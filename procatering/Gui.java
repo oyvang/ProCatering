@@ -776,6 +776,11 @@ public class Gui extends javax.swing.JFrame {
     	loginErrorMessage_label.setText(text);
         loginErrorMessage_label.setVisible(true);
     }
+    
+    private void errorPrint(){
+    	System.out.println("Dette er en test egentlig.");
+    }
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     	 boolean login = false;
          SecurityChecker checker = new SecurityChecker();
