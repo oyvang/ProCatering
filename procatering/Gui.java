@@ -805,7 +805,7 @@ public class Gui extends javax.swing.JFrame {
              backendMenu.setVisible(true);
              loginErrorMessage_label.setVisible(false);
          }else if(login == false && employee_id !=-1){
-         	errorTextHandler("The password or employee ID is wrong.");
+         	errorTextHandler("The password or employee ID wrong, please check input.");
          }
      
  }//GEN-LAST:event_jButton3ActionPerformed
