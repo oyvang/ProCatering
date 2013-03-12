@@ -798,7 +798,7 @@ public class Gui extends javax.swing.JFrame {
 			}
          
          login = checker.checkPassword(employee_id, password_s); //Checks whether the password matches the one stored on the specific user
-         
+         errorPrint();
          if(login == true && employee_id != -1){
              loginPanel.setVisible(false);
              mainMenu.setVisible(true);
