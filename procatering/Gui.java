@@ -1,19 +1,30 @@
 package procatering;
 
+import java.awt.Color;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import java.awt.Color;
+import javax.swing.JPanel;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class Gui extends javax.swing.JFrame {
     private DBConnection db;
+	private boolean admin;
+	private JPanel subscriptionPanel;
     /**
      * Creates new form Gui
      */
     public Gui() {
+    	admin = false;
         initComponents();
-        db = new DBConnection();
+        db = new DBConnection(); 
     }
 
     /**
@@ -42,10 +53,10 @@ public class Gui extends javax.swing.JFrame {
         backend5 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         loginPanel = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        loginButton = new javax.swing.JButton();
         employee_ID_input = new javax.swing.JTextField();
-        jLabel31 = new javax.swing.JLabel();
-        jLabel32 = new javax.swing.JLabel();
+        Employee_ID_input_label = new javax.swing.JLabel();
+        Password_input_label = new javax.swing.JLabel();
         password_input = new javax.swing.JPasswordField();
         loginErrorMessage_label = new javax.swing.JLabel();
         loginErrorMessage_label.setVisible(false);
@@ -100,6 +111,8 @@ public class Gui extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
         jLabel23 = new javax.swing.JLabel();
+        subscriptionPanel = new JPanel();
+        existPanel = new JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -125,9 +138,20 @@ public class Gui extends javax.swing.JFrame {
         });
 
         menuSubscriptionButton.setText("Subscription");
-
+        
+        menuSubscriptionButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent evt) {
+                menuSubscriptionButtonActionPerformed(evt);
+        	}
+        });
+        
         menuExistingButton.setText("Existing");
-
+        menuExistingButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent evt) {
+        		menuExistButtonActionPerformed(evt);
+        	}
+        });
+        
         javax.swing.GroupLayout mainMenuLayout = new javax.swing.GroupLayout(mainMenu);
         mainMenu.setLayout(mainMenuLayout);
         mainMenuLayout.setHorizontalGroup(
@@ -219,8 +243,8 @@ public class Gui extends javax.swing.JFrame {
                 .addGap(0, 102, Short.MAX_VALUE))
         );
 
-        jButton3.setText("login");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        loginButton.setText("login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
@@ -232,9 +256,9 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        jLabel31.setText("Employee id:");
+        Employee_ID_input_label.setText("Employee id:");
 
-        jLabel32.setText("Password:");
+        Password_input_label.setText("Password:");
 
         loginErrorMessage_label.setText("This field requires a numeric value. Type a number");
         loginErrorMessage_label.addAncestorListener(new javax.swing.event.AncestorListener() {
@@ -256,15 +280,15 @@ public class Gui extends javax.swing.JFrame {
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel31)
-                            .addComponent(jLabel32))
+                            .addComponent(Employee_ID_input_label)
+                            .addComponent(Password_input_label))
                         .addGap(18, 18, 18)
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(employee_ID_input, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                             .addComponent(password_input)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton3)))
+                        .addComponent(loginButton)))
                 .addGap(18, 18, 18)
                 .addComponent(loginErrorMessage_label)
                 .addContainerGap(463, Short.MAX_VALUE))
@@ -275,14 +299,14 @@ public class Gui extends javax.swing.JFrame {
                 .addGap(91, 91, 91)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(employee_ID_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel31)
+                    .addComponent(Employee_ID_input_label)
                     .addComponent(loginErrorMessage_label))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32)
+                    .addComponent(Password_input_label)
                     .addComponent(password_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(loginButton)
                 .addContainerGap(170, Short.MAX_VALUE))
         );
 
@@ -629,43 +653,52 @@ public class Gui extends javax.swing.JFrame {
 
         customersPanel.setVisible(false);
         singleOrderPanel.setVisible(false);
+        existPanel.setVisible(false);
+        subscriptionPanel.setVisible(false);
+        JLabel lblExisting = new JLabel("Existing");
+        existPanel.add(lblExisting);
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(customersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(543, Short.MAX_VALUE))
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(singleOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(356, Short.MAX_VALUE)))
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(545, Short.MAX_VALUE)))
+        	mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(mainPanelLayout.createSequentialGroup()
+        			.addGroup(mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(mainPanelLayout.createSequentialGroup()
+        					.addContainerGap()
+        					.addGroup(mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        						.addComponent(customersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(singleOrderPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(loginPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+        				.addGroup(mainPanelLayout.createSequentialGroup()
+        					.addGap(50)
+        					.addComponent(subscriptionPanel, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE)
+        					.addGap(60)
+        					.addComponent(existPanel, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(545, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(customersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(250, Short.MAX_VALUE))
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addGap(10, 10, 10)
-                    .addComponent(singleOrderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(114, Short.MAX_VALUE)))
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(224, Short.MAX_VALUE)))
+        	mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(mainPanelLayout.createSequentialGroup()
+        			.addGroup(mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(mainPanelLayout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(customersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addGroup(mainPanelLayout.createSequentialGroup()
+        					.addGap(10)
+        					.addComponent(singleOrderPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addGroup(mainPanelLayout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(loginPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+        			.addGap(28)
+        			.addGroup(mainPanelLayout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(subscriptionPanel, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(existPanel, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE))
+        			.addContainerGap(37, Short.MAX_VALUE))
         );
+        
+        JLabel lblSubscription = new JLabel("Subscription");
+        subscriptionPanel.add(lblSubscription);
+        mainPanel.setLayout(mainPanelLayout);
 
         mainMenu.setVisible(false);
         backendMenu.setVisible(false);
@@ -701,18 +734,28 @@ public class Gui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void backend1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backend1ActionPerformed
+    private void menuSubscriptionButtonActionPerformed(ActionEvent evt) {
+		setView("subscription", admin);
+	}
+    
+    private void menuExistButtonActionPerformed(ActionEvent evt) {
+		setView("existing", admin);
+	}
+
+	private void backend1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backend1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_backend1ActionPerformed
 
     private void customerFnameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerFnameInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_customerFnameInputActionPerformed
-
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //							MENU BUTTON CLICK HANDLING FOLLOWS										//
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     private void menuFindButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFindButtonActionPerformed
-        singleOrderPanel.setVisible(false);
-        loginPanel.setVisible(false);
-        customersPanel.setVisible(true);
+        
+    	setView("find", admin);
           DefaultListModel<String> nameList = new DefaultListModel<>();
             try(ResultSet rs = db.gQuery("select firstname, lastname from customer");){
                 String fName;
@@ -749,18 +792,13 @@ public class Gui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_customerSearchButtonActionPerformed
 
-    private void menuSingleOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSingleOrderButtonActionPerformed
-       
-            customersPanel.setVisible(false);
-            loginPanel.setVisible(false);
-            singleOrderPanel.setVisible(true); 
-        
-    }//GEN-LAST:event_menuSingleOrderButtonActionPerformed
+    private void menuSingleOrderButtonActionPerformed(java.awt.event.ActionEvent evt){
+    	setView("singleOrder", admin); //Sets view
+    }
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox1ActionPerformed
-
     
     private void singleOrderDateListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_singleOrderDateListValueChanged
         if(!singleOrderYearList.getValueIsAdjusting() && !singleOrderMonthList.getValueIsAdjusting()){
@@ -769,19 +807,18 @@ public class Gui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_singleOrderDateListValueChanged
 
-    private void employee_ID_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employee_ID_inputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_employee_ID_inputActionPerformed
-    private void errorTextHandler(String text){
-    	loginErrorMessage_label.setText(text);
-        loginErrorMessage_label.setVisible(true);
+    private void employee_ID_inputActionPerformed(java.awt.event.ActionEvent evt) {
+    	// TODO add your handling code here:
     }
     
-    private void errorPrint(){
-    	System.out.println("Dette er en test egentlig.");
-    }
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //							HELP METHODS															//
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
     	 boolean login = false;
          SecurityChecker checker = new SecurityChecker();
          int employee_id = -1;
@@ -796,23 +833,22 @@ public class Gui extends javax.swing.JFrame {
          for (int i = 0; i < password.length; i++) {
 				password_s = password_s + password[i];
 			}
-         
+         /* The login */
+         admin  = checker.checkAdmin(); // logs in admin
          login = checker.checkPassword(employee_id, password_s); //Checks whether the password matches the one stored on the specific user
-         errorPrint();
          if(login == true && employee_id != -1){
-             loginPanel.setVisible(false);
-             mainMenu.setVisible(true);
-             backendMenu.setVisible(true);
-             loginErrorMessage_label.setVisible(false);
+            loginErrorMessage_label.setVisible(false); //If there has been an error, the label is removed.
+            mainMenu.setVisible(true);
+            setView("find", admin); //See change view
          }else if(login == false && employee_id !=-1){
-         	errorTextHandler("The password or employee ID wrong, please check input.");
+         	errorTextHandler("The password or employee ID wrong, please check input."); //Displays an errorMessage
          }
      
- }//GEN-LAST:event_jButton3ActionPerformed
+ }
 
-    private void customerRegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerRegisterButtonActionPerformed
+    private void customerRegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        Person temp;
+    	Person temp;
         try{
             String fname    = customerFnameInput.getText();
             String lname    = customerLnameInput.getText();
@@ -825,57 +861,100 @@ public class Gui extends javax.swing.JFrame {
             String dob      = customerBirthInput.getText();
             String e        = customerEmailInput.getText();
 //          String notes    = customerNotesInput.getText();
-            
 //          temp = new Customer(adr, dob, fname,  lname, phone, e);
             db.eQuery("INSERT INTO customer VALUES(DEFAULT,'"+fname+"',DEFAULT,'"+lname+"','"+phone+"','"+adr+"','"+post+"')");
         }catch(Exception e){
             System.out.println("EXCEPTION: You have to fill in the required infomation.\n"+e);
         }
         
-    }//GEN-LAST:event_customerRegisterButtonActionPerformed
-
-    private void customerEmailInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerEmailInputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_customerEmailInputActionPerformed
-
-    private void loginErrorMessage_labelAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_loginErrorMessage_labelAncestorAdded
-     // TODO add your handling code here:
-    }//GEN-LAST:event_loginErrorMessage_labelAncestorAdded
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Gui().setVisible(true);
-            }
-        });
     }
+
+    private void customerEmailInputActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void loginErrorMessage_labelAncestorAdded(javax.swing.event.AncestorEvent evt) {
+     // TODO add your handling code here:
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //											HELP METHODS											//
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void errorTextHandler(String text){
+    	loginErrorMessage_label.setText(text);
+        loginErrorMessage_label.setVisible(true);
+    }
+
+    /** private method changeView takes a viewName as a parameter and changes the gui to the new view. 
+     * @param view is a string describing witch of the view that should be selected.
+     * @param admin is a boolean that chooses wether admin-tools is shown.
+     * @author Jørgen Lien Sellæg
+     * @return N/A
+     * */
+    private void setView(String view, boolean admin){
+    	switch (view.toLowerCase().trim()) {
+    		/* This view is the initial login.*/
+			default:
+				loginPanel.setVisible(false);
+	            customersPanel.setVisible(false);
+	            singleOrderPanel.setVisible(false);
+	            subscriptionPanel.setVisible(false);
+	            existPanel.setVisible(false);
+			break;
+			/* This view activates upon the hit of the  */
+			case "find":
+				setView("", admin);
+	            customersPanel.setVisible(true);
+			break;
+		
+			/* reg new?*/
+			case "regnew":
+				setView("", admin);
+	            customersPanel.setVisible(true);
+			break;
+			/* Dok */
+			case "singleorder":
+				setView("", admin);
+				singleOrderPanel.setVisible(true);
+				break;
+			/* Dok */
+			case "subscription":
+				setView("",admin);
+				subscriptionPanel.setVisible(true);
+				break;
+			/* Dok */	//TODO Documentation and imp
+			case "existing":
+				setView("",admin);
+				existPanel.setVisible(true);
+				break;
+			/* Dok */	//TODO Documentation and imp
+			case "employees":
+				setView("",admin);
+				break;
+			/* Dok */	//TODO Documentation and imp
+			case "customers":
+				setView("", admin);
+				break;
+			/* Dok */	//TODO Documentation and imp
+			case "orders":
+				setView("", admin);
+				break;
+			/* Dok */	//TODO Documentation and imp
+			case "dishes":
+				setView("", admin);
+				break;
+			/* Dok */ 	//TODO Documentation and imp
+			case "economics":
+				setView("", admin);
+				break;
+			case "logout":
+				setView("login", admin);
+				break;
+		}
+    	if(admin)
+          	 backendMenu.setVisible(true);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backend1;
     private javax.swing.JButton backend2;
@@ -896,10 +975,11 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JButton customerRegisterButton;
     private javax.swing.JButton customerSearchButton;
     private javax.swing.JPanel customersPanel;
+    private javax.swing.JPanel existPanel;
     private javax.swing.JTextField employee_ID_input;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton loginButton;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -920,8 +1000,8 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel Employee_ID_input_label;
+    private javax.swing.JLabel Password_input_label;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -953,4 +1033,36 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JPanel singleOrderPanel;
     private final javax.swing.JList singleOrderYearList = new javax.swing.JList();
     // End of variables declaration//GEN-END:variables
+   
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Gui().setVisible(true);
+            }
+        });
+    }
 }

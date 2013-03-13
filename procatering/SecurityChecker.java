@@ -92,6 +92,10 @@ public class SecurityChecker {
 	        md.update(text.getBytes("iso-8859-1"), 0, text.length());
 	        md5hash = md.digest();
 	        return convertToHex(md5hash);
-	    } 
+	    }
+		public boolean checkAdmin() {
+			// TODO Create check if the user is admin.
+			return false;
+		} 
 	
 }
