@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
+
+import database.DBConnection;
+import database.SecurityChecker;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 

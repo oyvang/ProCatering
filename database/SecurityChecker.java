@@ -1,4 +1,4 @@
-package procatering;
+package database;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
+
 
 /** Class SecurityChecker */
 public class SecurityChecker {

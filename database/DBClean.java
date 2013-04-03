@@ -1,4 +1,4 @@
-package procatering;
+package database;
 
 import java.sql.*;
 import static javax.swing.JOptionPane.*;

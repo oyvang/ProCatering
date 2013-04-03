@@ -3,6 +3,8 @@ package procatering ;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import database.DBConnection;
+
 /**
  * 
  * @author TEAM 17
