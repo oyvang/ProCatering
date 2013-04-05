@@ -26,7 +26,6 @@ public class Gui {
 
 	private JPanel background;
 	private JPanel mainMenu;
-	private JPanel mainPanel;
 	private JPanel topPanel;
 	private JPanel bottomPanel;
 	private JPanel costumerPanel;
@@ -42,8 +41,8 @@ public class Gui {
 	private JButton backendDishButton;
 	private JButton backendEconomicButton;
 	private JLabel currentPosition_label;
+	private JButton log_out_button;
 	private JPanel findPanel;
-	private JPanel customerListPanel;
 	private JPanel customerSearchPanel;
 	private JLabel firstnameLabel;
 	private JLabel lastnameLabel;
@@ -61,14 +60,22 @@ public class Gui {
 	private JTextField emailInputField;
 	private JLabel postalCodeOutputLabel;
 	private JButton registerNewButton;
+	private JPanel notePanel;
+	private JTextArea notesInputArea;
+	private JPanel customerListPanel;
+	private JScrollPane customerScrollPane;
 	private JList customerList;
 	private JButton customerSearchButton;
 	private JTextField customerSearchField;
-	private JScrollPane customerScrollPane;
-	private JPanel notePanel;
-	private JTextArea notesInputArea;
-	private JButton log_out_button;
 	private JPanel singleOrderPanel;
+	private JPanel mainPanel;
+	private JPanel existOrderPanel;
+	private JPanel subscriptionOrderPanel;
+	private JPanel employeesBackendPanel;
+	private JPanel customerBackendPanel;
+	private JPanel orderBackendPanel;
+	private JPanel dishBackendPanel;
+	private JPanel economicBackendPanel;
 
 
 	private void createUIComponents() {
