@@ -174,7 +174,7 @@ class Employee extends Person{
      * @param type String object
      */
     public void setType(String type) {
-        this.type = type;
+        this.type = type.toUpperCase();
     }    
     /**
      * toString are of the object String
