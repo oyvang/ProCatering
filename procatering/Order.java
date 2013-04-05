@@ -43,7 +43,7 @@ public class Order {
         }
     }
 
-    public void removeOrder(int index) {
-        ordercontent.removeElementAt(index);
+    public void addDB(){
+       database.DBConnection db = new database.DBConnection();
     }
 }
