@@ -14,14 +14,14 @@ import javax.swing.DefaultListModel;
  * 
  */
 public class OrderContent {
-    private DefaultListModel<Dish> dishes;
+    private DefaultListModel<String> dishes;
     private Timestamp deliveryTime;
     private Timestamp deliveryDate;
     private int deliveryDay;
     
     /*constructor */
     public OrderContent(){
-        dishes = new DefaultListModel<Dish>();
+        dishes = new DefaultListModel<String>();
     }
     
     public DefaultListModel getDishes(){
@@ -68,15 +68,15 @@ public class OrderContent {
     }
     /**
      * 
-     * @param dishObj This dish object will be added to the dishes list.
+     * @param dishName This dish object will be added to the dishes list.
      * @param quantity This amount of dishes will be added to the dishes list.
      * @return boolean
      * @author Tedjk
      */
-    public boolean addDish(Dish dishObj, int quantity){
-        if(dishObj != null){
+    public boolean addDish(String dishName, int quantity){
+        if(dishName != null){
             for (int i = 0; i < quantity; i++) {
-                dishes.addElement(dishObj);
+                dishes.addElement(dishName);
             }
             return true;
         }

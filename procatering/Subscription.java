@@ -4,7 +4,11 @@
  */
 package procatering;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import javax.swing.DefaultListModel;
 
 
@@ -17,18 +21,18 @@ public class Subscription {
     private Timestamp endDate;
     private Timestamp orderDate;
     private DefaultListModel<OrderContent> content;
-    private int employeeID;
-    private int customerID;     //use whole object if we need many queries.
+    private int employeeId;
+    private int customerId;     //use whole object if we need many queries.
 
     public Subscription() {
-        this.content = new DefaultListModel<OrderContent>();
+        this.content = new DefaultListModel<>();
     }
     
-    public void addStartDate(Date start){
+    public void addStartDate(Timestamp start){
         startDate = start;
     }
     
-    public void addEndDate(Date end){
+    public void addEndDate(Timestamp end){
         endDate = end;
     }
     
@@ -37,9 +41,16 @@ public class Subscription {
     }
     
     public void addToDB(){
-       database.DBConnection db = new database.DBConnection();
+       Calendar calendar = Calendar.getInstance();
+       java.util.Date now = calendar.getTime();
+       Timestamp current = new Timestamp(now.getTime());
        
-       db.eQuery("INSERT INTO table_name (column1, column2, column3,...) VALUES (value1, value2, value3,...));
+        database.DBConnection db = new database.DBConnection();
+       
+       
+       db.eQuery("INSERT INTO order (employee_id, customer_id, time_of_order, status) VALUES ("+employeeId+","+ customerId+","+current+", 'active')");
+       
+       ResultSet rs = db.gQuery("SELECT order_id FROM order WHERE timestamp = "+current);
  
     }
 }

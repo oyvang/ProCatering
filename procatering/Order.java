@@ -4,14 +4,14 @@ package procatering;
  *
  * @author TEAM 17
  */
+import java.sql.Timestamp;
 import javax.swing.DefaultListModel;
-import sun.util.calendar.LocalGregorianCalendar.Date;
 
 public class Order {
 
     private int customerId;
     private int employeeId;
-    private Date date;
+    private Timestamp date;
     private DefaultListModel<OrderContent> ordercontent;
 
     /* Constructor */
@@ -30,7 +30,7 @@ public class Order {
      * Adds the date the order is made
      * @param date
      */
-    public void addDate(Date date) {
+    public void addDate(Timestamp date) {
         this.date = date;
     }
 
