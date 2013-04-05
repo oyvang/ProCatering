@@ -1,6 +1,9 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,9 +13,13 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 public class Gui {
+	public Gui() {
+		initListeners();
+	}
+
 	public static void main(String[] args) {
-		JFrame frame = new JFrame("Gui");
-		frame.setContentPane(new Gui().background);
+		frame = new JFrame("Gui");
+		frame.setContentPane(new Gui().ProCatering);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -23,25 +30,26 @@ public class Gui {
 		frame.pack();
 		frame.setVisible(true);
 	}
-
-	private JPanel background;
+	private static JFrame frame;
+	private JPanel loggedIn;
 	private JPanel mainMenu;
-	private JPanel topPanel;
-	private JPanel bottomPanel;
 	private JPanel costumerPanel;
-	private JPanel orderMenu;
-	private JPanel backendMenu;
 	private JButton menuFindButton;
+	private JPanel orderMenu;
 	private JButton menuSingleOrderButton;
-	private JButton backendEmployeeButton;
 	private JButton menuExistingButton;
 	private JButton menuSubscriptionButton;
+	private JPanel backendMenu;
+	private JButton backendEmployeeButton;
 	private JButton backendCustomerButton;
 	private JButton backendOrderButton;
 	private JButton backendDishButton;
 	private JButton backendEconomicButton;
+	private JPanel topPanel;
 	private JLabel currentPosition_label;
+	private JPanel bottomPanel;
 	private JButton log_out_button;
+	private JPanel mainPanel;
 	private JPanel findPanel;
 	private JPanel customerSearchPanel;
 	private JLabel firstnameLabel;
@@ -68,7 +76,6 @@ public class Gui {
 	private JButton customerSearchButton;
 	private JTextField customerSearchField;
 	private JPanel singleOrderPanel;
-	private JPanel mainPanel;
 	private JPanel existOrderPanel;
 	private JPanel subscriptionOrderPanel;
 	private JPanel employeesBackendPanel;
@@ -76,10 +83,40 @@ public class Gui {
 	private JPanel orderBackendPanel;
 	private JPanel dishBackendPanel;
 	private JPanel economicBackendPanel;
+	private JPanel ProCatering;
+	private JLabel welcomeMessageLabel;
+	private JPanel loginPanel;
+	private JLabel Employee_ID_input_label;
+	private JLabel loginErrorMessage_label;
+	private JPasswordField password_input;
+	private JTextField employee_ID_input;
+	private JButton loginButton;
+	private JLabel Password_input_label;
+	private JPanel loggedOut;
+	private JPanel welcomeMessagePanel;
 
 
 	private void createUIComponents() {
 		// TODO: place custom component creation code here
+	}
+
+	private void initListeners(){
+		loginButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt){
+				loginButtonActionPerformed(evt);
+			}
+		});
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	//							EventHandlers															//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private void loginButtonActionPerformed(ActionEvent evt){
+		CardLayout cl = (CardLayout)ProCatering.getLayout();
+		cl.show(ProCatering,"loggedInCard");
+
+		//TODO legg inn der kodn.
 	}
 
 }
