@@ -4,17 +4,21 @@
  */
 package procatering;
 
+import java.sql.Timestamp;
 import javax.swing.DefaultListModel;
-import sun.util.calendar.LocalGregorianCalendar.Date;
+
 
 /**
  *
  * @author Ted
  */
 public class Subscription {
-    private Date startDate;
-    private Date endDate;
+    private Timestamp startDate;
+    private Timestamp endDate;
+    private Timestamp orderDate;
     private DefaultListModel<OrderContent> content;
+    private int employeeID;
+    private int customerID;     //use whole object if we need many queries.
 
     public Subscription() {
         this.content = new DefaultListModel<OrderContent>();
@@ -32,11 +36,10 @@ public class Subscription {
         content.addElement(cont);
     }
     
-    public void addDB(){
+    public void addToDB(){
        database.DBConnection db = new database.DBConnection();
        
        db.eQuery("INSERT INTO table_name (column1, column2, column3,...) VALUES (value1, value2, value3,...));
-       
-       
+ 
     }
 }

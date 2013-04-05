@@ -4,17 +4,20 @@
  */
 package procatering;
 
+
+import java.sql.Timestamp;
 import javax.swing.DefaultListModel;
-import sun.util.calendar.LocalGregorianCalendar.Date;
 
 /**
- * content of an order or subscription, with date(order) or day(subscription)
+ * content of an order or subscription, with deliveryDate( for order ) or deliveryDay( for subscription )
  * @author Ted
+ * 
  */
 public class OrderContent {
     private DefaultListModel<Dish> dishes;
-    private Date date;
-    private int day;
+    private Timestamp deliveryTime;
+    private Timestamp deliveryDate;
+    private int deliveryDay;
     
     /*constructor */
     public OrderContent(){
@@ -24,7 +27,19 @@ public class OrderContent {
     public DefaultListModel getDishes(){
         return dishes;
     }
-    
+
+    public Timestamp getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public int getDeliveryDay() {
+        return deliveryDay;
+    }
+        
     /**
      * Adds a date for an order
      * @param date
@@ -51,12 +66,6 @@ public class OrderContent {
        }
        return false;
     }
-    
-   
-    
-    
-    
-    
     /**
      * 
      * @param dishObj This dish object will be added to the dishes list.
