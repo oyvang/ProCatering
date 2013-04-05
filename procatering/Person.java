@@ -132,7 +132,7 @@ class Employee extends Person{
      */
     public static Employee getEmployee_id(int employee_id){
         DBConnection db = new DBConnection();
-         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id ="+employee_id);){
+         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employee_id+";")){
              String type;
              String birth;
              String fName;
@@ -147,6 +147,7 @@ class Employee extends Person{
             lName = rs.getString("lastname");
             phone = rs.getString("phone_number");
             mail = rs.getString("email");
+            db.disconnect();
             if(type!=null && birth != null && fName != null && lName != null 
                     && phone != null && mail != null){
                 return new Employee(type, birth, fName, lName, phone, mail);
@@ -157,9 +158,52 @@ class Employee extends Person{
                 System.err.println("exception while trying to fetch customers:"+e);
         }
 
-        
+        db.disconnect();
     	return null;
     	//Tips: SQL-henting fra databasen
+    }
+    
+    
+    public boolean addEmployee (String t,String birth, String fn, String ln, String phone, String mail){
+        DBConnection connection = new DBConnection();
+        connection.eQuery("INSERT INTO employee (firstname, lastname, password, dob, email, type");
+        return false;
+    }
+    
+    /**
+     * addDish adds a dish to a database using DBConnection object and close the connection after the methode is done.
+     * @param name (String)
+     * @param sellPrice (double)
+     * @param cost (double)
+     * @return if sucsessfully add a dish it will return true else it will retun false
+     */
+     public static boolean addDish(String name, double sellPrice, double cost){
+        DBConnection connection = new DBConnection();
+        if(connection.eQuery("INSERT INTO dish ('"+name.toUpperCase()+"',"+ sellPrice+","+cost+");")>-1){
+            connection.disconnect();
+            return true;
+        }else{
+            connection.disconnect();
+        return false;
+        }
+    }
+    /**
+     * UpdateDishPrices uses to update a dish price and cost using DBConnection. The methode cannot change dish name. the db connection will be closed after the methode are done.
+     * @param name (String)
+     * @param newPrice (double)
+     * @param cost (double)
+     * @return if sucsessfully changed the mothode will return true else it will return false.
+     */
+    public static boolean UpdateDishPrices(String name, double newPrice, double cost){
+        DBConnection connection = new DBConnection();
+        if(connection.eQuery("UPDATE dish SET price = " + newPrice +",cost = "+cost+" WHERE"
+                + " dishname = '"+name+"';")>-1){
+            connection.disconnect();
+            return true;
+        }else{
+            connection.disconnect();
+            return false;
+        }
     }
     
     /**
