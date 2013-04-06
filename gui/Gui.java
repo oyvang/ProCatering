@@ -1,5 +1,7 @@
 package gui;
 
+import database.SecurityChecker;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,11 +114,30 @@ public class Gui {
 	//							EventHandlers															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /** Method handles the actions performed when pushing the "Enter"-button in the loggedOutCard.
+     * @param evt ActionEvent-object from the button pressing.
+     * @return void
+     * @author Jørgen Lien Sellæg
+     *
+     * */
 	private void loginButtonActionPerformed(ActionEvent evt){
-		CardLayout cl = (CardLayout)ProCatering.getLayout();
-		cl.show(ProCatering,"loggedInCard");
+		CardLayout cl = (CardLayout)ProCatering.getLayout(); //Object for handling the cardLayout switch
+        Integer id = 0;
+		try{
+        	id = Integer.parseInt(employee_ID_input.getText().trim());
+        }catch(NumberFormatException e){
+            employee_ID_input.setText("");
+			loginErrorMessage_label.setVisible(true);
+            loginErrorMessage_label.setText("The Employee ID-field must be a number");
+        }
 
-		//TODO legg inn der kodn.
+        String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
+
+        if(SecurityChecker.logIn(id, password))
+            cl.show(ProCatering,"loggedInCard");
+        else{
+			loginErrorMessage_label.setVisible(true);
+			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
+		}
 	}
-
 }
