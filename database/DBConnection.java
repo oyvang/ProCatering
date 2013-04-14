@@ -30,6 +30,7 @@ public class DBConnection {
             try {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(URL,username,password);
+			System.out.println("KjÃ¸rt");
             } catch (Exception error){
                 showMessageDialog(null, "An Error have occurred when trying to accses the database!\n\n" + error,"ERROR!", ERROR_MESSAGE);
                 System.out.println(error);
@@ -48,7 +49,7 @@ public class DBConnection {
 	 * @param query An SQL-query like <code> SELECT * FROM 'COLUMN'</code>
 	 * @return
 	 * Returns a Result set of the given <code>query</code> returns <i>null</i> if there is an error
-	 * @author Jørgen Lien Sellæg */
+	 * @author JÃ¸rgen Lien SellÃ¦g */
 	public ResultSet gQuery(String query){
 		try{
 			statement = connection.createStatement();
@@ -63,7 +64,7 @@ public class DBConnection {
 	/**public method eQuery gets an result set from the given query
 	* @param query An SQL-query like <code> UPDATE </code> or similar
 	* @return * an integer witch contains the number of rows affected returns -1 if there is an error.
-	* @author Jørgen Lien Sellæg */
+	* @author JÃ¸rgen Lien SellÃ¦g */
 	public int eQuery(String query){
 		try(Statement statement = connection.createStatement()){ //statement is closed by try-catch
 			return statement.executeUpdate(query);

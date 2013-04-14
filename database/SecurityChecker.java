@@ -43,7 +43,7 @@ public class SecurityChecker {
 	 * @return String with a md5 hash of a password
 	 * @author Jørgen Lien Sellæg
 	 * */
-	private static String getPasswordFromDatabase(int id){ //TODO skriv muligens om
+	private static String getPasswordFromDatabase(int id){ //TODO possible rewrite, also check documentation accordingly
 		DBConnection con = new DBConnection();
 		
 		/* Selects the password from the database to be compared. */
@@ -80,9 +80,8 @@ public class SecurityChecker {
 	    }
 		return buf.toString();
 	}
-
-	public static String MD5(String text)
-	    throws NoSuchAlgorithmException, UnsupportedEncodingException  { 
+	//TODO Documentation
+	public static String MD5(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException  {
 	    MessageDigest md;
 	    md = MessageDigest.getInstance("MD5");
 	    byte[] md5hash = new byte[32];
@@ -90,6 +89,7 @@ public class SecurityChecker {
 	    md5hash = md.digest();
 	    return convertToHex(md5hash);
 	}
+	//TODO Documentation
 	public boolean checkAdmin() {
 	// TODO Create check if the user is admin.
 		return false;
@@ -103,7 +103,7 @@ public class SecurityChecker {
 			res += password[i]+"";
         return res;
     }
-	//Write dokumentation
+	//TODO Write documentation
 	public static boolean logIn(Integer id, String password) {
 		if(id == null)
 			return false;

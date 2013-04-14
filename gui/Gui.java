@@ -24,7 +24,7 @@ public class Gui {
 		frame.setContentPane(new Gui().ProCatering);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
 		}catch (Exception e){
 			System.out.println("Running default");
 		}
@@ -50,7 +50,7 @@ public class Gui {
 	private JPanel topPanel;
 	private JLabel currentPosition_label;
 	private JPanel bottomPanel;
-	private JButton log_out_button;
+	private JButton logOutButton;
 	private JPanel mainPanel;
 	private JPanel findPanel;
 	private JPanel customerSearchPanel;
@@ -104,8 +104,43 @@ public class Gui {
 
 	private void initListeners(){
 		loginButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt){
 				loginButtonActionPerformed(evt);
+			}
+		});
+		/* Log Out-button */
+		logOutButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				logOutButtonActionPerformed(evt);
+			}
+		});
+		/* Menu Register/Find customer button */
+		menuFindButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				menuFindButtonActionPerformed(evt);
+			}
+		});
+		/* Menu Single order button */
+		menuSingleOrderButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				menuSingleOrderButtonActionPerformed(evt);
+			}
+		});
+		/* Menu existing order button */
+		menuExistingButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				menuExistingButtonActionPerformed(evt);
+			}
+		});
+		menuSubscriptionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				menuSubscriptionButtonActionPerformed(evt);
 			}
 		});
 	}
@@ -114,11 +149,11 @@ public class Gui {
 	//							EventHandlers															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Method handles the actions performed when pushing the "Enter"-button in the loggedOutCard.
-     * @param evt ActionEvent-object from the button pressing.
+	/** Method handles the actions performed when pushing the "Enter"-button in the loggedOutCard.
+	 * @param evt ActionEvent-object from the button pressing.
      * @return void
      * @author Jørgen Lien Sellæg
-     *
+     * //TODO Write more documentation
      * */
 	private void loginButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)ProCatering.getLayout(); //Object for handling the cardLayout switch
@@ -131,7 +166,7 @@ public class Gui {
             loginErrorMessage_label.setText("The Employee ID-field must be a number");
         }
 
-        String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
+		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
         if(SecurityChecker.logIn(id, password))
             cl.show(ProCatering,"loggedInCard");
@@ -139,5 +174,27 @@ public class Gui {
 			loginErrorMessage_label.setVisible(true);
 			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
 		}
+	}
+	//TODO add logOutCode
+	private void logOutButtonActionPerformed(ActionEvent evt) {
+		CardLayout cl = (CardLayout)ProCatering.getLayout();
+		cl.show(ProCatering, "loggedOutCard");
+	}
+
+	private void menuFindButtonActionPerformed(ActionEvent evt) {
+		CardLayout cl = (CardLayout)ProCatering.getLayout();
+		cl.show(ProCatering, "loggedOutCard");
+	}
+
+	private void menuSingleOrderButtonActionPerformed(ActionEvent evt){
+		System.out.println("ButtonClicked");
+	}
+
+	private void menuExistingButtonActionPerformed(ActionEvent evt){
+		System.out.println("ButtonClicked");
+	}
+
+	private void menuSubscriptionButtonActionPerformed(ActionEvent evt){
+		System.out.println("ButtonClicked");
 	}
 }
