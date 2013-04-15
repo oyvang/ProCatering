@@ -15,7 +15,6 @@ import javax.swing.DefaultListModel;
  */
 public class OrderContent {
     private DefaultListModel<String> dishes;
-    private Timestamp deliveryTime;
     private Timestamp deliveryDate;
     private int deliveryDay;
     
@@ -28,11 +27,7 @@ public class OrderContent {
         return dishes;
     }
 
-    public Timestamp getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public Date getDeliveryDate() {
+    public Timestamp getDeliveryDate() {
         return deliveryDate;
     }
 
@@ -45,9 +40,9 @@ public class OrderContent {
      * @param date
      * @return 
      */
-    public boolean addDate(Date date){
+    public boolean addDate(Timestamp date){
        if(date != null){
-        this.date = date;
+        this.deliveryDate = date;
         return true;
        }
        return false;
@@ -61,7 +56,7 @@ public class OrderContent {
      */
     public boolean addDay(int dayNumber){
        if(dayNumber > 1 || dayNumber < 8){
-        this.day = dayNumber;
+        this.deliveryDay = dayNumber;
         return true;
        }
        return false;

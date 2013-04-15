@@ -40,17 +40,18 @@ public class Subscription {
         content.addElement(cont);
     }
     
-    public void addToDB(){
+  /*  public void addToDB(){
        Calendar calendar = Calendar.getInstance();
        java.util.Date now = calendar.getTime();
        Timestamp current = new Timestamp(now.getTime());
        
-        database.DBConnection db = new database.DBConnection();
-       
-       
+       database.DBConnection db = new database.DBConnection(); 
        db.eQuery("INSERT INTO order (employee_id, customer_id, time_of_order, status) VALUES ("+employeeId+","+ customerId+","+current+", 'active')");
-       
        ResultSet rs = db.gQuery("SELECT order_id FROM order WHERE timestamp = "+current);
+       
+       while(rs.next()){
+           
+       }
  
-    }
+    }*/
 }
