@@ -44,6 +44,6 @@ public class Order {
     }
 
     public void addDB(){
-       database.DBConnection db = new database.DBConnection();
+       database.Database db = new database.Database();
     }
 }

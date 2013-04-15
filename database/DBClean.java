@@ -7,7 +7,7 @@ import static javax.swing.JOptionPane.*;
  * @author Team 17
  */
 public class DBClean {
-
+//TODO edit documentation for entire class. <--
     /**
      * Close a Connection object
      * @param con Connection object
@@ -16,19 +16,19 @@ public class DBClean {
      * @author Geir Morten Larsen
      *
      */
-    public boolean closeConnection(Connection con) {
+    public String closeConnection(Connection con) {
         try{
             if(con != null) {
                 con.close();
-                return true;
+                return null;
             }else if(con == null){
-                return true;
+                return null;
             }
         }catch (SQLException ex){
-            errorMessage(ex, "Error trying to close database Connection");
+           return errorMessage(ex, "Error 006: Error trying to close database Connection");
 
         }
-        return false;
+         return "Error 001: The Database connection is not valid.";
 
     }
     /**
@@ -38,20 +38,19 @@ public class DBClean {
      *          will return false with an error message.
      * @author Geir Morten Larsen
      */
-    public boolean closeResultSet(ResultSet rs) {
+    public String closeResultSet(ResultSet rs) {
         try {
             if(rs != null) {
                 rs.close();
-                return true;
+                return null;
             } else if(rs == null){
-                return true;
+                return null;
             }
         }catch (SQLException ex) {
-            errorMessage(ex, "Error trying to close database ResultSet");
+            return errorMessage(ex, "Error 007: Error trying to close database ResultSet");
 
         }
-
-        return false;
+         return "Error 002: The database resultset is not valid.";
     }
     /**
      * Colse a Statement object
@@ -60,20 +59,19 @@ public class DBClean {
      *          If a SQLException occure it will return false with an error message.
      * @author Geir Morten Larsen
      */
-    public boolean closeStatement(Statement state) {
+    public String closeStatement(Statement state) {
         try {
             if(state != null){
-
                 state.close();
-                return true;
+                return null;
             } else if(state == null){
-                return true;
+                return null;
             }
 
         }catch (SQLException ex) {
-            errorMessage(ex, "Error trying to close database Statement");
+            return errorMessage(ex, "Error 008: Error trying to close database Statement");
         }
-        return false;
+        return "Error 003: The statement is not valid.";
     }
 
     /**
@@ -83,16 +81,16 @@ public class DBClean {
      *          If an SQLExceptio  occure it will return false with an error message.
      */
 
-    public boolean dbRollback(Connection con){
+    public String dbRollback(Connection con){
         try {
             if(con != null && !con.getAutoCommit()){
                 con.rollback();
-                return true;
+                return null;
             }
         }catch (SQLException ex){
-            errorMessage(ex, "Error trying to rollback");
+            return errorMessage(ex, "Error 009: Error trying to rollback");
         }
-        return false;
+         return "Error 004: Error trying to fix an error in the database.";
     }
     /**
      * Enable setAutoCommit on an connection object.
@@ -101,18 +99,18 @@ public class DBClean {
      *      If an SQLException occure it will return false with an error message.
      */
 
-    public boolean autoCommit(Connection con){
+    public String autoCommit(Connection con){
         try{
             if(con!=null && !con.getAutoCommit()){
                 con.setAutoCommit(true);
-                return true;
+                return null;
             }else if(con!=null && con.getAutoCommit()){
-                return true;
+                return null;
             }
         }catch (SQLException ex) {
-            errorMessage(ex, "Error trying to start setAutoCommit");
+            errorMessage(ex, "Error 010: Error trying to start setAutoCommit");
         }
-        return false;
+            return "Error 005: Error in the database transaction.";
     }
 
 
@@ -124,8 +122,11 @@ public class DBClean {
      * @return return showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
      * @author Geir Morten Larsen
      */
-    private void errorMessage(Exception ex, String error) {
-        showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
+    private String errorMessage(Exception ex, String error) {
+        if(ex != null && error != null){
+            return "ERROR! \n" + error + "\n" + ex;
+        }
+        return "Error 666: Error while trying to make an errormessage.";
     }
 }
 

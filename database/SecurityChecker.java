@@ -41,10 +41,10 @@ public class SecurityChecker {
 	/** Gets a MD5 hash from the database and returns it as a String
 	 * @param id of the column witch contains the password 
 	 * @return String with a md5 hash of a password
-	 * @author Jørgen Lien Sellæg
+	 * @author Jï¿½rgen Lien Sellï¿½g
 	 * */
 	private String getPasswordFromDatabase(int id){
-		DBConnection con = new DBConnection();
+		Database con = new Database();
 		
 		/* Selects the password from the database to be compared. */
 		String query = "SELECT employee.password FROM employee WHERE employee_id = '"+id+"'";

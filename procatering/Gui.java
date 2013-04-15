@@ -11,7 +11,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 
-import database.DBConnection;
+import database.Database;
 import database.SecurityChecker;
 
 import java.awt.event.ActionListener;
@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class Gui extends javax.swing.JFrame {
-    private DBConnection db;
+    private Database db;
 	private boolean admin;
 	private JPanel subscriptionPanel;
     /**
@@ -28,7 +28,7 @@ public class Gui extends javax.swing.JFrame {
     public Gui() {
     	admin = false;
         initComponents();
-        db = new DBConnection(); 
+        db = new Database(); 
     }
 
     /**
@@ -892,7 +892,7 @@ public class Gui extends javax.swing.JFrame {
     /** private method changeView takes a viewName as a parameter and changes the gui to the new view. 
      * @param view is a string describing witch of the view that should be selected.
      * @param admin is a boolean that chooses wether admin-tools is shown.
-     * @author Jørgen Lien Sellæg
+     * @author Jï¿½rgen Lien Sellï¿½g
      * @return N/A
      * */
     private void setView(String view, boolean admin){
