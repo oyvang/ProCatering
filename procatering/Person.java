@@ -13,7 +13,7 @@ import database.DBConnection;
  * 
  */
 
-public class Person {
+public abstract class Person {
     private final String DOB;
     private String firstName;
     private String lastName;
@@ -118,21 +118,23 @@ public class Person {
  */
 class Employee extends Person{ 
     private String type;
+    database.Database db;
     
-    public Employee(String t,String birth, String fn, String ln, String phone, String mail){
+    public Employee(String type,String birth, String fn, String ln, String phone, String mail){
     super(birth,  fn,  ln,  phone,  mail);
-    this.type = t.toUpperCase();
+    this.type = type.toUpperCase();
+    db = new database.Database();
     }
 
 
     /**
-     * Create a  new employee object and returns a reference to that object
+     * Create a new employee object and returns a reference to that object
      * @param employee_id Employee object
      * @return employee object if sucsessfully fetched from the database if not it will return null
      */
-    public static Employee getEmployee_id(int employee_id){
+    public static Employee getEmployee(int employeeId){
         DBConnection db = new DBConnection();
-         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employee_id+";")){
+         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employeeId+";")){
              String type;
              String birth;
              String fName;
@@ -152,58 +154,86 @@ class Employee extends Person{
                     && phone != null && mail != null){
                 return new Employee(type, birth, fName, lName, phone, mail);
             }
-          }
-            
+          }           
          }catch(SQLException e){
                 System.err.println("exception while trying to fetch customers:"+e);
         }
-
         db.disconnect();
     	return null;
     	//Tips: SQL-henting fra databasen
     }
     
+    /**
+     * addEmployee uses a Database object to add a new Employee to the database
+     * @param type
+     * @param birth
+     * @param fn
+     * @param ln
+     * @param phone
+     * @param mail
+     * @return a boolean. true if sucsessfully added a new employee, else it will return false;
+     */
+    public boolean addEmployee (String type,String birth, String fn, String ln, String phone, String mail){
+        String cleanFN = fn.toUpperCase();
+        String cleanLN = ln.toUpperCase();
+        fn = capitalFirst(fn);
+        if(db.addEmployee(type,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
+            return true;
+        }
+        return false;
+    }
     
-    public boolean addEmployee (String t,String birth, String fn, String ln, String phone, String mail){
-        DBConnection connection = new DBConnection();
-        connection.eQuery("INSERT INTO employee (firstname, lastname, password, dob, email, type");
+       // TO DO:
+        // Lag en metode som finner customer... metoden skal sende informasjon vidre til Database db og bruke en metode der som gjør jobben.
+    
+    /**
+     * addCustomer uses a db object and adds a new customer to the database. This metode will turn all first letters in fn and ln to uppercase
+     * @param adr
+     * @param birth
+     * @param fn
+     * @param ln
+     * @param phone
+     * @param mail
+     * @return a boolean. if true it has sucsessfully added a new customer to the database, else it will return false.
+     */
+     public boolean addCustomer (String adr,String birth, String fn, String ln, String phone, String mail){
+        String cleanFN = fn.toUpperCase();
+        String cleanLN = ln.toUpperCase();
+        fn = capitalFirst(fn);
+        if(db.addCustomer(adr,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
+            return true;
+        }
         return false;
     }
     
     /**
-     * addDish adds a dish to a database using DBConnection object and close the connection after the methode is done.
-     * @param name (String)
-     * @param sellPrice (double)
-     * @param cost (double)
-     * @return if sucsessfully add a dish it will return true else it will retun false
+     * addDish uses a Database object to add a new dish to the database. this metode will make the first letter in name to uppercase.
+     * @param name
+     * @param sellPrice
+     * @param cost
+     * @return a boolean. true if sucsessfully added, else it will return false.
      */
-     public static boolean addDish(String name, double sellPrice, double cost){
-        DBConnection connection = new DBConnection();
-        if(connection.eQuery("INSERT INTO dish ('"+name.toUpperCase()+"',"+ sellPrice+","+cost+");")>-1){
-            connection.disconnect();
+     public boolean addDish(String name, double sellPrice, double cost){
+        name = capitalFirst(name);  // skal bruke firstLetterToUppare metode fra Helper classen
+        if(db.addDish(name, sellPrice, cost)){
             return true;
-        }else{
-            connection.disconnect();
+        }
         return false;
-        }
-    }
-    /**
-     * UpdateDishPrices uses to update a dish price and cost using DBConnection. The methode cannot change dish name. the db connection will be closed after the methode are done.
-     * @param name (String)
-     * @param newPrice (double)
-     * @param cost (double)
-     * @return if sucsessfully changed the mothode will return true else it will return false.
-     */
-    public static boolean UpdateDishPrices(String name, double newPrice, double cost){
-        DBConnection connection = new DBConnection();
-        if(connection.eQuery("UPDATE dish SET price = " + newPrice +",cost = "+cost+" WHERE"
-                + " dishname = '"+name+"';")>-1){
-            connection.disconnect();
+        }  
+
+     /**
+      * updateDishPrices uses a Database object to update both price and cost of an existing dish in the database.
+      * @param name
+      * @param newPrice
+      * @param cost
+      * @return a boolean. true if sucsessfully updatet, else it will return false.
+      */
+    public boolean updateDishPrices(String name, double newPrice, double cost){
+        name = capitalFirst(name);
+        if(db.updateDishPrices(name, newPrice, cost)){
             return true;
-        }else{
-            connection.disconnect();
-            return false;
         }
+        return false;
     }
     
     /**
