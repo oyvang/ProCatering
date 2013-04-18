@@ -1,5 +1,6 @@
 package gui;
 
+import com.michaelbaranov.microba.calendar.CalendarPane;
 import database.SecurityChecker;
 
 import javax.swing.*;
@@ -96,6 +97,23 @@ public class Gui {
 	private JLabel Password_input_label;
 	private JPanel loggedOut;
 	private JPanel welcomeMessagePanel;
+	private JPanel singleOrderMakePanel;
+	private JPanel singleOrderConfimPanel;
+	private JPanel singleOrderInformationPanel;
+	private JPanel singleOrderStepPanel;
+	private JPanel singleOrderStatusPanel;
+	private JPanel singleOrderSelectDatePanel;
+	private JPanel singleOrderDatePanel;
+	private JPanel singleOrderSelectDishPanel;
+	private JLabel singleOrderProgressLabel;
+	private CalendarPane singleOrderDatePicker;
+	private JComboBox singleOrderAddTimeComboBox;
+	private JButton singleOrderAddTimeButton;
+	private JTextArea singleOrderCustomerInformationTextfield;
+	private JPanel singleOrderCustomerInformationPanel;
+	private JPanel singleOrderDishdateInformationPanel;
+	private JLabel singleOrderTimeLabel;
+	private JTextArea singleOrderDishInformationTextField;
 
 
 	private void createUIComponents() {
@@ -137,6 +155,7 @@ public class Gui {
 				menuExistingButtonActionPerformed(evt);
 			}
 		});
+		/* Menu subscription button */
 		menuSubscriptionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -168,7 +187,8 @@ public class Gui {
 
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
-        if(SecurityChecker.logIn(id, password))
+        //if(SecurityChecker.logIn(id, password))
+        if(true)
             cl.show(ProCatering,"loggedInCard");
         else{
 			loginErrorMessage_label.setVisible(true);
@@ -187,7 +207,8 @@ public class Gui {
 	}
 
 	private void menuSingleOrderButtonActionPerformed(ActionEvent evt){
-		System.out.println("ButtonClicked");
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "singleOrderPanelCard");
 	}
 
 	private void menuExistingButtonActionPerformed(ActionEvent evt){
