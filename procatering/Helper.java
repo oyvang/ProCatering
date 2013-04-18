@@ -25,7 +25,7 @@ public class Helper {
      * @param input
      * @return 
      */
-    static String capitalFirst(String input){
+    public static String capitalFirst(String input){
         String[] table = input.split(" ");
         String output = "";
         for (int i = 0; i < table.length; i++) {
@@ -42,6 +42,19 @@ public class Helper {
     }
     
     
-    
+        /**
+     * Uses showMessageDialog to print out error messages.
+     *
+     * @param ex Exception object
+     * @param error String object
+     * @return return showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
+     * @author Geir Morten Larsen
+     */
+    public static String errorMessage(Exception ex, String error) {
+        if(ex != null && error != null){
+            return "ERROR! \n" + error + "\n" + ex;
+        }
+        return "Error 666: Error while trying to make an errormessage.";
+    }
     
 }

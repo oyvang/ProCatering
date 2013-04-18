@@ -62,10 +62,6 @@ public class Database {
         } 
     }
     
-    public String addCustomer(procatering.Customer custobj) {
-        
-        return "";
-    }
 	/**public method gQuery gets an result set from the given query
 	 * @param query An SQL-query like <code> SELECT * FROM 'COLUMN'</code>
 	 * @return
@@ -76,14 +72,14 @@ public class Database {
                 try{
                     statement = connection.createStatement();
                 } catch(SQLException sql){
-                    procatering.errorMessage(sql,"Error 012: Error while trying to get information from the database.");
+                    procatering.Helper.errorMessage(sql,"Error 012: Error while trying to get information from the database.");
                     return null;
                 }
                 try{
                     ResultSet result = statement.executeQuery(query);
                     return result;
                 }catch(SQLException sql2){
-                    procatering.errorMessage(sql2,"Error 014: Error while trying to get information from the database.");
+                    procatering.Helper.errorMessage(sql2,"Error 014: Error while trying to get information from the database.");
                     return null;
                 }
             }
@@ -95,13 +91,41 @@ public class Database {
 	* @return * an integer witch contains the number of rows affected returns -1 if there is an error.
 	* @author J�rgen Lien Sell�g */
 	private int eQuery(String query){
-            try(Statement statement = connection.createStatement()){ //statement is closed by autoClosable interface implemented in  java7.
-                return statement.executeUpdate(query);
-            }catch(SQLException sql){
-                System.err.println("Error message: "+sql);
-                return -1;
+            if(createConnection()){
+                try{ 
+                    Statement statement = connection.createStatement();
+                    return statement.executeUpdate(query);
+                }catch(SQLException sql){
+                    System.err.println("Error message: "+sql);
+                    return -1;
+                }finally{
+                    disconnect();
+                }
             }
+            return -1;
 	}
+        
+        /* QUERIES: */
+        
+        /**
+         * 
+         * @param input requires sanitized attributes for the database
+         * @return 
+         */
+        public boolean addCustomer(procatering.Customer input){
+            if(input == null){
+                return false;
+            }
+            /*creating strings for every attribute in the customer object:*/ 
+            String fnClean = input.getFirstName().toUpperCase();
+            String lnClean = input.getLastName().toUpperCase();
+            if(eQuery("INSERT INTO customer(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode) VALUES('"+procatering.Helper.capitalFirst(input.getFirstName())+"', '"
+                    + ""+ procatering.Helper.capitalFirst(input.getLastName()) + "', '" + fnClean +"', '"+ lnClean + "', '" + input.getPhoneNumber() +"', '"
+                    + ""+ input.getEmail() + "', '" + input.getAddress() +"', '"+ input.getPostalCode()+ "')") < 0){
+                return true;
+            }
+            return false;
+        }
 }
 
 
