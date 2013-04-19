@@ -9,6 +9,16 @@ package procatering;
  * @author Ted
  */
 public class Helper {
+    public static final int GUI_NUMBER = 1;
+    public static final int DATABASE_NUMBER = 2;
+    public static final int HELPER_NUMBER = 3;
+    public static final int PERSON_NUMBER = 4;
+    public static final int ORDER_NUMBER = 5;
+    public static final int ORDERCONTENT_NUMBER = 6;
+    public static final int SUBSCRIPTION_NUMBER = 7;
+    public static final int SECURITYCHECKER_NUMBER = 8;
+    public static final int DISH_NUMBER = 9;
+    
     
     /**
      * Takes a String and returns the first letter of the String as capital and rest as lower case.
@@ -25,7 +35,7 @@ public class Helper {
      * @param input
      * @return 
      */
-    static String capitalFirst(String input){
+    public static String capitalFirst(String input){
         String[] table = input.split(" ");
         String output = "";
         for (int i = 0; i < table.length; i++) {
@@ -42,6 +52,19 @@ public class Helper {
     }
     
     
-    
+        /**
+     * Uses showMessageDialog to print out error messages.
+     *
+     * @param ex Exception object
+     * @param error String object
+     * @return return showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
+     * @author Geir Morten Larsen
+     */
+    public static String errorMessage(Exception ex, String error) {
+        if(ex != null && error != null){
+            return "ERROR! \n" + error + "\n" + ex;
+        }
+        return "Error 666: Error while trying to make an errormessage.";
+    }
     
 }
