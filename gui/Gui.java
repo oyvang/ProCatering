@@ -114,6 +114,7 @@ public class Gui {
 	private JPanel singleOrderDishdateInformationPanel;
 	private JLabel singleOrderTimeLabel;
 	private JTextArea singleOrderDishInformationTextField;
+	private static String errorMessageTitle = "Error";
 
 
 	private void createUIComponents() {
@@ -217,5 +218,12 @@ public class Gui {
 
 	private void menuSubscriptionButtonActionPerformed(ActionEvent evt){
 		System.out.println("ButtonClicked");
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	//							staticMethods															//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	public static void showErrorMessage(String errorOrigin, String errorID, Exception exp){
+			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 	}
 }
