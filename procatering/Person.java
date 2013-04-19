@@ -3,14 +3,17 @@ package procatering ;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.DBConnection;
+import database.Database;
 
 /**
- * 
+ * Person include get and set methodes for: <br> - DOB (Date of Birth), firstName, lastName, phoneNumber, email. <br>
+ * - all of these are a object of the type String.<br><br>
+ * The class constuctor require (String, String, String, String, String) and are going to fill the variables (DOB,firstName,lastName,phoneNumber,email)
  * @author TEAM 17
  * 
  */
-public class Person {
+
+public abstract class Person {
     private final String DOB;
     private String firstName;
     private String lastName;
@@ -18,82 +21,120 @@ public class Person {
     private String email;
     
     
-    /** Constructor */
+    /**
+     * Person constuctor excepect all parameters have been checked and is correct before trying to create an object of person.
+     * @param birth String
+     * @param fn String
+     * @param ln String
+     * @param phone String
+     * @param mail  
+     */ 
     public Person(String birth, String fn, String ln, String phone, String mail){
-        /* Check if correct syntax is inserted */
-        
-        /* creating*/
+
         DOB = birth;
         firstName = fn;
         lastName = ln;
         phoneNumber = phone;
         email = mail;
+        
     }
-
+    /**
+     * DOB are of object type String
+     * @return DOB 
+     */
     public String getDOB(){
         return DOB;
-        //TODO legg til dokumentasjon
     }
-    
+    /**
+     * firstName are of object type String
+     * @return firstName
+     */
     public String getFirstName() {
         return firstName;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * set firstName variable to equal the parameter firstName
+     * @param firstName String object
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * lastName are of object type String
+     * @return lastName
+     */
     public String getLastName() {
         return lastName;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * set lastName variable to equal the parameter lastName
+     * @param lastName 
+     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * phoneNumber are of object type String
+     * @return phoneNumber
+     */
     public String getPhoneNumber() {
         return phoneNumber;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * set phoneNumber variable to equal the parameter phoneNumber
+     * @param phoneNumber 
+     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * email are of object type String
+     * @return email
+     */
     public String getEmail() {
         return email;
-      //TODO legg til dokumentasjon
     }
-
+    /**
+     * set email variable to equal the parameter email
+     * @param email 
+     */
     public void setEmail(String email) {
         this.email = email;
     }
-
+    /**
+     * toString are of the type String
+     * @return class information: <br>DOB, firstName, lastName, phoneNumber, email
+     */
     @Override
     public String toString() {
         return "Person{" + "DOB=" + DOB + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
     }
 }
-//TODO legg til dokumentasjon
 
-class Employee extends Person{  //TODO: Fix StringToUpper on "type"
+/**
+ * Customer cunstructor takes a String pluss the same constructor as the class Person<br>
+ * constructor(String type, String, String, String, String, String)
+ * @author TEAM 17
+ */
+class Employee extends Person{ 
     private String type;
+    database.Database db;
     
-    public Employee(String t,String birth, String fn, String ln, String phone, String mail){
+    public Employee(String type,String birth, String fn, String ln, String phone, String mail){
     super(birth,  fn,  ln,  phone,  mail);
-    this.type = t;
+    this.type = type.toUpperCase();
+    db = new database.Database();
     }
 
-    
-    //TODO skriv konstruktør for id-kreasjon av et employee-objekt.
-    public static Employee getEmployee_id(int employee_id){
+
+    /**
+     * Create a new employee object and returns a reference to that object
+     * @param employeeId Employee object
+     * @return employee object if sucsessfully fetched from the database if not it will return null
+     */
+    public static Employee getEmployee(int employeeId){
         DBConnection db = new DBConnection();
-         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id ="+employee_id);){
+         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employeeId+";")){
              String type;
              String birth;
              String fName;
@@ -108,63 +149,116 @@ class Employee extends Person{  //TODO: Fix StringToUpper on "type"
             lName = rs.getString("lastname");
             phone = rs.getString("phone_number");
             mail = rs.getString("email");
-          //TODO: CHECK FOR INPUT ERRORS!
-           return new Employee(type, birth, fName, lName, phone, mail); 
-          }
-            
+            db.disconnect();
+            if(type!=null && birth != null && fName != null && lName != null 
+                    && phone != null && mail != null){
+                return new Employee(type, birth, fName, lName, phone, mail);
+            }
+          }           
          }catch(SQLException e){
                 System.err.println("exception while trying to fetch customers:"+e);
         }
-
-        
+        db.disconnect();
     	return null;
     	//Tips: SQL-henting fra databasen
     }
     
-    //TODO legg til dokumentasjon
+    /**
+     * addEmployee uses a Database object to add a new Employee to the database
+     * @param type
+     * @param birth
+     * @param fn
+     * @param ln
+     * @param phone
+     * @param mail
+     * @return a boolean. true if sucsessfully added a new employee, else it will return false;
+     */
+    public boolean addEmployee (String type,String birth, String fn, String ln, String phone, String mail){
+        String cleanFN = fn.toUpperCase();
+        String cleanLN = ln.toUpperCase();
+        fn = capitalFirst(fn);
+        if(db.addEmployee(type,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
+            return true;
+        }
+        return false;
+    }
+    
+       // TO DO:
+        // Lag en metode som finner customer... metoden skal sende informasjon vidre til Database db og bruke en metode der som gjÃ¸r jobben.
+    
+    /**
+     * addCustomer uses a db object and adds a new customer to the database. This metode will turn all first letters in fn and ln to uppercase
+     * @param adr
+     * @param birth
+     * @param fn
+     * @param ln
+     * @param phone
+     * @param mail
+     * @return a boolean. if true it has sucsessfully added a new customer to the database, else it will return false.
+     */
+     public boolean addCustomer (String adr,String birth, String fn, String ln, String phone, String mail){
+        String cleanFN = fn.toUpperCase();
+        String cleanLN = ln.toUpperCase();
+        fn = capitalFirst(fn);
+        if(db.addCustomer(adr,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * addDish uses a Database object to add a new dish to the database. this metode will make the first letter in name to uppercase.
+     * @param name
+     * @param sellPrice
+     * @param cost
+     * @return a boolean. true if sucsessfully added, else it will return false.
+     */
+     public boolean addDish(String name, double sellPrice, double cost){
+        name = capitalFirst(name);  // skal bruke firstLetterToUppare metode fra Helper classen
+        if(db.addDish(name, sellPrice, cost)){
+            return true;
+        }
+        return false;
+        }  
+
+     /**
+      * updateDishPrices uses a Database object to update both price and cost of an existing dish in the database.
+      * @param name
+      * @param newPrice
+      * @param cost
+      * @return a boolean. true if sucsessfully updatet, else it will return false.
+      */
+    public boolean updateDishPrices(String name, double newPrice, double cost){
+        name = capitalFirst(name);
+        if(db.updateDishPrices(name, newPrice, cost)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * type are of object type String
+     * @return type
+     */
     public String getType() {
         return type;
     }
-    //TODO legg til dokumentasjon
+    /**
+     * set type variable to the parameter type
+     * @param type String object
+     */
     public void setType(String type) {
-        this.type = type;
+        this.type = type.toUpperCase();
     }    
-
+    /**
+     * toString are of the object String
+     * @return class information and Person class toString: <br>
+     * returns: type + Person toString
+     */
     @Override
     public String toString() {
         return "Employee{" + "type=" + type + " "+ super.toString()+'}';
     }
     
-    
-}
-
-class Customer extends Person{
-    private String address;
-    
-    public Customer(String adr,String birth, String fn, String ln, String phone, String mail){
-        super( birth,  fn,  ln,  phone,  mail);
-        this.address = adr;
-    }
-    public Customer(int c_id){
-    	super("p","2","e","e","2"); //slett dette, kun her for å få bort den jævla feilmeldinga... 
-    	//TODO Skriv sql-kode som henter ut costumerinformasjon fra databasen
-    	//Nå lages en costumer fra inforamsjonen fra databasen.
-    	//parameter i super skives inforamajsonenewn w
-    	System.out.println("Slett dette");
-    	
-    }
-    //TODO legg til dokumentasjon
-    public String getAddress() {
-        return address;
-    }
-    //TODO legg til dokumentasjon
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" + "address=" + address +" "+ super.toString()+'}';
-    }
     
 }

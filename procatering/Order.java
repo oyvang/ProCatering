@@ -2,54 +2,48 @@ package procatering;
 
 /**
  *
- * @author Eirik    
+ * @author TEAM 17
  */
+import java.sql.Timestamp;
+import javax.swing.DefaultListModel;
+
 public class Order {
-    private int dish;
-    private String date;
-    private double totalPrice;
-    private double totalCost;
-    private Employee employee;
-    private Customer customer;
-    
+
+    private int customerId;
+    private int employeeId;
+    private Timestamp date;
+    private DefaultListModel<OrderContent> ordercontent;
+
     /* Constructor */
-    public Order(int c_id, int dish, double tp, String date, double tc, int e_id){
-        this.dish = dish;
+    public Order(int c_id, int e_id) {
+        customerId = c_id;
+        employeeId = e_id;
         this.date = date;
-        totalPrice = tp;
-        totalCost = tc;
-        employee = Employee.getEmployee_id(e_id);
-        customer = new Customer(c_id);
+        ordercontent = new DefaultListModel();
     }
-    
-    /* get methodes */
-    public int getDish(){
-        return dish;
+
+    public DefaultListModel getOrderContent() {
+        return ordercontent;
     }
-    public String getDate(){
-        return date;
-    }
-    public double getTotalPrice(){
-        return totalPrice;
-    }
-    public double getTotalCost(){
-        return totalCost;
-    }
-    /* set methodes */
-    public void setDish(int dish){
-        this.dish = dish;
-    }
-    public void setDate(String date){
+
+    /**
+     * Adds the date the order is made
+     * @param date
+     */
+    public void addDate(Timestamp date) {
         this.date = date;
     }
-    public void setTotalPrice(double totalPrice){
-        this.totalPrice = totalPrice;
+
+    /**
+     * @param orderObj This ordercontent object will be added to the order list.
+     */
+    public void addOrderContent(OrderContent orderObj) {
+        for (int i = 0; i < ordercontent.getSize(); i++) {
+            ordercontent.addElement(orderObj);
+        }
     }
-    public void setTotalCost(double totalCost){
-        this.totalCost = totalCost;
-    }
-    public String toString(){
-        return "Costumer: " + "/*customer.id */"+ ", Dish: " + dish + ", Price: " + totalPrice + " kr." +
-                ", Date: " + date + ",\n (Cost of order: " + totalCost + " kr. " + ", Employee: " + "/*employee.id*/" + ")";
+
+    public void addDB(){
+       database.Database db = new database.Database();
     }
 }
