@@ -11,8 +11,8 @@ package procatering;
 public class Customer extends Person{
     private String address;
     
-    public Customer(String adr,String birth, String fn, String ln, String phone, String mail, int pCode){
-        super( birth,  fn,  ln,  phone,  mail, pCode);
+    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode){
+        super( fn,  ln,  phone,  mail, pCode);
         this.address = adr;
     }
     public Customer(int c_id){

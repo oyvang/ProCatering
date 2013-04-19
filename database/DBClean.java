@@ -112,8 +112,5 @@ public class DBClean {
         }
             return "Error 005: Error in the database transaction.";
     }
-
-
-
 }
 

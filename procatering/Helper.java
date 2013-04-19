@@ -9,6 +9,16 @@ package procatering;
  * @author Ted
  */
 public class Helper {
+    public static final int GUI_NUMBER = 1;
+    public static final int DATABASE_NUMBER = 2;
+    public static final int HELPER_NUMBER = 3;
+    public static final int PERSON_NUMBER = 4;
+    public static final int ORDER_NUMBER = 5;
+    public static final int ORDERCONTENT_NUMBER = 6;
+    public static final int SUBSCRIPTION_NUMBER = 7;
+    public static final int SECURITYCHECKER_NUMBER = 8;
+    public static final int DISH_NUMBER = 9;
+    
     
     /**
      * Takes a String and returns the first letter of the String as capital and rest as lower case.

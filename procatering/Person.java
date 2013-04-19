@@ -14,7 +14,6 @@ import database.Database;
  */
 
 public abstract class Person {
-    private final String DOB;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -24,14 +23,13 @@ public abstract class Person {
     
     /**
      * Person constuctor excepect all parameters have been checked and is correct before trying to create an object of person.
-     * @param birth String
      * @param fn String
      * @param ln String
      * @param phone String
      * @param mail String
      * @param pCode String postal code
      */ 
-    public Person(String birth, String fn, String ln, String phone, String mail, int pCode){ 
+    public Person(String fn, String ln, String phone, String mail, int pCode){ 
 
         DOB = birth;
         firstName = fn;
@@ -123,17 +121,20 @@ public abstract class Person {
 
 /**
  * Customer cunstructor takes a String pluss the same constructor as the class Person<br>
+ * @param birth String
  * constructor(String type, String, String, String, String, String)
  * @author TEAM 17
  */
 class Employee extends Person{ 
+    private final String DOB;
     private String type;
     database.Database db;
     
-    public Employee(String type,String birth, String fn, String ln, String phone, String mail, int pCode){
-    super(birth,  fn,  ln,  phone,  mail, pCode);
+    public Employee(String birth, String type,String birth, String fn, String ln, String phone, String mail, int pCode){
+    super(fn,  ln,  phone,  mail, pCode);
     this.type = type.toUpperCase();
     db = new database.Database();
+    DOB = birth;
     }
 
 
