@@ -112,21 +112,5 @@ public class DBClean {
         }
             return "Error 005: Error in the database transaction.";
     }
-
-
-    /**
-     * Uses showMessageDialog to print out error messages.
-     *
-     * @param ex Exception object
-     * @param error String object
-     * @return return showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
-     * @author Geir Morten Larsen
-     */
-    private String errorMessage(Exception ex, String error) {
-        if(ex != null && error != null){
-            return "ERROR! \n" + error + "\n" + ex;
-        }
-        return "Error 666: Error while trying to make an errormessage.";
-    }
 }
 

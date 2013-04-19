@@ -14,28 +14,29 @@ import database.Database;
  */
 
 public abstract class Person {
-    private final String DOB;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
+    private int postalCode;
     
     
     /**
      * Person constuctor excepect all parameters have been checked and is correct before trying to create an object of person.
-     * @param birth String
      * @param fn String
      * @param ln String
      * @param phone String
-     * @param mail  
+     * @param mail String
+     * @param pCode String postal code
      */ 
-    public Person(String birth, String fn, String ln, String phone, String mail){
+    public Person(String fn, String ln, String phone, String mail, int pCode){ 
 
         DOB = birth;
         firstName = fn;
         lastName = ln;
         phoneNumber = phone;
         email = mail;
+        postalCode = pCode;
         
     }
     /**
@@ -102,6 +103,13 @@ public abstract class Person {
         this.email = email;
     }
     /**
+     * 
+     * @return returns the postal code
+     */
+    public int getPostalCode(){
+        return postalCode;
+    }
+    /**
      * toString are of the type String
      * @return class information: <br>DOB, firstName, lastName, phoneNumber, email
      */
@@ -113,17 +121,20 @@ public abstract class Person {
 
 /**
  * Customer cunstructor takes a String pluss the same constructor as the class Person<br>
+ * @param birth String
  * constructor(String type, String, String, String, String, String)
  * @author TEAM 17
  */
 class Employee extends Person{ 
+    private final String DOB;
     private String type;
     database.Database db;
     
-    public Employee(String type,String birth, String fn, String ln, String phone, String mail){
-    super(birth,  fn,  ln,  phone,  mail);
+    public Employee(String birth, String type,String birth, String fn, String ln, String phone, String mail, int pCode){
+    super(fn,  ln,  phone,  mail, pCode);
     this.type = type.toUpperCase();
     db = new database.Database();
+    DOB = birth;
     }
 
 
@@ -133,7 +144,7 @@ class Employee extends Person{
      * @return employee object if sucsessfully fetched from the database if not it will return null
      */
     public static Employee getEmployee(int employeeId){
-        DBConnection db = new DBConnection();
+        Database db = new Database();
          try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employeeId+";")){
              String type;
              String birth;
@@ -199,8 +210,8 @@ class Employee extends Person{
      public boolean addCustomer (String adr,String birth, String fn, String ln, String phone, String mail){
         String cleanFN = fn.toUpperCase();
         String cleanLN = ln.toUpperCase();
-        fn = capitalFirst(fn);
-        if(db.addCustomer(adr,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
+        fn = Helper.capitalFirst(fn);
+        if(db.addCustomer(new Customer(adr,birth,fn,ln,phone,mail))){
             return true;
         }
         return false;
@@ -259,6 +270,4 @@ class Employee extends Person{
     public String toString() {
         return "Employee{" + "type=" + type + " "+ super.toString()+'}';
     }
-    
-    
 }
