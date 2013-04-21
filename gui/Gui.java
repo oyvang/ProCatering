@@ -1,6 +1,6 @@
 package gui;
 
-import com.michaelbaranov.microba.calendar.CalendarPane;
+//import com.michaelbaranov.microba.calendar.CalendarPane;
 import database.SecurityChecker;
 
 import javax.swing.*;
@@ -106,7 +106,7 @@ public class Gui {
 	private JPanel singleOrderDatePanel;
 	private JPanel singleOrderSelectDishPanel;
 	private JLabel singleOrderProgressLabel;
-	private CalendarPane singleOrderDatePicker;
+//	private CalendarPane singleOrderDatePicker;
 	private JComboBox singleOrderAddTimeComboBox;
 	private JButton singleOrderAddTimeButton;
 	private JTextArea singleOrderCustomerInformationTextfield;
@@ -222,7 +222,7 @@ public class Gui {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	public static void showErrorMessage(String errorOrigin, String errorID, Exception exp){
+	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 	}
 }

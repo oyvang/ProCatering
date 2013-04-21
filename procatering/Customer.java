@@ -10,19 +10,26 @@ package procatering;
  */
 public class Customer extends Person{
     private String address;
+    private int customerID;
     
     public Customer(String adr, String fn, String ln, String phone, String mail, int pCode){
         super( fn,  ln,  phone,  mail, pCode);
         this.address = adr;
     }
-    public Customer(int c_id){
-    	super("p","2","e","e","2"); //slett dette, kun her for � f� bort den j�vla feilmeldinga... 
-    	//TODO Skriv sql-kode som henter ut costumerinformasjon fra databasen
-    	//N� lages en costumer fra inforamsjonen fra databasen.
-    	//parameter i super skives inforamajsonenewn w
-    	System.out.println("Slett dette");
-    	
+//    public Customer(int c_id){
+//    	super("p","2","e","e","2"); //slett dette, kun her for � f� bort den j�vla feilmeldinga... 
+//    	//TODO Skriv sql-kode som henter ut costumerinformasjon fra databasen
+//    	//N� lages en costumer fra inforamsjonen fra databasen.
+//    	//parameter i super skives inforamajsonenewn w
+//    	System.out.println("Slett dette");
+//    }
+    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, int cid){
+        super( fn,  ln,  phone,  mail, pCode);
+        this.address = adr;
+        customerID = cid;
     }
+    
+    
     //TODO legg til dokumentasjon
     public String getAddress() {
         return address;
