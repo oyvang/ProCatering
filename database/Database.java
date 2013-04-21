@@ -1,15 +1,13 @@
 
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import javax.swing.DefaultListModel;
+import gui.Gui;
+import procatering.Employee;
 
-import static procatering.Helper.*;
+import javax.swing.*;
+import java.sql.*;
 
+import static procatering.Helper.DATABASE_NUMBER;
 
 /**
  * @author TEAM 17
@@ -31,17 +29,6 @@ public class Database {
 			System.out.println(error);
 		}
 	}
-
-	private boolean createConnection() {
-		try {
-			connection = DriverManager.getConnection(URL, username, password);
-			return true;
-		} catch (SQLException ex) {
-			return false;//"Error 011: "+ex;
-		}
-	}
-
-        /* QUERIES: */
 
 	/**
 	 * addCustomer
@@ -180,19 +167,23 @@ public class Database {
 	}
 
 	public String getPasswordFromDatabase(int id) {
-		String query = "SELECT employee.password FROM employee WHERE employee_id = '" + id + "'";
+		String query = "SELECT password FROM employee WHERE employee_id = ?";
 		try (Connection con = DriverManager.getConnection(URL, username, password);
 			 PreparedStatement prep = con.prepareStatement(query)) {
-			prep.setInt(7, id);
+			prep.setInt(id, id);
 			ResultSet ans = prep.executeQuery();
 			ans.first();
 			return ans.getString(1);
 		} catch (SQLException e) {
+			Gui.showErrorMessage(DATABASE_NUMBER,100,e);
 			return null;
 		}
 	}
 
-
+	public static Employee getEmployee(int EmployeeId){
+		//TODO write method.
+		return null;
+	}
 	//TODO: add customer:        OK
 	//TODO: getCustomer:
 	//TODO: editCustomer:

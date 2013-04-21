@@ -1,6 +1,7 @@
 package gui;
 
-//import com.michaelbaranov.microba.calendar.CalendarPane;
+import com.michaelbaranov.microba.calendar.CalendarPane;
+import com.sun.xml.internal.bind.v2.TODO;
 import database.SecurityChecker;
 
 import javax.swing.*;
@@ -106,7 +107,7 @@ public class Gui {
 	private JPanel singleOrderDatePanel;
 	private JPanel singleOrderSelectDishPanel;
 	private JLabel singleOrderProgressLabel;
-//	private CalendarPane singleOrderDatePicker;
+	private CalendarPane singleOrderDatePicker;
 	private JComboBox singleOrderAddTimeComboBox;
 	private JButton singleOrderAddTimeButton;
 	private JTextArea singleOrderCustomerInformationTextfield;
@@ -178,6 +179,7 @@ public class Gui {
 	private void loginButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)ProCatering.getLayout(); //Object for handling the cardLayout switch
         Integer id = 0;
+		//TODO validate data.
 		try{
         	id = Integer.parseInt(employee_ID_input.getText().trim());
         }catch(NumberFormatException e){
