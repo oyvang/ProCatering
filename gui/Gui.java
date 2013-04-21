@@ -188,8 +188,7 @@ public class Gui {
 
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
-        //if(SecurityChecker.logIn(id, password))
-        if(true)
+        if(SecurityChecker.logIn(id, password))
             cl.show(ProCatering,"loggedInCard");
         else{
 			loginErrorMessage_label.setVisible(true);

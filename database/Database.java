@@ -55,7 +55,6 @@ public class Database {
         }
         return output;
     }
-     
     private boolean createConnection(){
         try{
             connection = DriverManager.getConnection(URL,username,password);
@@ -190,10 +189,22 @@ public class Database {
                     return false;                    
                 }
         }
-        
-        
-        
-        //TODO: addcustomer:        OK
+
+	public String getPasswordFromDatabase(int id){
+		String query = "SELECT employee.password FROM employee WHERE employee_id = '"+id+"'";
+		try(Connection con = DriverManager.getConnection(URL,username,password);
+			PreparedStatement prep = con.prepareStatement(query)){
+			prep.setInt(7,id);
+			ResultSet ans = prep.executeQuery();
+			ans.first();
+			return ans.getString(1);
+		}catch(SQLException e){
+			return null;
+		}
+	}
+
+
+	//TODO: addcustomer:        OK
         //TODO: getCustomer:        
         //TODO: editCustomer:        
         
