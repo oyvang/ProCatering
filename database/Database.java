@@ -72,14 +72,10 @@ public class Database {
 	}
 
 	public DefaultListModel<procatering.Customer> findCustomer(String value) {
-            /*creating strings for every attribute in the customer object:*/
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
-
+	value = "%"+value+"%";
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
-					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer "
-							+ "WHERE clean_fn LIKE '%?%' OR clean_ln LIKE '%?%' OR phonenumber LIKE '%?%' OR postalcode LIKE '%?%'")
+					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer WHERE clean_fn LIKE ? OR clean_ln LIKE ? OR phonenumber LIKE ? OR postalcode LIKE ?")
 			) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, value);
@@ -88,11 +84,11 @@ public class Database {
 				prepStat.setString(4, value);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
-				con.setAutoCommit(true);
 				DefaultListModel<procatering.Customer> output = new DefaultListModel<>();
-				while (!rs.next()) {
+				while (rs.next()) {
 					output.addElement(new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id")));
 				}
+				con.setAutoCommit(true);
 				return output;
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
@@ -156,8 +152,8 @@ public class Database {
                 prepStat.setString(2, input.getFirstName());
                 prepStat.setString(3, input.getLastName());
                 prepStat.setString(4, input.getFirstName().toUpperCase());
+				prepStat.setString(6, SecurityChecker.MD5(pw));
                 prepStat.setString(5, input.getLastName().toUpperCase());
-                prepStat.setString(6, pw);
                 prepStat.setString(7, input.getPhoneNumber());
                 prepStat.setInt(8, input.getPostalCode());
                 prepStat.setString(9, input.getDob());;
@@ -166,7 +162,7 @@ public class Database {
                 con.commit();
                 con.setAutoCommit(true);
                 return true;
-            }catch(SQLException ePrepState){
+            }catch(Exception ePrepState){
                 gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
                 cleanup.dbRollback(con);
                 return false;
@@ -184,7 +180,7 @@ public class Database {
         /*creating strings for every attribute in the customer object:*/
         try(Connection con = DriverManager.getConnection(URL,username,password);){
             try(
-                    PreparedStatement prepStat = con.prepareStatement("SELECT * FROM employee WHERE employee_id = ?;")
+                    PreparedStatement prepStat = con.prepareStatement("SELECT * FROM employee WHERE employee_id = ?")
 			){
                         prepStat.setInt(1, id);
                 try( ResultSet rs = prepStat.executeQuery();) {
@@ -233,8 +229,8 @@ public class Database {
 //            String lnClean = input.getLastName().toUpperCase();
             try(Connection con = DriverManager.getConnection(URL,username,password);){
                 try(
-                    PreparedStatement prepStat = con.prepareStatement("Update customer"
-                    + "SET type_id = ?, firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ?," 
+                    PreparedStatement prepStat = con.prepareStatement("Update customer "
+                    + "SET type_id = ?, firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ?"
                     +" WHERE employee_id = ?;");
                     ){
                         con.setAutoCommit(false);
@@ -267,17 +263,14 @@ public class Database {
                   if(input == null){
                 return false;
             }
-            /*creating strings for every attribute in the customer object:*/ 
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
-            try(Connection con = DriverManager.getConnection(URL,username,password);){
+            try(Connection con = DriverManager.getConnection(URL,username,password)){
                 try(
-                    PreparedStatement prepStat = con.prepareStatement("Update customer"
-                    + "SET password = ?,"
-                    +" WHERE employee_id = ?;");
+                    PreparedStatement prepStat = con.prepareStatement("Update customer "
+                    + "SET password = ?"
+                    +" WHERE employee_id = ?")
                     ){
                         con.setAutoCommit(false);
-                            prepStat.setString(1, input);;
+                            prepStat.setString(1, input);
                             prepStat.setInt(2, id);
                             prepStat.executeUpdate();
                         con.commit();
@@ -342,5 +335,8 @@ public class Database {
 			return null;
 		}
 	}
+
+
+
 }
 

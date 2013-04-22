@@ -1,5 +1,9 @@
 package procatering;
 
+import database.Database;
+
+import javax.swing.*;
+
 /**
  * @author Ted
  */
@@ -38,8 +42,15 @@ public class Customer extends Person{
     public void setAddress(String address) {
         this.address = address;
     }
+
+	public static DefaultListModel<Customer> findCustomer(String search){
+		Database db = new Database();
+		return db.findCustomer(search);
+	}
+
+
     @Override
     public String toString() {
-        return "Customer{" + "address=" + address +" "+ super.toString()+'}';
+        return getLastName()+", "+getFirstName();
     }
 }
