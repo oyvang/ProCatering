@@ -321,7 +321,72 @@ public class Database {
 			return false;
 		}
 	}
+        
+        
+    public boolean addOrder(procatering.Order input) {
+        if (input == null) {
+            return false;
+        }
 
+        try (Connection con = DriverManager.getConnection(URL, username, password);) {
+            try (
+                    //TODO add a for-loop to add ordercontent/dishes
+                    PreparedStatement prepStat = con.prepareStatement("INSERT INTO Order "
+                            + "SET employee_id = '?', SET customer_id = '?', SET time_of_order = '?', "
+                            + "SET status = '?'")) {
+
+                con.setAutoCommit(false);
+                    prepStat.setInt(1, input.getEmployeeId());
+                    prepStat.setInt(2, input.getCustomerId());
+                    prepStat.setTimestamp(3, input.getDate());
+                    prepStat.setString(3, input.getStatus());
+                return true;
+
+            } catch (SQLException ePrepState) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                cleanup.dbRollback(con);
+                return false;
+            }
+        } catch (SQLException eCon) {
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+            return false;
+        }
+    }
+    
+    public DefaultListModel<procatering.Order> findOrder(String value) {
+            /*creating strings for every attribute in the customer object:*/
+//            String fnClean = input.getFirstName().toUpperCase();
+//            String lnClean = input.getLastName().toUpperCase();
+
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (
+					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order "
+							+ "WHERE employee_id LIKE '%?%' OR customer_id LIKE '%?%' OR order_id LIKE '%?%'")
+			) {
+				con.setAutoCommit(false);
+				prepStat.setString(1, value);
+				prepStat.setString(2, value);
+				prepStat.setString(3, value);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+				while (!rs.next()) {
+					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status")));
+				}
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+    
+    
 	public String getPasswordFromDatabase(int id) {
 		String query = "SELECT password FROM employee WHERE employee_id = ?";
 		try (Connection con = DriverManager.getConnection(URL, username, password);
