@@ -9,6 +9,7 @@ import java.sql.*;
 
 import static procatering.Helper.DATABASE_NUMBER;
 
+
 /**
  * @author TEAM 17
  */
@@ -105,10 +106,6 @@ public class Database {
 	}
 
 	public procatering.Customer getCustomer(int cid) {
-            /*creating strings for every attribute in the customer object:*/
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
-
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer WHERE customer_id = ?")
@@ -131,6 +128,172 @@ public class Database {
 		}
 	}
 
+    private boolean createConnection(){
+        try{
+            connection = DriverManager.getConnection(URL,username,password);
+            return true;
+        }catch(SQLException ex){
+            return false;//"Error 011: "+ex;
+        }
+    }
+
+    public boolean addEmployee(Employee input, String pw) {
+        if(input == null){
+            return false;
+        }
+        /*creating strings for every attribute in the customer object:*/
+        //            String fnClean = input.getFirstName().toUpperCase();
+        //            String lnClean = input.getLastName().toUpperCase();
+        try(Connection con = DriverManager.getConnection(URL,username,password);){
+            try(
+                    PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
+                            + "(type_id, firstname, lastname, clean_fn, clean_ln, password, phonenumber,"
+                            + "postalcode, dob, email)"
+                            +" VALUES('?', '?', '?', '?', '?', '?', '?', '?', '?', '?')");
+                    ){
+                con.setAutoCommit(false);
+                prepStat.setString(1, input.getType());
+                prepStat.setString(2, input.getFirstName());
+                prepStat.setString(3, input.getLastName());
+                prepStat.setString(4, input.getFirstName().toUpperCase());
+                prepStat.setString(5, input.getLastName().toUpperCase());
+                prepStat.setString(6, pw);
+                prepStat.setString(7, input.getPhoneNumber());
+                prepStat.setInt(8, input.getPostalCode());
+                prepStat.setString(9, input.getDob());;
+                prepStat.setString(10, input.getEmail());
+                prepStat.executeUpdate();
+                con.commit();
+                con.setAutoCommit(true);
+                return true;
+            }catch(SQLException ePrepState){
+                gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
+                cleanup.dbRollback(con);
+                return false;
+            }
+        }catch(SQLException eCon){
+            gui.Gui.showErrorMessage(DATABASE_NUMBER,2,eCon);
+            return false;
+        }
+    }
+    
+    public Employee getEmployee(int id) {
+        if(id <1){
+            return null;
+        }
+        /*creating strings for every attribute in the customer object:*/
+        try(Connection con = DriverManager.getConnection(URL,username,password);){
+            try(
+                    PreparedStatement prepStat = con.prepareStatement("SELECT * FROM employee WHERE employee_id = ?;")
+			){
+                        prepStat.setInt(1, id);
+                try( ResultSet rs = prepStat.executeQuery();) {
+                    
+                    while(!rs.next()){
+                        String type = rs.getString("type_id");
+                        String fn = rs.getString("firstname");
+                        String ln = rs.getString("lastname");
+                        String dob = rs.getString("dob");
+                        String phone = rs.getString("phonenumber");
+                        String mail = rs.getString("mail");
+                        int pCode = rs.getInt("postalcode");
+                        
+                        if(type!=null && fn != null && ln != null && dob != null
+                                && phone != null && mail != null && pCode > 999 && pCode < 10000){
+                            return new Employee(type, fn, ln, phone, pCode, dob, mail);
+                        }else {
+                            return null;
+                        }
+                    } //String type, String fn, String ln, String phone, int pCode,String dob, String mail
+                    
+                }catch(SQLException ePrepState){
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return null;
+                }
+                
+            }catch(SQLException ePrepState){
+                gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
+                cleanup.dbRollback(con);
+                return null;
+            }
+        }catch(SQLException eCon){
+            gui.Gui.showErrorMessage(DATABASE_NUMBER,2,eCon);
+            return null;
+        }
+        return null;   /// WHY NOT UNREACHABLE!?
+    }
+    
+    public boolean updateEmployee(procatering.Employee input, int id) {
+            if(input == null){
+                return false;
+            }
+            /*creating strings for every attribute in the customer object:*/ 
+//            String fnClean = input.getFirstName().toUpperCase();
+//            String lnClean = input.getLastName().toUpperCase();
+            try(Connection con = DriverManager.getConnection(URL,username,password);){
+                try(
+                    PreparedStatement prepStat = con.prepareStatement("Update customer"
+                    + "SET type_id = ?, firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ?," 
+                    +" WHERE employee_id = ?;");
+                    ){
+                        con.setAutoCommit(false);
+                            prepStat.setString(1, input.getType());
+                            prepStat.setString(2, input.getFirstName());
+                            prepStat.setString(3, input.getLastName());
+                            prepStat.setString(4, input.getFirstName().toUpperCase());
+                            prepStat.setString(5, input.getLastName().toUpperCase());
+                            prepStat.setString(6, input.getPhoneNumber());
+                            prepStat.setInt(7, input.getPostalCode());
+                            prepStat.setString(8, input.getDob());
+                            prepStat.setString(9, input.getEmail());
+                            prepStat.setInt(10, id);
+                            prepStat.executeUpdate();
+                        con.commit();
+                        con.setAutoCommit(true);
+                        return true;
+                    }catch(SQLException ePrepState){
+                        gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);    
+                        cleanup.dbRollback(con);
+                        return false;
+                    }
+                }catch(SQLException eCon){
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER,2,eCon);
+                    return false;                    
+                }
+        } 
+      
+    public boolean changeEmployeePassword(String input, int id){
+                  if(input == null){
+                return false;
+            }
+            /*creating strings for every attribute in the customer object:*/ 
+//            String fnClean = input.getFirstName().toUpperCase();
+//            String lnClean = input.getLastName().toUpperCase();
+            try(Connection con = DriverManager.getConnection(URL,username,password);){
+                try(
+                    PreparedStatement prepStat = con.prepareStatement("Update customer"
+                    + "SET password = ?,"
+                    +" WHERE employee_id = ?;");
+                    ){
+                        con.setAutoCommit(false);
+                            prepStat.setString(1, input);;
+                            prepStat.setInt(2, id);
+                            prepStat.executeUpdate();
+                        con.commit();
+                        con.setAutoCommit(true);
+                        return true;
+                    }catch(SQLException ePrepState){
+                        gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);    
+                        cleanup.dbRollback(con);
+                        return false;
+                    }
+                }catch(SQLException eCon){
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER,2,eCon);
+                    return false;                    
+                }  
+        }     
+    
 	public boolean updateCustomer(procatering.Customer input, int cid) {
 		if (input == null || cid < 1) {
 			return false;
@@ -179,47 +342,5 @@ public class Database {
 			return null;
 		}
 	}
-
-	public static Employee getEmployee(int EmployeeId){
-		//TODO write method.
-		return null;
-	}
-
-
-	//TODO: add customer:        OK
-	//TODO: getCustomer:
-	//TODO: editCustomer:
-	//TODO: add customer:        OK
-	//TODO: findCustomer:       OK
-	//TODO: getCustomer:        OK
-	//TODO: updateCustomer:     OK
-	//TODO: addEmployee:        OK
-	//TODO: getEmployee:        gm
-	//TODO: editEmployee:       gm
-
-	//TODO: addDish:
-	//TODO: getDish:
-	//TODO: getDishes:
-	//TODO: editDish:
-	//TODO: removeDish:
-
-	//TODO: addCategory:
-	//TODO: getCategories:
-	//TODO: editCategory:
-	//TODO: removeCategory:
-
-	//TODO: addOrder:
-	//TODO: getOrder:
-	//TODO: getOrders:
-	//TODO: editOrder:      ?
-
-	//TODO: addSubscription:
-	//TODO: getSubscription:
-	//TODO: getSubscriptions:
-	//TODO: editSubscription:
 }
 
-//
-//+procatering.Helper.capitalFirst(input.getFirstName())+"', '"
-//                    + ""+ procatering.Helper.capitalFirst(input.getLastName()) + "', '" + fnClean +"', '"+ lnClean + "', '" + input.getPhoneNumber() +"', '"
-//                    + ""+ input.getEmail() + "', '" + input.getAddress() +"', '"+ input.getPostalCode()+ "')");

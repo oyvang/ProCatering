@@ -1,7 +1,5 @@
 package procatering;
 
-import database.Database;
-
 /**
  * Person include get and set method's for: <br> - DOB (Date of Birth), firstName, lastName, phoneNumber, email. <br>
  * - all of these are a object of the type String.<br><br>
@@ -9,7 +7,6 @@ import database.Database;
  *
  * @author TEAM 17
  */
-
 public abstract class Person {
 	private String firstName;
 	private String lastName;
@@ -19,7 +16,6 @@ public abstract class Person {
 
 	/**
 	 * Person constructor except all parameters have been checked and is correct before trying to create an object of person.
-	 *
 	 * @param fn    String
 	 * @param ln    String
 	 * @param phone String
@@ -114,4 +110,3 @@ public abstract class Person {
 		return "Person{ firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
 	}
 }
-

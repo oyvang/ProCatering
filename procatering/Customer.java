@@ -31,7 +31,6 @@ public class Customer extends Person{
     public String getAddress() {
         return address;
     }
-
 	/**
 	 * @author Team17
 	 * //TODO legg til dokumentasjon
@@ -39,7 +38,6 @@ public class Customer extends Person{
     public void setAddress(String address) {
         this.address = address;
     }
-
     @Override
     public String toString() {
         return "Customer{" + "address=" + address +" "+ super.toString()+'}';
