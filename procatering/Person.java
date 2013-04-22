@@ -31,7 +31,7 @@ public abstract class Person {
      */ 
     public Person(String fn, String ln, String phone, String mail, int pCode){ 
 
-        DOB = birth;
+    //    DOB = birth;
         firstName = fn;
         lastName = ln;
         phoneNumber = phone;
@@ -43,9 +43,9 @@ public abstract class Person {
      * DOB are of object type String
      * @return DOB 
      */
-    public String getDOB(){
-        return DOB;
-    }
+//    public String getDOB(){
+//        return DOB;
+//    }
     /**
      * firstName are of object type String
      * @return firstName
@@ -115,7 +115,7 @@ public abstract class Person {
      */
     @Override
     public String toString() {
-        return "Person{" + "DOB=" + DOB + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
+        return "Person{" + "firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
     }
 }
 
@@ -125,149 +125,3 @@ public abstract class Person {
  * constructor(String type, String, String, String, String, String)
  * @author TEAM 17
  */
-class Employee extends Person{ 
-    private final String DOB;
-    private String type;
-    database.Database db;
-    
-    public Employee(String birth, String type,String birth, String fn, String ln, String phone, String mail, int pCode){
-    super(fn,  ln,  phone,  mail, pCode);
-    this.type = type.toUpperCase();
-    db = new database.Database();
-    DOB = birth;
-    }
-
-
-    /**
-     * Create a new employee object and returns a reference to that object
-     * @param employeeId Employee object
-     * @return employee object if sucsessfully fetched from the database if not it will return null
-     */
-    public static Employee getEmployee(int employeeId){
-        Database db = new Database();
-         try(ResultSet rs = db.gQuery("SELECT employee WHERE employee_id = "+employeeId+";")){
-             String type;
-             String birth;
-             String fName;
-             String lName;
-             String phone;
-             String mail;
-             
-          while(!rs.next()){
-            type = rs.getString("status");  
-            birth = rs.getString("dob");
-            fName = rs.getString("firstname");
-            lName = rs.getString("lastname");
-            phone = rs.getString("phone_number");
-            mail = rs.getString("email");
-            db.disconnect();
-            if(type!=null && birth != null && fName != null && lName != null 
-                    && phone != null && mail != null){
-                return new Employee(type, birth, fName, lName, phone, mail);
-            }
-          }           
-         }catch(SQLException e){
-                System.err.println("exception while trying to fetch customers:"+e);
-        }
-        db.disconnect();
-    	return null;
-    	//Tips: SQL-henting fra databasen
-    }
-    
-    /**
-     * addEmployee uses a Database object to add a new Employee to the database
-     * @param type
-     * @param birth
-     * @param fn
-     * @param ln
-     * @param phone
-     * @param mail
-     * @return a boolean. true if sucsessfully added a new employee, else it will return false;
-     */
-    public boolean addEmployee (String type,String birth, String fn, String ln, String phone, String mail){
-        String cleanFN = fn.toUpperCase();
-        String cleanLN = ln.toUpperCase();
-        fn = capitalFirst(fn);
-        if(db.addEmployee(type,birth,fn,ln,cleanFN,cleanLN,phone,mail)){
-            return true;
-        }
-        return false;
-    }
-    
-       // TO DO:
-        // Lag en metode som finner customer... metoden skal sende informasjon vidre til Database db og bruke en metode der som gjør jobben.
-    
-    /**
-     * addCustomer uses a db object and adds a new customer to the database. This metode will turn all first letters in fn and ln to uppercase
-     * @param adr
-     * @param birth
-     * @param fn
-     * @param ln
-     * @param phone
-     * @param mail
-     * @return a boolean. if true it has sucsessfully added a new customer to the database, else it will return false.
-     */
-     public boolean addCustomer (String adr,String birth, String fn, String ln, String phone, String mail){
-        String cleanFN = fn.toUpperCase();
-        String cleanLN = ln.toUpperCase();
-        fn = Helper.capitalFirst(fn);
-        if(db.addCustomer(new Customer(adr,birth,fn,ln,phone,mail))){
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * addDish uses a Database object to add a new dish to the database. this metode will make the first letter in name to uppercase.
-     * @param name
-     * @param sellPrice
-     * @param cost
-     * @return a boolean. true if sucsessfully added, else it will return false.
-     */
-     public boolean addDish(String name, double sellPrice, double cost){
-        name = capitalFirst(name);  // skal bruke firstLetterToUppare metode fra Helper classen
-        if(db.addDish(name, sellPrice, cost)){
-            return true;
-        }
-        return false;
-        }  
-
-     /**
-      * updateDishPrices uses a Database object to update both price and cost of an existing dish in the database.
-      * @param name
-      * @param newPrice
-      * @param cost
-      * @return a boolean. true if sucsessfully updatet, else it will return false.
-      */
-    public boolean updateDishPrices(String name, double newPrice, double cost){
-        name = capitalFirst(name);
-        if(db.updateDishPrices(name, newPrice, cost)){
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * type are of object type String
-     * @return type
-     */
-    public String getType() {
-        return type;
-    }
-    /**
-     * set type variable to the parameter type
-     * @param type String object
-     */
-    public void setType(String type) {
-        this.type = type.toUpperCase();
-    }    
-    /**
-     * toString are of the object String
-     * @return class information and Person class toString: <br>
-     * returns: type + Person toString
-     */
-    @Override
-    public String toString() {
-        return "Employee{" + "type=" + type + " "+ super.toString()+'}';
-    }
-}
