@@ -6,6 +6,7 @@ DROP TABLE customer;
 DROP TABLE types;
 DROP TABLE corporate_register;
 DROP TABLE categories;
+DROP TABLE postalcode;
 
 
 CREATE TABLE employee(
@@ -63,6 +64,11 @@ order_id INT NOT NULL,
 dish_id INT NOT NULL,
 CONSTRAINT order_dish_pk PRIMARY KEY (order_id, dish_id)) ENGINE=InnoDB;
 
+CREATE TABLE postalcode (
+  postalcode int PRIMARY KEY,
+  place VARCHAR (254)
+) ENGINE=InnoDB;
+
 ALTER TABLE orders
 ADD CONSTRAINT orders_fk1 FOREIGN KEY(employee_id) REFERENCES employee (employee_id);
 
@@ -84,4 +90,5 @@ ADD CONSTRAINT customer_fk1 FOREIGN KEY (corporatenumber) REFERENCES corporate_r
 ALTER TABLE categories
 ADD CONSTRAINT categories_fk1 FOREIGN KEY (dish_id) REFERENCES dish (dish_id);
 
+ALTER TABLE
 

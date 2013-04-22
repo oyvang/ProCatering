@@ -45,7 +45,7 @@ public class Database {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
 							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode)"
-							+ " VALUES('?', '?', '?', '?', '?', '?', '?', '?')")
+							+ " VALUES(?,?, ?, ?, ?, ?, ?, ?)")
 			) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, input.getFirstName());
@@ -86,7 +86,7 @@ public class Database {
 				con.commit();
 				DefaultListModel<procatering.Customer> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id")));
+					output.addElement(new procatering.Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id")));
 				}
 				con.setAutoCommit(true);
 				return output;
@@ -337,6 +337,18 @@ public class Database {
 	}
 
 
-
+	public String findPostPlace(Integer postInt) {
+		String query = "SELECT place FROM postalcode WHERE postalcode = ?";
+		try (Connection con = DriverManager.getConnection(URL, username, password);
+			PreparedStatement prep = con.prepareStatement(query)){
+			prep.setInt(1,postInt);
+			ResultSet ans = prep.executeQuery();
+			ans.first();
+			return String.valueOf(ans.getString("place"));
+		}catch(SQLException e){
+			System.out.println(e);
+			return "N/A";
+		}
+	}
 }
 

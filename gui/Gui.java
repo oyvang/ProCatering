@@ -5,9 +5,15 @@ import database.SecurityChecker;
 import procatering.Customer;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static procatering.Helper.GUI_NUMBER;
+import static procatering.Helper.errorMessage;
+import static procatering.Helper.searchPostalCode;
 
 /**
  * Created with IntelliJ IDEA.
@@ -127,6 +133,14 @@ public class Gui {
 			@Override
 			public void actionPerformed(ActionEvent evt){
 				loginButtonActionPerformed(evt);
+				menuFindButtonActionPerformed(evt);
+			}
+		});
+		password_input.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				loginButtonActionPerformed(evt);
+				menuFindButtonActionPerformed(evt);
 			}
 		});
 		/* Log Out-button */
@@ -164,11 +178,57 @@ public class Gui {
 				menuSubscriptionButtonActionPerformed(evt);
 			}
 		});
-		
+		/* Customer search button */
 		customerSearchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				customerSearchButtonActionPerformed(evt);
+				customerSearchButtonActionPerformed();
+			}
+		});
+
+		customerSearchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if(customerSearchField.getText().length() >= 5)
+					customerSearchButtonActionPerformed();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
+		/* Customer registration button */
+		registerNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				registerNewButtonActionPerformed(evt);
+			}
+		});
+
+		postalCodeInputField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				String saved = "";
+				if(postalCodeInputField.getText().length() == 4){
+					saved = postalCodeInputField.getText();
+					postalCodeOutputLabel.setText(searchPostalCode(postalCodeInputField.getText()));
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+
 			}
 		});
 	}
@@ -222,8 +282,8 @@ public class Gui {
 	}
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
-		CardLayout cl = (CardLayout)ProCatering.getLayout();
-		cl.show(ProCatering, "findPanelCard");
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "findPanelCard");
 	}
 
 	private void menuSingleOrderButtonActionPerformed(ActionEvent evt){
@@ -241,12 +301,43 @@ public class Gui {
 		cl.show(mainPanel, "subscriptionOrder");
 	}
 
-	private void customerSearchButtonActionPerformed(ActionEvent evt){
+	private void customerSearchButtonActionPerformed(){
 		DefaultListModel<Customer> nameList = Customer.findCustomer(customerSearchField.getText());
 		customerList = new JList<Customer>(nameList);
 		customerScrollPane.setViewportView(customerList);
 	}
 
+	private void registerNewButtonActionPerformed(ActionEvent evt){
+		Boolean gtg = true;
+		String firstname 	= firstnameInputField.getText().trim();
+		String lastname 	= lastnameInputField.getText().trim();
+		String address 		= addressInputField.getText().trim();
+		int postalCode = 0;
+		try{
+		postalCode	 	= Integer.parseInt(postalCodeInputField.getText().trim());
+		}catch(NumberFormatException e){
+			showErrorMessage(GUI_NUMBER, 1, new Exception("Postal code needs a numeric value"));
+			gtg = false;
+		}
+		String phoneNumber 	= phonenumberInputField.getText().trim();
+		String email 		= emailInputField.getText().trim();
+		
+		String note = notesInputArea.getText().trim();
+		
+		if(firstname.isEmpty() || lastname.isEmpty() || address.isEmpty() || phoneNumber.isEmpty() || email.isEmpty()){
+			showErrorMessage(GUI_NUMBER, 2, new Exception("All fields except note and email needs to be filled."));
+			gtg = false;
+		}
+
+		if(gtg){
+			Customer customer = new Customer(address, firstname, lastname, phoneNumber, email, postalCode);
+			String confirmMessage = "<h3>This is the information you put in:<h3><br><p>Firstname: "+customer.getFirstName()+"</p>";
+			int confirm = JOptionPane.showConfirmDialog(null, confirmMessage, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(confirm == 0)
+				customer.addCustomer(customer);
+		}
+
+	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
