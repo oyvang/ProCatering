@@ -43,24 +43,10 @@ public class SecurityChecker {
 	 * @return String with a md5 hash of a password
 	 * @author J�rgen Lien Sell�g
 	 * */
-	private String getPasswordFromDatabase(int id){
+	private static String getPasswordFromDatabase(int id){
 		Database con = new Database();
 		/* Selects the password from the database to be compared. */
-		String query = "SELECT employee.password FROM employee WHERE employee_id = '"+id+"'";
-		
-		try{
-			ResultSet set = con.gQuery(query);
-			while(set.next()){
-				return set.getString("password");
-			}
-			return null;
-		} catch (SQLException error) {
-			JOptionPane.showMessageDialog(null, "An Error have occurred when trying to access the database!\n\n" + error,"ERROR!", ERROR_MESSAGE);
-			return null;
-		}
-		finally{
-			con.disconnect();
-		}
+		return con.getPasswordFromDatabase(id);
 	}
 
 	//TODO legg til dokumentasjon for md5sjekkeren.

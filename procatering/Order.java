@@ -4,8 +4,9 @@ package procatering;
  *
  * @author TEAM 17
  */
+
+import javax.swing.*;
 import java.sql.Timestamp;
-import javax.swing.DefaultListModel;
 
 public class Order {
 

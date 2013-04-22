@@ -1,6 +1,7 @@
 package gui;
 
 import com.michaelbaranov.microba.calendar.CalendarPane;
+import com.sun.xml.internal.bind.v2.TODO;
 import database.SecurityChecker;
 
 import javax.swing.*;
@@ -178,6 +179,7 @@ public class Gui {
 	private void loginButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)ProCatering.getLayout(); //Object for handling the cardLayout switch
         Integer id = 0;
+		//TODO validate data.
 		try{
         	id = Integer.parseInt(employee_ID_input.getText().trim());
         }catch(NumberFormatException e){
@@ -188,8 +190,7 @@ public class Gui {
 
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
-        //if(SecurityChecker.logIn(id, password))
-        if(true)
+        if(SecurityChecker.logIn(id, password))
             cl.show(ProCatering,"loggedInCard");
         else{
 			loginErrorMessage_label.setVisible(true);
@@ -223,7 +224,7 @@ public class Gui {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	public static void showErrorMessage(String errorOrigin, String errorID, Exception exp){
+	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 	}
 }

@@ -18,6 +18,7 @@ public class Helper {
     public static final int SUBSCRIPTION_NUMBER = 7;
     public static final int SECURITYCHECKER_NUMBER = 8;
     public static final int DISH_NUMBER = 9;
+	public static final int DATABASECLEAN_NUMBER = 10;
     
     
     /**
