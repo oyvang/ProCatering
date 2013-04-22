@@ -70,39 +70,63 @@ public class Database {
 			return false;
 		}
 	}
-
-	public DefaultListModel<procatering.Customer> findCustomer(String value) {
-            /*creating strings for every attribute in the customer object:*/
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
-
-		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (
-					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer "
-							+ "WHERE clean_fn LIKE '%?%' OR clean_ln LIKE '%?%' OR phonenumber LIKE '%?%' OR postalcode LIKE '%?%'")
-			) {
-				con.setAutoCommit(false);
-				prepStat.setString(1, value);
-				prepStat.setString(2, value);
-				prepStat.setString(3, value);
-				prepStat.setString(4, value);
-				ResultSet rs = prepStat.executeQuery();
-				con.commit();
-				con.setAutoCommit(true);
-				DefaultListModel<procatering.Customer> output = new DefaultListModel<>();
-				while (!rs.next()) {
-					output.addElement(new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id")));
-				}
-				return output;
-			} catch (SQLException ePrepState) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				cleanup.dbRollback(con);
-				return null;
-			}
-		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-			return null;
-		}
+        /**
+         * Creates a list of customers for the GUI.
+         * @param input Takes letters or numbers and searches the customer table for matches within first name, last name, phone number, postal code, and corporate name and number
+         * @return DefaultListModel containing customer objects
+         * @author Tedjk
+         */
+	public DefaultListModel<procatering.Customer> findCustomer(String input) {
+            
+            /*Adds wildcard on both sides of the search phrase*/
+            input = "%"+input+"%";
+            
+            /*tries to setup a connection to the database*/
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                /*tries to create a prepared statement.*/
+                try (
+                    PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer LEFT JOIN corporate_register" +
+                        "ON customer.corporatenumber = corporate_register.corporatenumber " +
+                        "WHERE clean_fn LIKE '?' OR clean_ln LIKE '?' OR phonenumber LIKE '?'" +
+                        "OR postalcode LIKE '?' OR corporatename LIKE '?' OR customer.corporatenumber LIKE '?'");
+                ){
+                    /*Inserts the input search string to the SQL in the prepared statement*/
+                    con.setAutoCommit(false);
+                        prepStat.setString(1, input);       //clean firstname
+                        prepStat.setString(2, input);       //clean lastname
+                        prepStat.setString(3, input);       //phone number
+                        prepStat.setString(4, input);       //postal code
+                        prepStat.setString(5, input);       //corporate number / customer id
+                        prepStat.setString(6, input);       //corporate name
+                        ResultSet rs = prepStat.executeQuery();
+                        con.commit();
+                    con.setAutoCommit(true);
+                    
+                    /* Declares and initializes the return DefaultListModel*/
+                    DefaultListModel<procatering.Customer> output = new DefaultListModel<>();
+                    
+                    /*creates the objects that has matching attributes to the search phrase*/
+                    while (rs.next()) {
+                            procatering.Customer inputObject = new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id"));
+                            /*if the customer object has a corporate connection, add to attributes*/
+                                if(rs.getString("corporate_register.corporatename") != null){
+                                    inputObject.setCorporateNum(rs.getInt("corporate_register.corporatenumber"));
+                                    inputObject.setCorporateName(rs.getString("corporate_register.corporatename"));
+                                }
+                            /*Adds the object to the DefaultListModel*/     
+                           output.addElement(inputObject);
+                    }
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+                    return output;
+                } catch (SQLException ePrepState) {
+                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                        cleanup.dbRollback(con);
+                        return null;
+                }
+            } catch (SQLException eCon) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                    return null;
+            }
 	}
 
 	public procatering.Customer getCustomer(int cid) {
