@@ -1,3 +1,4 @@
+
 package procatering;
 
 /**
@@ -5,17 +6,18 @@ package procatering;
  * @author TEAM 17
  */
 
-import javax.swing.*;
+import database.Database;
 import java.sql.Timestamp;
+import javax.swing.*;
 
 public class Order {
-
+    
     private int customerId;
     private int employeeId;
     private String status;
     private Timestamp date;
     private DefaultListModel<OrderContent> ordercontent;
-
+    
     /* Constructor */
     public Order(int c_id, int e_id, String status) {
         customerId = c_id;
@@ -23,7 +25,8 @@ public class Order {
         this.status = status;
         this.date = date;
         ordercontent = new DefaultListModel();
-    }
+	}
+	
     public int getEmployeeId(){
         return employeeId;
     }
@@ -47,7 +50,7 @@ public class Order {
     public DefaultListModel getOrderContent() {
         return ordercontent;
     }
-
+    
     /**
      * Adds the date the order is made
      * @param date
@@ -55,7 +58,7 @@ public class Order {
     public void addDate(Timestamp date) {
         this.date = date;
     }
-
+    
     /**
      * @param orderObj This ordercontent object will be added to the order list.
      */
@@ -64,8 +67,18 @@ public class Order {
             ordercontent.addElement(orderObj);
         }
     }
-
+    
     public void addDB(){
-       database.Database db = new database.Database();
+        database.Database db = new database.Database();
     }
+    
+    @Override
+    public String toString() {
+        Database db = new Database();
+        Customer customer = db.getCustomer(customerId);
+        return customer.getLastName() + ", " + customer.getFirstName()+ " - " + date;
+    }
+    
+
 }
+
