@@ -156,7 +156,7 @@ public class Database {
                 prepStat.setString(2, input.getFirstName());
                 prepStat.setString(3, input.getLastName());
                 prepStat.setString(4, input.getFirstName().toUpperCase());
-				prepStat.setString(6, SecurityChecker.MD5(pw));
+		prepStat.setString(6, SecurityChecker.MD5(pw));
                 prepStat.setString(5, input.getLastName().toUpperCase());
                 prepStat.setString(7, input.getPhoneNumber());
                 prepStat.setInt(8, input.getPostalCode());
@@ -178,6 +178,60 @@ public class Database {
     }
     
     /**
+     * Checks if an employee are allready in the database. The metode will check for firstname, lastname, and phonenumber.
+     * @param firstn
+     * @param lastn
+     * @param phonenumber
+     * @return true if employee does not exist, and false if it does exist or if any of the parameters are null
+     */
+     public boolean checkEmployee(String firstn, String lastn, String phonenumber ) {
+        if(firstn == null || lastn == null || phonenumber == null){
+            return false;
+        }
+        try(Connection con = DriverManager.getConnection(URL,username,password);){
+            try(
+                    PreparedStatement prepStat = con.prepareStatement("SELECT * FROM employee WHERE clean_fn = ? AND clean_ln = ? AND phonenumber = ?")
+			){
+                        prepStat.setString(1, firstn.toUpperCase());
+                        prepStat.setString(2, lastn.toUpperCase());
+                        prepStat.setString(3, phonenumber);
+                try( ResultSet rs = prepStat.executeQuery();) {
+                    
+                    while(rs.next()){
+                        String type = rs.getString("type_id");
+                        String fn = rs.getString("firstname");
+                        String ln = rs.getString("lastname");
+                        String dob = rs.getString("dob");
+                        String phone = rs.getString("phonenumber");
+                        String mail = rs.getString("mail");
+                        
+                        if(type==null && fn == null && ln == null && dob == null
+                                && phone == null && mail == null){
+                            return true;
+                        }else {
+                            return false;
+                        }
+                    } //String type, String fn, String ln, String phone, int pCode,String dob, String mail
+                    
+                }catch(SQLException ePrepState){
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return false;
+                }
+                
+            }catch(SQLException ePrepState){
+                gui.Gui.showErrorMessage(DATABASE_NUMBER,1, ePrepState);
+                cleanup.dbRollback(con);
+                return false;
+            }
+        }catch(SQLException eCon){
+            gui.Gui.showErrorMessage(DATABASE_NUMBER,2,eCon);
+            return false;
+        }
+        return false;   /// WHY NOT UNREACHABLE!?
+    }
+    
+    /**
      * getEmploye creates a new Employee object by using the employee id to identify the employe in the database.
      * @param id
      * @return Employe if correct employee id have been given, else it will return null.
@@ -194,7 +248,7 @@ public class Database {
                         prepStat.setInt(1, id);
                 try( ResultSet rs = prepStat.executeQuery();) {
                     
-                    while(!rs.next()){
+                    while(rs.next()){
                         String type = rs.getString("type_id");
                         String fn = rs.getString("firstname");
                         String ln = rs.getString("lastname");
@@ -389,7 +443,7 @@ public class Database {
 				con.commit();
 				con.setAutoCommit(true);
 				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
-				while (!rs.next()) {
+				while (rs.next()) {
 					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status")));
 				}
 				return output;
@@ -465,7 +519,7 @@ public class Database {
                         prepStat.setString(1, dishName);
                         try( ResultSet rs = prepStat.executeQuery();) {
                             
-                            while(!rs.next()){
+                            while(rs.next()){
                                 String name = rs.getString("dishname");
                                 double price = rs.getDouble("price");
                                 double cost = rs.getDouble("cost");
@@ -546,7 +600,7 @@ public class Database {
                     con.commit();
                     con.setAutoCommit(true);
                     DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
-                    while (!rs.next()) {
+                    while (rs.next()) {
                         output.addElement(new procatering.Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost")));
                     }
                     return output;
@@ -590,16 +644,101 @@ public class Database {
             }
             return false;
         }
+
         /**
-         * Adds a new category into the database. This methode only uses the name of the category to create one.
+         * Adds a new category into the database. This methode will make the first letter capital. It also checks if the parameter string are less than 255.
          * @param name
-         * @return 
+         * @return
          */
         public boolean addCategory(String name) {
             if(Helper.stringChecker(name)){
                 try (Connection con = DriverManager.getConnection(URL, username, password)) {
                     try ( PreparedStatement prepStat = con.prepareStatement("INSERT INTO category (catname) VALUES ('?');")
                             ) {
+                        con.setAutoCommit(false);
+                        prepStat.setString(1, Helper.capitalFirst(name));
+                        prepStat.executeUpdate();
+                        con.commit();
+                        con.setAutoCommit(true);
+                        return true;
+                    } catch (SQLException ePrepState) {
+                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                        cleanup.dbRollback(con);
+                        return false;
+                    }
+                } catch (SQLException eCon) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                    return false;
+                }
+                
+            }
+            return false;
+        }
+        /**
+         *
+         * @return a DefaultListModel with string, or null if no string found in the database
+         */
+        public DefaultListModel getCategories() {
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories")
+                        ) {
+                    con.setAutoCommit(false);
+                    ResultSet rs = prepStat.executeQuery();
+                    con.commit();
+                    con.setAutoCommit(true);
+                    DefaultListModel output = new DefaultListModel<>();
+                    while (rs.next()) {
+                        output.addElement(rs.getString("catname"));
+                    }
+                    return output;
+                } catch (SQLException ePrepState) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return null;
+                }
+            } catch (SQLException eCon) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                return null;
+            }
+        }
+        /**
+         * Uses the first String to find the row in the database, and change the name to the second string
+         * @param name
+         * @param newname
+         * @return true if sucsesfully updated, else it will return false.
+         */
+        public boolean editCategory (String name, String newname){
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                try (PreparedStatement prepStat = con.prepareStatement("UPDATE categories SET catname = ? WHERE catname = ?")
+                        ) {
+                    con.setAutoCommit(false);
+                    prepStat.setString(1, Helper.capitalFirst(newname));
+                    prepStat.setString(2, Helper.capitalFirst(name));
+                    prepStat.executeUpdate();
+                    con.commit();
+                    con.setAutoCommit(true);
+                    return true;
+                } catch (SQLException ePrepState) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return false;
+                }
+            } catch (SQLException eCon) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                return false;
+            }
+            
+        }
+        
+        /**
+         * Removes a category from the database, based on the string value
+         * @param name
+         * @return true f sucsessfully removed, else it will return false.
+         */
+        public boolean removeCategory (String name){
+            if(Helper.stringChecker(name)){
+                try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                    try ( PreparedStatement prepStat = con.prepareStatement("DELETE FROM categories WHERE cathname = ?")){
                         con.setAutoCommit(false);
                         prepStat.setString(1, name);
                         prepStat.executeUpdate();
@@ -620,3 +759,4 @@ public class Database {
             return false;
         }
 }
+
