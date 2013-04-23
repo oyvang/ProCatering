@@ -35,7 +35,13 @@ public class Order {
         return customerId;
     }
     
+     /**
+     * Adds the date the order is made
+     * @param date
+     */
     public Timestamp getDate(){
+        java.util.Date time= new java.util.Date();
+	Timestamp date = new Timestamp(time.getTime());
         return date;
     }
     
@@ -51,13 +57,6 @@ public class Order {
         return ordercontent;
     }
     
-    /**
-     * Adds the date the order is made
-     * @param date
-     */
-    public void addDate(Timestamp date) {
-        this.date = date;
-    }
     
     /**
      * @param orderObj This ordercontent object will be added to the order list.
