@@ -83,14 +83,14 @@ public class Database {
 
             /*tries to setup a connection to the database*/
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                /*tries to create a prepared statement.*/
+				/*tries to create a prepared statement.*/
 			try (
 					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer LEFT JOIN corporate_register " +
 							"ON customer.corporatenumber = corporate_register.corporatenumber " +
 							"WHERE clean_fn LIKE ? OR clean_ln LIKE ? OR phonenumber LIKE ?" +
 							"OR postalcode LIKE ? OR corporatename LIKE ? OR customer.corporatenumber LIKE ?")
 			) {
-                    /*Inserts the input search string to the SQL in the prepared statement*/
+					/*Inserts the input search string to the SQL in the prepared statement*/
 				con.setAutoCommit(false);
 				prepStat.setString(1, input);       //clean firstname
 				prepStat.setString(2, input);       //clean lastname
@@ -164,15 +164,12 @@ public class Database {
 	 *
 	 * @param input
 	 * @param pw
-	 * @return true if sucsessfully added, else it will return false.
+	 * @return true if successfully added, else it will return false.
 	 */
 	public boolean addEmployee(Employee input, String pw) {
 		if (input == null) {
 			return false;
 		}
-        /*creating strings for every attribute in the customer object:*/
-		//            String fnClean = input.getFirstName().toUpperCase();
-		//            String lnClean = input.getLastName().toUpperCase();
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
 					PreparedStatement prepStat = con.prepareStatement
@@ -224,6 +221,7 @@ public class Database {
 					while (rs.next()) {
 						int employeeId = rs.getInt("employee_id");
 						String type = rs.getString("type_id");
+						//TODO FIXES PÅ AT TYPE Å DER GREIERN DER IKKE E EN DEL AV DATABASE OSV.
 						String fn = rs.getString("firstname");
 						String ln = rs.getString("lastname");
 						String dob = rs.getString("dob");
@@ -254,7 +252,7 @@ public class Database {
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return null;
 		}
-		return null;   /// WHY NOT UNREACHABLE!?
+		return null;
 	}
 
 	/**
@@ -265,21 +263,15 @@ public class Database {
 	 *
 	 * @param input
 	 * @param id
-	 * @return true if sucsessfully updated, else it will return null.
+	 * @return true if successfully updated, else it will return null.
 	 */
 	public boolean updateEmployee(procatering.Employee input, int id) {
 		if (input == null) {
 			return false;
 		}
-            /*creating strings for every attribute in the customer object:*/
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (
-					PreparedStatement prepStat = con.prepareStatement("UPDATE customer "
-							+ "SET type_id = ?, firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ?"
-							+ " WHERE employee_id = ?;")
-			) {
+			//TODO typeID must be removed
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE customer SET type_id = ?, firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ? WHERE employee_id = ?")) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, input.getType());
 				prepStat.setString(2, input.getFirstName());
@@ -307,22 +299,75 @@ public class Database {
 	}
 
 	/**
-	 * Uses the employee id to identify a row in the database and updatet the password with the given string.
+	 * Checks if an employee are already in the database. The method will check for firstname, lastname, and phonenumber.
 	 *
-	 * @param input
-	 * @param id
-	 * @return return true if sucsessfully updatet, else it will return fasle.
+	 * @param firstn      tiss
+	 * @param lastn       tiss
+	 * @param phonenumber tiss
+	 * @return true if employee does not exist, and false if it does exist or if any of the parameters are null
+	 *         <p/>
+	 *         //TODO FJERN URIN
+	 */
+	public boolean checkEmployee(String firstn, String lastn, String phonenumber) {
+		if (firstn == null || lastn == null || phonenumber == null) {
+			return false;
+		}
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (
+					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM employee WHERE clean_fn = ? AND clean_ln = ? AND phonenumber = ?")
+			) {
+				prepStat.setString(1, firstn.toUpperCase());
+				prepStat.setString(2, lastn.toUpperCase());
+				prepStat.setString(3, phonenumber);
+				try (ResultSet rs = prepStat.executeQuery()) {
+
+					while (rs.next()) {
+						String type = rs.getString("type_id");
+						String fn = rs.getString("firstname");
+						String ln = rs.getString("lastname");
+						String dob = rs.getString("dob");
+						String phone = rs.getString("phonenumber");
+						String mail = rs.getString("mail");
+
+						if (type == null && fn == null && ln == null && dob == null
+								&& phone == null && mail == null) {
+							return true;
+						} else {
+							return false;
+						}
+					} //String type, String fn, String ln, String phone, int pCode,String dob, String mail
+
+				} catch (SQLException ePrepState) {
+					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return false;
+				}
+
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return false;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
+		return false;   /// WHY NOT UNREACHABLE!?
+	}
+
+	/**
+	 * Uses the employee id to identify a row in the database and updated the password with the given string.
+	 *
+	 * @param input osv //TODO add comment
+	 * @param id    osv //TODO add comment
+	 * @return return true if successfully updated, else it will return false.
 	 */
 	public boolean changeEmployeePassword(String input, int id) {
 		if (input == null) {
 			return false;
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (
-					PreparedStatement prepStat = con.prepareStatement("UPDATE customer "
-							+ "SET password = ?"
-							+ " WHERE employee_id = ?")
-			) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE employee SET password = ? WHERE employee_id = ?")) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, input);
 				prepStat.setInt(2, id);
@@ -441,44 +486,12 @@ public class Database {
 	}
 
 
-		/**
-		 * Adds a new dish into the database. The method uses another method to check the length of the.
-		 * These means that the dish name need less than 255 signs.
-		 *
-		 * @return true if successfully added, else it will return null.
-		 *         TODO FIX THE DOCUMENTATION
-		 */
-		public boolean addDish (Dish dish){
-			if (Helper.stringChecker(dish.getName())) {
-				try (Connection con = DriverManager.getConnection(URL, username, password)) {
-					try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
-						con.setAutoCommit(false);
-						prepStat.setString(1, dish.getName());
-						prepStat.setDouble(2, dish.getPrice());
-						prepStat.setDouble(3, dish.getCost());
-						prepStat.executeUpdate();
-						con.commit();
-						con.setAutoCommit(true);
-						return true;
-					} catch (SQLException ePrepState) {
-						gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-						cleanup.dbRollback(con);
-						return false;
-					}
-				} catch (SQLException eCon) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-					return false;
-				}
-			}
-			return false;
-		}
-
-		/**
-		 * The methode check the dishName length, it has to be less than 255 signs.
-		 *
-		 * @param dishName
-		 * @return Dish object, or null if dishName is not found in the database.
-		 */
+	/**
+	 * The methode check the dishName length, it has to be less than 255 signs.
+	 *
+	 * @param dishName
+	 * @return Dish object, or null if dishName is not found in the database.
+	 */
 
 	public Dish getDish(String dishName) {
 		if (Helper.stringChecker(dishName)) {
@@ -564,20 +577,20 @@ public class Database {
 	 * @return a DefaultListModel with dishes that include the string value in dishname, or null if something fails.
 	 */
 	public DefaultListModel<procatering.Dish> findDishes(String value) {
-		value = "%"+value+"%";
+		value = "%" + value + "%";
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish WHERE dishname LIKE ?")){
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish WHERE dishname LIKE ?")) {
 				con.setAutoCommit(false);
-					prepStat.setString(1, value);
-					ResultSet rs = prepStat.executeQuery();
-					DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
-					while (rs.next()) {
-						output.addElement(new procatering.Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost")));
-					}
+				prepStat.setString(1, value);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement(new procatering.Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost")));
+				}
 				con.commit();
 				con.setAutoCommit(true);
 				return output;
-			}catch(SQLException ePrepState){
+			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
 				return null;
@@ -662,5 +675,126 @@ public class Database {
 			System.out.println(e);
 			return "N/A";
 		}
+	}
+
+	/**
+	 * Adds a new dish into the database. The metode uses another metode to check the length of the dishname.
+	 * These means that the dish name need less than 255 signs.
+	 *
+	 * @param name f //TODO FIX
+	 * @param price f //TODO FIX
+	 * @param cost f //TODO FIX
+	 * @return true if sucsessfully added, else it will retun null.
+	 *         TODO FIX THE DOCUMENTATION
+	 */
+	public boolean addDish(Dish dish) {
+		if (Helper.stringChecker(dish.getName())) {
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
+					con.setAutoCommit(false);
+					prepStat.setString(1, dish.getName());
+					prepStat.setDouble(2, dish.getPrice());
+					prepStat.setDouble(3, dish.getCost());
+					prepStat.executeUpdate();
+					con.commit();
+					con.setAutoCommit(true);
+					return true;
+				} catch (SQLException ePrepState) {
+					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return false;
+				}
+			} catch (SQLException eCon) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return false;
+			}
+		}
+		return false;
+	}
+	/**
+	 * @return a DefaultListModel with string, or null if no string found in the database
+	 */
+	public DefaultListModel getCategories() {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories")
+			) {
+				con.setAutoCommit(false);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement(rs.getString("catname"));
+				}
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
+	/**
+	 * Uses the first String to find the row in the database, and change the name to the second string
+	 *
+	 * @param name
+	 * @param newname
+	 * @return true if sucsesfully updated, else it will return false.
+	 */
+	public boolean editCategory(String name, String newname) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE categories SET catname = ? WHERE catname = ?")
+			) {
+				con.setAutoCommit(false);
+				prepStat.setString(1, Helper.capitalFirst(newname));
+				prepStat.setString(2, Helper.capitalFirst(name));
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return false;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
+
+	}
+
+	/**
+	 * Removes a category from the database, based on the string value
+	 *
+	 * @param name vis //TODO æsj
+	 * @return true f sucsessfully removed, else it will return false.
+	 */
+	public boolean removeCategory(String name) {
+		if (Helper.stringChecker(name)) {
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM categories WHERE catname = ?")){
+					con.setAutoCommit(false);
+					prepStat.setString(1, name);
+					prepStat.executeUpdate();
+					con.commit();
+					con.setAutoCommit(true);
+					return true;
+				} catch (SQLException ePrepState) {
+					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return false;
+				}
+			} catch (SQLException eCon) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return false;
+			}
+
+		}
+		return false;
 	}
 }
