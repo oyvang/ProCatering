@@ -80,7 +80,7 @@ public class Database {
 	public DefaultListModel<procatering.Customer> findCustomer(String input) {
 			/*Adds wildcard on both sides of the search phrase*/
 		input = "%" + input + "%";
-            
+
             /*tries to setup a connection to the database*/
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
                 /*tries to create a prepared statement.*/
@@ -376,33 +376,6 @@ public class Database {
 		}
 	}
 
-
-	public boolean addOrder(procatering.Order input) {
-		if (input == null) {
-			return false;
-		}
-
-		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (//TODO add a for-loop to add ordercontent/dishes
-				 PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
-				con.setAutoCommit(false);
-				prepStat.setInt(1, input.getEmployeeId());
-				prepStat.setInt(2, input.getCustomerId());
-				prepStat.setTimestamp(3, input.getDate());
-				prepStat.setString(3, input.getStatus());
-				return true;
-				//TODO SET AUTOCOMMIT == TRUE;
-			} catch (SQLException ePrepState) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				cleanup.dbRollback(con);
-				return false;
-			}
-		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-			return false;
-		}
-	}
-
 	public String getPasswordFromDatabase(int id) {
 		String query = "SELECT password FROM employee WHERE employee_id = ?";
 		try (Connection con = DriverManager.getConnection(URL, username, password);
@@ -417,44 +390,96 @@ public class Database {
 		}
 	}
 
-	/**
-	 * Adds a new dish into the database. The method uses another method to check the length of the.
-	 * These means that the dish name need less than 255 signs.
-	 *
-	 * @return true if successfully added, else it will return null.
-	 *         TODO FIX THE DOCUMENTATION
-	 */
-	public boolean addDish(Dish dish) {
-		if (Helper.stringChecker(dish.getName())) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
-					con.setAutoCommit(false);
-					prepStat.setString(1, dish.getName());
-					prepStat.setDouble(2, dish.getPrice());
-					prepStat.setDouble(3, dish.getCost());
-					prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-					return true;
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+	public boolean addOrder(procatering.Order order) {
+		if (order == null) {
+			return false;
+		}
+
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (//TODO add a for-loop to add ordercontent/dishes
+				 PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, order.getEmployeeId());
+				prepStat.setInt(2, order.getCustomerId());
+				prepStat.setTimestamp(3, order.getDate());
+				prepStat.setString(3, order.getStatus());
+				return true;
+				//TODO SET AUTOCOMMIT == TRUE;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
 				return false;
 			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
 		}
-		return false;
 	}
 
-	/**
-	 * The methode check the dishName length, it has to be less than 255 signs.
-	 *
-	 * @param dishName
-	 * @return Dish object, or null if dishName is not found in the database.
-	 */
+	public DefaultListModel<procatering.Order> getOrder(int cid) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, cid);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status")));
+				}
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
+
+		/**
+		 * Adds a new dish into the database. The method uses another method to check the length of the.
+		 * These means that the dish name need less than 255 signs.
+		 *
+		 * @return true if successfully added, else it will return null.
+		 *         TODO FIX THE DOCUMENTATION
+		 */
+		public boolean addDish (Dish dish){
+			if (Helper.stringChecker(dish.getName())) {
+				try (Connection con = DriverManager.getConnection(URL, username, password)) {
+					try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
+						con.setAutoCommit(false);
+						prepStat.setString(1, dish.getName());
+						prepStat.setDouble(2, dish.getPrice());
+						prepStat.setDouble(3, dish.getCost());
+						prepStat.executeUpdate();
+						con.commit();
+						con.setAutoCommit(true);
+						return true;
+					} catch (SQLException ePrepState) {
+						gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+						cleanup.dbRollback(con);
+						return false;
+					}
+				} catch (SQLException eCon) {
+					gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+					return false;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * The methode check the dishName length, it has to be less than 255 signs.
+		 *
+		 * @param dishName
+		 * @return Dish object, or null if dishName is not found in the database.
+		 */
+
 	public Dish getDish(String dishName) {
 		if (Helper.stringChecker(dishName)) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -539,21 +564,20 @@ public class Database {
 	 * @return a DefaultListModel with dishes that include the string value in dishname, or null if something fails.
 	 */
 	public DefaultListModel<procatering.Dish> findDishes(String value) {
+		value = "%"+value+"%";
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish "
-					+ "WHERE dishname LIKE '%?%'")
-			) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish WHERE dishname LIKE ?")){
 				con.setAutoCommit(false);
-				prepStat.setString(1, value);
-				ResultSet rs = prepStat.executeQuery();
+					prepStat.setString(1, value);
+					ResultSet rs = prepStat.executeQuery();
+					DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
+					while (rs.next()) {
+						output.addElement(new procatering.Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost")));
+					}
 				con.commit();
 				con.setAutoCommit(true);
-				DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
-				while (!rs.next()) {
-					output.addElement(new procatering.Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost")));
-				}
 				return output;
-			} catch (SQLException ePrepState) {
+			}catch(SQLException ePrepState){
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
 				return null;
