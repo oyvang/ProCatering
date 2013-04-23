@@ -345,8 +345,8 @@ public class Database {
 	}
         
         
-    public boolean addOrder(procatering.Order input) {
-        if (input == null) {
+    public boolean addOrder(procatering.Order order) {
+        if (order == null) {
             return false;
         }
 
@@ -354,10 +354,10 @@ public class Database {
             try(//TODO add a for-loop to add ordercontent/dishes
                 PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")){
                 con.setAutoCommit(false);
-                    prepStat.setInt(1, input.getEmployeeId());
-                    prepStat.setInt(2, input.getCustomerId());
-                    prepStat.setTimestamp(3, input.getDate());
-                    prepStat.setString(3, input.getStatus());
+                    prepStat.setInt(1, order.getEmployeeId());
+                    prepStat.setInt(2, order.getCustomerId());
+                    prepStat.setTimestamp(3, order.getDate());
+                    prepStat.setString(3, order.getStatus());
                 return true;
 				//TODO SET AUTOCOMMIT == TRUE;
             } catch (SQLException ePrepState) {
@@ -371,15 +371,44 @@ public class Database {
         }
     }
     
+    	public DefaultListModel <procatering.Order> getOrder(int cid) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, cid);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+                                DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+				while (rs.next()){
+                                    output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status")));
+                                }
+                                return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+        
+    
+    
+    /**
+     * Search metode for order. Uses a string value to search the orders.
+     * @param value
+     * @return a DefaultListModel with orders, or null if something fails.
+     */
     public DefaultListModel<procatering.Order> findOrder(String value) {
-            /*creating strings for every attribute in the customer object:*/
-//            String fnClean = input.getFirstName().toUpperCase();
-//            String lnClean = input.getLastName().toUpperCase();
+                value = "%"+value+"%";
 
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order "
-							+ "WHERE employee_id LIKE '%?%' OR customer_id LIKE '%?%' OR order_id LIKE '%?%'")
+							+ "WHERE employee_id LIKE ? OR customer_id LIKE ? OR order_id LIKE ?")
 			) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, value);
