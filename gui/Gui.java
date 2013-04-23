@@ -213,6 +213,9 @@ public class Gui {
 
 		postalCodeInputField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
+			/**
+			 * Method queries database and inserts postal place into field.
+			 */
 			public void insertUpdate(DocumentEvent e) {
 				String saved = "";
 				if(postalCodeInputField.getText().length() == 4){
@@ -233,8 +236,9 @@ public class Gui {
 		});
 	}
 
-
-
+	/**
+	 * Method setVisibility sets the visibility of elements in the gui.
+	 */
 	private void setVisibility(){
 		loginErrorMessage_label.setVisible(false);
 	}
@@ -254,7 +258,6 @@ public class Gui {
 	private void loginButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)ProCatering.getLayout(); //Object for handling the cardLayout switch
         Integer id = 0;
-		//TODO validate data.
 		try{
         	id = Integer.parseInt(employee_ID_input.getText().trim());
         }catch(NumberFormatException e){
@@ -331,17 +334,42 @@ public class Gui {
 
 		if(gtg){
 			Customer customer = new Customer(address, firstname, lastname, phoneNumber, email, postalCode);
-			String confirmMessage = "<h3>This is the information you put in:<h3><br><p>Firstname: "+customer.getFirstName()+"</p>";
-			int confirm = JOptionPane.showConfirmDialog(null, confirmMessage, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if(confirm == 0)
+			String confirmMessage = "<html>" +
+										"<h3>This is the information you put in:</h3>" +
+										"<table>" +
+												"<tr><td>Firstname:</td><td>"+customer.getFirstName()+"</td></tr>" +
+												"<tr><td>Lastname:</td><td>"+customer.getLastName()+"</td></tr>" +
+												"<tr><td>Phone number:</td><td>"+customer.getPhoneNumber()+"</td></tr>" +
+												"<tr><td>Address:</td><td>"+customer.getAddress()+"</td></tr>" +
+												"<tr><td>Postal Code:</td><td>"+customer.getPostalCode()+" "+postalCodeOutputLabel.getText()+"</td></tr>"+
+												"<tr><td>Email:</td><td>"+customer.getEmail()+"</td></tr>" +
+									"</html>";
+			int confirm = JOptionPane.showConfirmDialog(ProCatering, confirmMessage, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(confirm == 0){
 				customer.addCustomer(customer);
+				clearCustomerFields();
+			}
 		}
 
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Method showErrorMessage prints an error in a JOptionPane for the user.
+	 * @param errorOrigin
+	 * @param errorID
+	 * @param exp
+	 */
 	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 * Method clearCustomerFields clears the fields when adding a customer.
+	 */
+	private static void clearCustomerFields(){
+		//TODO Create method
 	}
 }

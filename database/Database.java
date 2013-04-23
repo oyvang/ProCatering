@@ -316,7 +316,7 @@ public class Database {
 				cleanup.dbRollback(con);
 				return false;
 			}
-		} catch (SQLException eCon) {
+		} catch (SQLException eCon){
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
