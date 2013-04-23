@@ -1,13 +1,3 @@
-DROP TABLE order_dish;
-DROP TABLE dish;
-DROP TABLE orders;
-DROP TABLE employee;
-DROP TABLE customer;
-DROP TABLE types;
-DROP TABLE corporate_register;
-DROP TABLE categories;
-DROP TABLE postalcode;
-
 CREATE TABLE employee(
     employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	  type_id INT NOT NULL,
@@ -19,7 +9,7 @@ CREATE TABLE employee(
     phonenumber VARCHAR (30) NOT NULL,
     postalcode INT NOT NULL,
     dob CHAR (11)NOT NULL,
-    email VARCHAR (255)) ENGINE=InnoDB;
+    email VARCHAR (255) NOT NULL) ENGINE=InnoDB;
 
 CREATE TABLE types(
     type_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -70,6 +60,11 @@ CREATE TABLE postalcode (
     postalcode int PRIMARY KEY,
     place VARCHAR (255)) ENGINE=InnoDB;
 
+CREATE TABLE employee_types (
+    employee_id INT NOT NULL,
+    type_id INT NOT NULL,
+    CONSTRAINT order_dish_pk PRIMARY KEY (employee_id, type_id)) ENGINE=InnoDB;
+
 ALTER TABLE orders
     ADD CONSTRAINT orders_fk1 FOREIGN KEY(employee_id) REFERENCES employee (employee_id);
 
@@ -81,6 +76,12 @@ ALTER TABLE order_dish
 
 ALTER TABLE order_dish
     ADD CONSTRAINT order_dish_fk2 FOREIGN KEY(dish_id) REFERENCES dish (dish_id);
+
+ALTER TABLE employee_types
+    ADD CONSTRAINT employee_types_fk1 FOREIGN KEY (employee_id) REFERENCES employee (employee_id);
+
+ALTER TABLE employee_types
+    ADD CONSTRAINT employee_types_fk2 FOREIGN KEY (type_id) REFERENCES types (type_id);
 
 ALTER TABLE employee
     ADD CONSTRAINT type_fk1 FOREIGN KEY (type_id) REFERENCES types (type_id);
@@ -98,4 +99,9 @@ ALTER TABLE customer
     ADD CONSTRAINT customer_fk2 FOREIGN KEY (postalcode) REFERENCES postalcode (postalcode);
 
 
-INSERT INTO customer (type_id, firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email, note) VALUES('?', '?', '?', '?', '?', '?', '?', '?', '?', '?');
+INSERT INTO customer (firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note) VALUES('Jørgen Lien', 'Sellæg', 'JØRGEN LIEN', 'SELLÆG', '93478353', 'jorgen@guut.org', 'Asylveita 3', '7012', 'He has been a customer for years. VIP');
+INSERT INTO customer (firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note) VALUES('Geir Morten', 'Larsen', 'GEIR MORTEN', 'LARSEN', '94883883', 'geir@guut.org', 'Tynset 3', '2500', null );
+INSERT INTO customer (firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note) VALUES('Ted Johan', 'Kristoffersen', 'TED JOHAN', 'KRISTOFFERSEN', '23425554', null, 'Flatåsveien', '7099', null );
+INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES ('Kjell Toft', 'Hansen', 'KJELL TOFT', 'HANSEN', '900150983cd24fb0d6963f7d28e17f72', '99339933', 7657, '19021992', 'kjellha@procatering.org');
+INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES ('Grethe', 'Sandstrak', 'GRETHE', 'SANDSTRAK', '900150983cd24fb0d6963f7d28e17f72', '99339933', 7657, '19011992', 'grethesa@procatering.org');
+INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES ('Geir', 'Maribu', 'GEIR', 'MARIBU', '900150983cd24fb0d6963f7d28e17f72', '99339933', 7657, '19011992', 'gremlin@procatering.org');

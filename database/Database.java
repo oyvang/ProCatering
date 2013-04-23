@@ -447,9 +447,9 @@ public class Database {
 		}
 	}
         /**
-         * Adds a new dish into the database. The metode uses another metode to check the length of the dishname.
+         * Adds a new dish into the database. The method uses another method to check the length of the.
          * These means that the dish name need less than 255 signs.
-         * @return true if sucsessfully added, else it will retun null.
+         * @return true if successfully added, else it will return null.
 		 * TODO FIX THE DOCUMENTATION
          */
         public boolean addDish (Dish dish) {
