@@ -4,6 +4,8 @@
  */
 package procatering;
 
+import database.Database;
+
 /**
  *Helper class which is contains help methods
  * @author Ted
@@ -65,7 +67,7 @@ public class Helper {
         if(ex != null && error != null){
             return "ERROR! \n" + error + "\n" + ex;
         }
-        return "Error 666: Error while trying to make an errormessage.";
+        return "Error 666: Error while trying to make an error message.";
     }
     /**
      * Checks if a string is less than 255 signs and is not null.
@@ -79,4 +81,22 @@ public class Helper {
         return false;
     }
     
+    public static String searchPostalCode(String postalCode){
+		Database db = new Database();
+		Boolean gtg = true;
+		Integer postInt = 0;
+		try {
+			postInt = Integer.parseInt(postalCode);
+		} catch (NumberFormatException e) {
+			gui.Gui.showErrorMessage(HELPER_NUMBER, 1, new Exception("The postal code must be a number"));
+			System.err.println(e);
+			gtg = false;
+		}
+		if (gtg) {
+			return db.findPostPlace(postInt);
+		} else {
+			return "N/A";
+		}
+
+	}
 }

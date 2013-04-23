@@ -14,11 +14,17 @@ public class Customer extends Person{
     private String corporateName;
 
 	/**
-	 * @author Team17
-	 * //TODO legg til dokumentasjon
+	 * Customer object. Extended from Person.
+	 * @param adr The customers address
+	 * @param fn The customers firstname
+	 * @param ln The customers lastname
+	 * @param phone The customers phone number
+	 * @param mail The customers email address
+	 * @param pCode The customers postal code
+	 * @author Jørgen Lien Sellæg
 	 */
     public Customer(String adr, String fn, String ln, String phone, String mail, int pCode){
-        super( fn,  ln,  phone,  mail, pCode);
+        super(fn,  ln,  phone,  mail, pCode);
         this.address = adr;
     }
 	/**
@@ -70,11 +76,18 @@ public class Customer extends Person{
         this.corporateName = corporateName;
     }
     
+	public boolean addCustomer(Customer customer) {
+		Database db = new Database();
+		if(customer != null)
+			return db.addCustomer(customer);
+		return false;
+	}
+
 	@Override
 	/**
-	* toString returns a string representation of the customer object.
-	*/
-    public String toString() {
-        return getLastName()+", "+getFirstName();
-    }
+	 * toString returns a string representation of the customer object.
+	 */
+	public String toString() {
+		return getLastName()+", "+getFirstName();
+	}
 }

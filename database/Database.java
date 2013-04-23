@@ -47,7 +47,7 @@ public class Database {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
 							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode)"
-							+ " VALUES('?', '?', '?', '?', '?', '?', '?', '?')")
+							+ " VALUES(?,?, ?, ?, ?, ?, ?, ?)")
 			) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, input.getFirstName());
@@ -129,7 +129,7 @@ public class Database {
                     gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
                     return null;
             }
-		}
+	}
 
 	public procatering.Customer getCustomer(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -178,7 +178,7 @@ public class Database {
         try(Connection con = DriverManager.getConnection(URL,username,password);){
             try(
                 PreparedStatement prepStat = con.prepareStatement
-				("INSERT INTO customer (type_id, firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES('?', '?', '?', '?', '?', '?', '?', '?', '?', '?')")){
+				("INSERT INTO employee (type_id, firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES('?', '?', '?', '?', '?', '?', '?', '?', '?', '?')")){
                 con.setAutoCommit(false);
                 prepStat.setString(1, input.getType());
                 prepStat.setString(2, input.getFirstName());
@@ -366,7 +366,7 @@ public class Database {
 				cleanup.dbRollback(con);
 				return false;
 			}
-		} catch (SQLException eCon) {
+		} catch (SQLException eCon){
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
@@ -449,9 +449,6 @@ public class Database {
         /**
          * Adds a new dish into the database. The metode uses another metode to check the length of the dishname.
          * These means that the dish name need less than 255 signs.
-         * @param name
-         * @param price
-         * @param cost
          * @return true if sucsessfully added, else it will retun null.
 		 * TODO FIX THE DOCUMENTATION
          */
@@ -647,4 +644,18 @@ public class Database {
             }
             return false;
         }
+
+	public String findPostPlace(Integer postInt) {
+		String query = "SELECT place FROM postalcode WHERE postalcode = ?";
+		try (Connection con = DriverManager.getConnection(URL, username, password);
+			PreparedStatement prep = con.prepareStatement(query)){
+			prep.setInt(1,postInt);
+			ResultSet ans = prep.executeQuery();
+			ans.first();
+			return String.valueOf(ans.getString("place"));
+		}catch(SQLException e){
+			System.out.println(e);
+			return "N/A";
+		}
+	}
 }
