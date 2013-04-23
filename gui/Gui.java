@@ -1,8 +1,8 @@
 package gui;
 
 import com.michaelbaranov.microba.calendar.CalendarPane;
-import com.sun.xml.internal.bind.v2.TODO;
 import database.SecurityChecker;
+import procatering.Customer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 public class Gui {
 	public Gui() {
 		initListeners();
+		setVisibility();
 	}
 
 	public static void main(String[] args) {
@@ -117,7 +118,6 @@ public class Gui {
 	private JTextArea singleOrderDishInformationTextField;
 	private static String errorMessageTitle = "Error";
 
-
 	private void createUIComponents() {
 		// TODO: place custom component creation code here
 	}
@@ -164,7 +164,22 @@ public class Gui {
 				menuSubscriptionButtonActionPerformed(evt);
 			}
 		});
+		
+		customerSearchButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				customerSearchButtonActionPerformed(evt);
+			}
+		});
 	}
+
+
+
+	private void setVisibility(){
+		loginErrorMessage_label.setVisible(false);
+	}
+
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							EventHandlers															//
@@ -190,8 +205,11 @@ public class Gui {
 
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
-        if(SecurityChecker.logIn(id, password))
+        if(SecurityChecker.logIn(id, password)){
             cl.show(ProCatering,"loggedInCard");
+			employee_ID_input.setText("");
+			password_input.setText("");
+		}
         else{
 			loginErrorMessage_label.setVisible(true);
 			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
@@ -205,7 +223,7 @@ public class Gui {
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
-		cl.show(ProCatering, "loggedOutCard");
+		cl.show(ProCatering, "findPanelCard");
 	}
 
 	private void menuSingleOrderButtonActionPerformed(ActionEvent evt){
@@ -214,11 +232,19 @@ public class Gui {
 	}
 
 	private void menuExistingButtonActionPerformed(ActionEvent evt){
-		System.out.println("ButtonClicked");
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "existOrderCard");
 	}
 
 	private void menuSubscriptionButtonActionPerformed(ActionEvent evt){
-		System.out.println("ButtonClicked");
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "subscriptionOrder");
+	}
+
+	private void customerSearchButtonActionPerformed(ActionEvent evt){
+		DefaultListModel<Customer> nameList = Customer.findCustomer(customerSearchField.getText());
+		customerList = new JList<Customer>(nameList);
+		customerScrollPane.setViewportView(customerList);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////

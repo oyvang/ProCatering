@@ -67,5 +67,16 @@ public class Helper {
         }
         return "Error 666: Error while trying to make an errormessage.";
     }
+    /**
+     * Checks if a string is less than 255 signs and is not null.
+     * @param input
+     * @return true if the string is not null and is less than 255 signs, if not it will return false.
+     */
+    public static boolean stringChecker(String input){
+        if(input != null && input.length() < 255){
+            return true;
+        }
+        return false;
+    }
     
 }

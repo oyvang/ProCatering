@@ -90,9 +90,7 @@ public class SecurityChecker {
     }
 	//TODO Write documentation
 	public static boolean logIn(Integer id, String password) {
-		if(id == null)
-			return false;
-		if(password == null)
+		if(id == null || id <= 0 || password == null || password.equals(""))
 			return false;
 
 		return checkPassword(id, password);
