@@ -36,8 +36,12 @@ public class Subscription {
         endDate = end;
     }
     
-    public void addOrderContent(OrderContent cont){
-        content.addElement(cont);
+      public boolean addOrderContent(DefaultListModel<Dish> dishes,int weekDay, Timestamp delivery) {
+        if(dishes != null){    
+            content.addElement(new OrderContent(dishes, weekDay, delivery));
+            return true;
+        }
+        return false;
     }
     
   /*  public void addToDB(){

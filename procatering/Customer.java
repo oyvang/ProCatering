@@ -60,6 +60,7 @@ public class Customer extends Person{
 		Database db = new Database();
 		return db.findCustomer(search);
 	}
+
     public int getCorporateNum() {
         return corporateNum;
     }
@@ -75,7 +76,7 @@ public class Customer extends Person{
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
     }
-    
+
 	public boolean addCustomer(Customer customer) {
 		Database db = new Database();
 		if(customer != null)

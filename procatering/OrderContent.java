@@ -14,21 +14,25 @@ import javax.swing.DefaultListModel;
  * 
  */
 public class OrderContent {
-    private DefaultListModel<String> dishes;
-    private Timestamp deliveryDate;
+    private DefaultListModel<Dish> dishes;
+    private Timestamp deliveryTime;     // timestamp with date and/or time.
     private int deliveryDay;
     
-    /*constructor */
-    public OrderContent(){
-        dishes = new DefaultListModel<String>();
+    /*constructor for order */
+    public OrderContent(DefaultListModel<Dish> dishesInput, Timestamp delivery){
+        dishes = dishesInput;
+        deliveryTime = delivery;        // timestamp with time and date.
     }
-    
+    /*constructor for subscription */
+        public OrderContent(DefaultListModel<Dish> dishesInput, int day, Timestamp time){
+        dishes = dishesInput;
+    }
     public DefaultListModel getDishes(){
         return dishes;
     }
 
     public Timestamp getDeliveryDate() {
-        return deliveryDate;
+        return deliveryTime;
     }
 
     public int getDeliveryDay() {
@@ -42,7 +46,7 @@ public class OrderContent {
      */
     public boolean addDate(Timestamp date){
        if(date != null){
-        this.deliveryDate = date;
+        this.deliveryTime = date;
         return true;
        }
        return false;
@@ -68,7 +72,7 @@ public class OrderContent {
      * @return boolean
      * @author Tedjk
      */
-    public boolean addDish(String dishName, int quantity){
+    public boolean addDish(Dish dishName, int quantity){
         if(dishName != null){
             for (int i = 0; i < quantity; i++) {
                 dishes.addElement(dishName);
