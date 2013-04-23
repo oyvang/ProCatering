@@ -2,11 +2,23 @@ package procatering;
 import database.Database;
 
 public class Employee extends Person {
-	private final String dob;
+	private int employeeId;
+        private final String dob;
 	private String type;
 	private Database db;
+        private Order order;
+        private Subscription subscription;
 
-	public Employee(String type, String fn, String ln, String phone, int pCode, String dob, String mail) {
+        public Employee(int empId, String type, String fn, String ln, String phone, int pCode, String dob, String mail) {
+           //Person(String fn, String ln, String phone, String mail, int pCode)
+           super(fn, ln, phone, mail, pCode);
+           this.type = type.toUpperCase();
+           this.dob = dob;
+           this.employeeId = empId;
+           db = new Database();
+	}
+        
+        public Employee(String type, String fn, String ln, String phone, int pCode, String dob, String mail) {
 		//Person(String fn, String ln, String phone, String mail, int pCode)
 		super(fn, ln, phone, mail, pCode);
 		this.type = type.toUpperCase();
@@ -33,13 +45,7 @@ public class Employee extends Person {
 		}
 		return new Employee(db.getEmployee(employeeId));
 	}
-	public boolean getEmployee(int id) {
-		if (db.getEmployee(id) != null) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	/**
 	 * Method addEmployee uses a Database object to add a new Employee to the database
 	 *
@@ -94,6 +100,9 @@ public class Employee extends Person {
 		return dob;
 	}
 
+        public int getEmployeeId() {
+            return employeeId;
+        }
 	public boolean addEmployee(String type, String fn, String ln, String phone, int pCode, String dob, String mail, String pw) {
 		fn = Helper.capitalFirst(fn);
 		if (999 < pCode && pCode > 10000) {
@@ -130,4 +139,19 @@ public class Employee extends Person {
 	public String toString() {
 		return "Employee{" + "type=" + type + " " + super.toString() + '}';
 	}
+        
+        /* TODO:
+         * addOrder
+         * order.addContent
+         * addSubscription
+         * subscription.addContent
+         */
+        
+        public boolean addOrder(int c_id){
+            if(c_id > 0){
+                order = new Order(c_id, this.getEmployeeId(), "New");
+                return true;
+            }
+            return false;
+        }
 }

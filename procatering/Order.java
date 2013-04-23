@@ -62,10 +62,12 @@ public class Order {
     /**
      * @param orderObj This ordercontent object will be added to the order list.
      */
-    public void addOrderContent(OrderContent orderObj) {
-        for (int i = 0; i < ordercontent.getSize(); i++) {
-            ordercontent.addElement(orderObj);
+    public boolean addOrderContent(DefaultListModel<Dish> dishes, Timestamp delivery) {
+        if(dishes != null){    
+            ordercontent.addElement(new OrderContent(dishes, delivery));
+            return true;
         }
+        return false;
     }
     
     public void addDB(){
@@ -78,7 +80,5 @@ public class Order {
         Customer customer = db.getCustomer(customerId);
         return customer.getLastName() + ", " + customer.getFirstName()+ " - " + date;
     }
-    
-
 }
 
