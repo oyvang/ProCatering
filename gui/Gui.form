@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.Gui">
   <grid id="58511" binding="ProCatering" layout-manager="CardLayout" hgap="0" vgap="0" show="d20e1">
     <constraints>
-      <xy x="104" y="308" width="739" height="486"/>
+      <xy x="104" y="108" width="1024" height="768"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -13,15 +13,15 @@
         </constraints>
         <properties>
           <font name="Tahoma" size="9" style="0"/>
-          <minimumSize width="300" height="450"/>
-          <preferredSize width="700" height="600"/>
+          <minimumSize width="1024" height="768"/>
+          <preferredSize width="1024" height="768"/>
         </properties>
         <border type="none">
           <font/>
           <title-color color="-16777216"/>
         </border>
         <children>
-          <grid id="6884a" binding="mainMenu" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="6884a" binding="mainMenu" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="5" left="5" bottom="5" right="5"/>
             <constraints border-constraint="West"/>
             <properties/>
@@ -32,7 +32,7 @@
               <grid id="6656f" binding="costumerPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none" title="Customer">
@@ -49,46 +49,10 @@
                   </component>
                 </children>
               </grid>
-              <grid id="16211" binding="orderMenu" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-                <border type="none" title="Order">
-                  <font/>
-                </border>
-                <children>
-                  <component id="736af" class="javax.swing.JButton" binding="menuSingleOrderButton">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Single"/>
-                    </properties>
-                  </component>
-                  <component id="33384" class="javax.swing.JButton" binding="menuExistingButton">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Subscription"/>
-                    </properties>
-                  </component>
-                  <component id="c21a" class="javax.swing.JButton" binding="menuSubscriptionButton">
-                    <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Existing"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
               <grid id="57812" binding="backendMenu" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none" title="Backend">
@@ -137,6 +101,31 @@
                   </component>
                 </children>
               </grid>
+              <grid id="16211" binding="orderMenu" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Order">
+                  <font/>
+                </border>
+                <children>
+                  <component id="c21a" class="javax.swing.JButton" binding="menuSeeOrdersButton">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="See orders"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <vspacer id="d1615">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
           <grid id="785cd" binding="topPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -409,10 +398,10 @@
               </grid>
               <grid id="cf7d4" binding="singleOrderPanel" layout-manager="CardLayout" hgap="0" vgap="0" show="1d870">
                 <constraints>
-                  <card name="singleOrderPanelCard"/>
+                  <card name="singleOrderCard"/>
                 </constraints>
                 <properties>
-                  <visible value="false"/>
+                  <visible value="true"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -439,14 +428,22 @@
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <grid id="a8f0a" binding="singleOrderDatePanel" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                              <grid id="a8f0a" binding="singleOrderDatePanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                                 <margin top="0" left="0" bottom="0" right="0"/>
                                 <constraints>
-                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
                                 </constraints>
                                 <properties/>
                                 <border type="none" title="Select time and date"/>
                                 <children>
+                                  <component id="a7907" class="com.toedter.calendar.JCalendar" binding="singleOrderDatePicker">
+                                    <constraints>
+                                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+                                    </constraints>
+                                    <properties>
+                                      <toolTipText value=""/>
+                                    </properties>
+                                  </component>
                                   <component id="25c37" class="javax.swing.JLabel" binding="singleOrderTimeLabel">
                                     <constraints>
                                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -454,12 +451,6 @@
                                     <properties>
                                       <text value="Time"/>
                                     </properties>
-                                  </component>
-                                  <component id="7629d" class="com.michaelbaranov.microba.calendar.CalendarPane" binding="singleOrderDatePicker">
-                                    <constraints>
-                                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                                    </constraints>
-                                    <properties/>
                                   </component>
                                   <component id="5b295" class="javax.swing.JComboBox" binding="singleOrderAddTimeComboBox">
                                     <constraints>
@@ -469,7 +460,7 @@
                                   </component>
                                   <component id="1e365" class="javax.swing.JButton" binding="singleOrderAddTimeButton">
                                     <constraints>
-                                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
                                         <preferred-size width="50" height="10"/>
                                       </grid>
                                     </constraints>
@@ -492,32 +483,28 @@
                           </grid>
                         </children>
                       </grid>
-                      <grid id="84988" binding="singleOrderInformationPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="84988" binding="singleOrderInformationPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
-                          <grid row="0" column="1" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties/>
                         <border type="none" title="Order information"/>
                         <children>
-                          <grid id="79c47" binding="singleOrderCustomerInformationPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                          <grid id="79c47" binding="singleOrderCustomerInformationPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                             <margin top="0" left="0" bottom="0" right="0"/>
                             <constraints>
-                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties/>
                             <border type="none" title="Customer"/>
                             <children>
-                              <component id="862d4" class="javax.swing.JTextArea" binding="singleOrderCustomerInformationTextfield">
+                              <component id="ffd0" class="javax.swing.JTextPane" binding="singleOrderCustomerInformationTextpane">
                                 <constraints>
-                                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                                    <preferred-size width="150" height="50"/>
-                                  </grid>
+                                  <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                                 </constraints>
                                 <properties>
-                                  <background color="-3355444"/>
-                                  <editable value="false"/>
-                                  <text value="Dette er en tekst"/>
+                                  <text value=""/>
                                 </properties>
                               </component>
                             </children>
@@ -525,22 +512,22 @@
                           <grid id="10e9e" binding="singleOrderDishdateInformationPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                             <margin top="0" left="0" bottom="0" right="0"/>
                             <constraints>
-                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false">
+                                <minimum-size width="-1" height="400"/>
+                                <preferred-size width="-1" height="400"/>
+                              </grid>
                             </constraints>
                             <properties/>
                             <border type="none" title="Order information"/>
                             <children>
-                              <component id="c7d90" class="javax.swing.JTextArea" binding="singleOrderDishInformationTextField">
+                              <component id="e8c2a" class="javax.swing.JTextPane" binding="singleOrderOrderInformationTextpane">
                                 <constraints>
                                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                                    <preferred-size width="150" height="50"/>
+                                    <minimum-size width="-1" height="250"/>
+                                    <preferred-size width="-1" height="250"/>
                                   </grid>
                                 </constraints>
-                                <properties>
-                                  <background color="-3355444"/>
-                                  <editable value="false"/>
-                                  <text value="Dette er en tekst"/>
-                                </properties>
+                                <properties/>
                               </component>
                             </children>
                           </grid>
@@ -589,7 +576,7 @@
               <grid id="52c7a" binding="subscriptionOrderPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <card name="subscriptionOrder"/>
+                  <card name="subscriptionOrderCard"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -660,6 +647,11 @@
             <properties/>
             <border type="none"/>
             <children>
+              <vspacer id="38a1c">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
               <component id="12dcf" class="javax.swing.JLabel" binding="welcomeMessageLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -670,11 +662,6 @@
                   <text value="Welcome to ProCatering"/>
                 </properties>
               </component>
-              <vspacer id="38a1c">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </vspacer>
             </children>
           </grid>
           <grid id="9fc11" binding="loginPanel" layout-manager="GridLayoutManager" row-count="4" column-count="11" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

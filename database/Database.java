@@ -2,6 +2,7 @@
 package database;
 
 import gui.Gui;
+import procatering.Customer;
 import procatering.Dish;
 import procatering.Employee;
 import procatering.Helper;
@@ -44,8 +45,8 @@ public class Database {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
-							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode)"
-							+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
+							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note)"
+							+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")
 			) {
 				con.setAutoCommit(false);
 				prepStat.setString(1, input.getFirstName());
@@ -56,6 +57,7 @@ public class Database {
 				prepStat.setString(6, input.getEmail());
 				prepStat.setString(7, input.getAddress());
 				prepStat.setInt(8, input.getPostalCode());
+				prepStat.setString(9, input.getNote());
 				prepStat.executeUpdate();
 				con.commit();
 				con.setAutoCommit(true);
@@ -107,7 +109,7 @@ public class Database {
                     
                     /*creates the objects that has matching attributes to the search phrase*/
 				while (rs.next()) {
-					procatering.Customer inputObject = new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id"));
+					procatering.Customer inputObject = new procatering.Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id"));
                             /*if the customer object has a corporate connection, add to attributes*/
 					if (rs.getString("corporate_register.corporatename") != null) {
 						inputObject.setCorporateNum(rs.getInt("corporate_register.corporatenumber"));
@@ -425,7 +427,7 @@ public class Database {
 		String query = "SELECT password FROM employee WHERE employee_id = ?";
 		try (Connection con = DriverManager.getConnection(URL, username, password);
 			 PreparedStatement prep = con.prepareStatement(query)) {
-			prep.setInt(id, id);
+			prep.setInt(1, id);
 			ResultSet ans = prep.executeQuery();
 			ans.first();
 			return ans.getString(1);
@@ -796,5 +798,18 @@ public class Database {
 
 		}
 		return false;
+	}
+
+	public boolean customerExist(Customer customer) {
+		String sql = "SELECT clean_fn, phonenumber FROM customer WHERE clean_fn = ? AND phonenumber = ?";
+		try (Connection con = DriverManager.getConnection(URL, username, password);
+			 PreparedStatement prepStat = con.prepareStatement(sql)) {
+			prepStat.setString(1, customer.getFirstName().toUpperCase());
+			prepStat.setString(2, customer.getPhoneNumber());
+			ResultSet res = prepStat.executeQuery();
+			return res.next();
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 }

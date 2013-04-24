@@ -12,6 +12,7 @@ public class Customer extends Person{
     private int customerID;
     private int corporateNum;
     private String corporateName;
+	private String note;
 
 	/**
 	 * Customer object. Extended from Person.
@@ -23,9 +24,10 @@ public class Customer extends Person{
 	 * @param pCode The customers postal code
 	 * @author Jørgen Lien Sellæg
 	 */
-    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode){
+    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, String note){
         super(fn,  ln,  phone,  mail, pCode);
         this.address = adr;
+		this.note = note;
     }
 	/**
 	 * @author Team17
@@ -36,6 +38,12 @@ public class Customer extends Person{
         this.address = adr;
         customerID = cid;
     }
+	/** Standard copy constructor */
+	public Customer(Customer customer){
+		super(customer.getFirstName(), customer.getLastName(), customer.getPhoneNumber(), customer.getEmail(), customer.getPostalCode());
+		this.address = customer.getAddress();
+		this.note = customer.getNote();
+	}
 	/**
 	 * Regular get method for address.
 	 * Returns a string value of the address.
@@ -77,12 +85,26 @@ public class Customer extends Person{
         this.corporateName = corporateName;
     }
 
+	public String getNote(){
+		return this.note;
+	}
+
 	public boolean addCustomer(Customer customer) {
 		Database db = new Database();
 		if(customer != null)
 			return db.addCustomer(customer);
 		return false;
 	}
+
+	public static boolean customerExist(Customer customer){
+		Database db = new Database();
+		return db.customerExist(customer);
+	}
+
+	public String getPostPlace(String postCode){
+		return Helper.searchPostalCode(postCode);
+	}
+
 
 	@Override
 	/**

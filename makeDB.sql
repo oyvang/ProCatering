@@ -1,6 +1,6 @@
 CREATE TABLE employee(
     employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	  type_id INT NOT NULL,
+	  type_id INT NOT NULL DEFAULT 1,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
 	  clean_fn VARCHAR (255) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE corporate_register(
    
 CREATE TABLE customer (
     customer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    corporatenumber INT NOT NULL,
+    corporatenumber INT NOT NULL DEFAULT 0,
     firstname VARCHAR (255) NOT NULL,
     lastname VARCHAR (255) NOT NULL,
     clean_fn VARCHAR (255) NOT NULL,

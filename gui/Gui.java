@@ -1,6 +1,6 @@
 package gui;
 
-import com.michaelbaranov.microba.calendar.CalendarPane;
+import com.toedter.calendar.JCalendar;
 import database.SecurityChecker;
 import procatering.Customer;
 
@@ -10,9 +10,10 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import static procatering.Helper.GUI_NUMBER;
-import static procatering.Helper.errorMessage;
 import static procatering.Helper.searchPostalCode;
 
 /**
@@ -25,7 +26,7 @@ import static procatering.Helper.searchPostalCode;
 public class Gui {
 	public Gui() {
 		initListeners();
-		setVisibility();
+		editStartValues();
 	}
 
 	public static void main(String[] args) {
@@ -47,9 +48,7 @@ public class Gui {
 	private JPanel costumerPanel;
 	private JButton menuFindButton;
 	private JPanel orderMenu;
-	private JButton menuSingleOrderButton;
-	private JButton menuExistingButton;
-	private JButton menuSubscriptionButton;
+	private JButton menuSeeOrdersButton;
 	private JPanel backendMenu;
 	private JButton backendEmployeeButton;
 	private JButton backendCustomerButton;
@@ -83,9 +82,10 @@ public class Gui {
 	private JTextArea notesInputArea;
 	private JPanel customerListPanel;
 	private JScrollPane customerScrollPane;
-	private JList customerList;
+	private JList<Customer> customerList;
 	private JButton customerSearchButton;
 	private JTextField customerSearchField;
+	private DefaultListModel<Customer> nameList;
 	private JPanel singleOrderPanel;
 	private JPanel existOrderPanel;
 	private JPanel subscriptionOrderPanel;
@@ -114,14 +114,15 @@ public class Gui {
 	private JPanel singleOrderDatePanel;
 	private JPanel singleOrderSelectDishPanel;
 	private JLabel singleOrderProgressLabel;
-	private CalendarPane singleOrderDatePicker;
 	private JComboBox singleOrderAddTimeComboBox;
 	private JButton singleOrderAddTimeButton;
 	private JTextArea singleOrderCustomerInformationTextfield;
 	private JPanel singleOrderCustomerInformationPanel;
 	private JPanel singleOrderDishdateInformationPanel;
 	private JLabel singleOrderTimeLabel;
-	private JTextArea singleOrderDishInformationTextField;
+	private JCalendar singleOrderDatePicker;
+	private JTextPane singleOrderCustomerInformationTextpane;
+	private JTextPane singleOrderOrderInformationTextpane;
 	private static String errorMessageTitle = "Error";
 
 	private void createUIComponents() {
@@ -129,6 +130,7 @@ public class Gui {
 	}
 
 	private void initListeners(){
+		/* Login button action listener */
 		loginButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt){
@@ -136,6 +138,7 @@ public class Gui {
 				menuFindButtonActionPerformed(evt);
 			}
 		});
+		/* Password field action listener */
 		password_input.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -157,25 +160,11 @@ public class Gui {
 				menuFindButtonActionPerformed(evt);
 			}
 		});
-		/* Menu Single order button */
-		menuSingleOrderButton.addActionListener(new ActionListener() {
+		/* Menu see orders button */
+		menuSeeOrdersButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				menuSingleOrderButtonActionPerformed(evt);
-			}
-		});
-		/* Menu existing order button */
-		menuExistingButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				menuExistingButtonActionPerformed(evt);
-			}
-		});
-		/* Menu subscription button */
-		menuSubscriptionButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				menuSubscriptionButtonActionPerformed(evt);
+				menuSeeOrdersButtonActionPerformed(evt);
 			}
 		});
 		/* Customer search button */
@@ -185,7 +174,7 @@ public class Gui {
 				customerSearchButtonActionPerformed();
 			}
 		});
-
+		/* Customer search field listener*/
 		customerSearchField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
@@ -195,12 +184,12 @@ public class Gui {
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 		});
 		/* Customer registration button */
@@ -210,23 +199,26 @@ public class Gui {
 				registerNewButtonActionPerformed(evt);
 			}
 		});
-
+		/* Postal Code search listener */
 		postalCodeInputField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			/**
 			 * Method queries database and inserts postal place into field.
 			 */
 			public void insertUpdate(DocumentEvent e) {
-				String saved = "";
 				if(postalCodeInputField.getText().length() == 4){
-					saved = postalCodeInputField.getText();
 					postalCodeOutputLabel.setText(searchPostalCode(postalCodeInputField.getText()));
 				}
 			}
 
 			@Override
+			/**
+			 * Method resets the postalCodeField
+			 */
 			public void removeUpdate(DocumentEvent e) {
-
+				if(postalCodeInputField.getText().length() == 3){
+					postalCodeOutputLabel.setText("N/A");
+				}
 			}
 
 			@Override
@@ -234,16 +226,73 @@ public class Gui {
 
 			}
 		});
+		/* Phone number field listener */
+		phonenumberInputField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				customerSearchField.setText(phonenumberInputField.getText());
+
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
+		/* King kong*/ //TODO something
+		customerList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() >= 2 && !customerList.isSelectionEmpty()){
+					String[] options = new String[]{"Single order","Subscription"};
+					String message = "Please select order type for "+customerList.getSelectedValue().toString()+":";
+					int option = JOptionPane.showOptionDialog(ProCatering, message, "Choose subscription type",JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+					if(option == 0)
+						menuSingleOrderButtonActionPerformed(new Customer((Customer)customerList.getSelectedValue()));
+					if(option == 1)
+						menuSubscriptionButtonActionPerformed();
+
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
 	}
 
 	/**
-	 * Method setVisibility sets the visibility of elements in the gui.
+	 * Method editStartValues sets the visibility of elements in the gui.
 	 */
-	private void setVisibility(){
+	private void editStartValues(){
 		loginErrorMessage_label.setVisible(false);
+
+		singleOrderCustomerInformationTextpane.setContentType("text/html");
+		singleOrderCustomerInformationTextpane.setEditable(false);
+		singleOrderOrderInformationTextpane.setContentType("text/html");
+		singleOrderOrderInformationTextpane.setEditable(false);
 	}
-
-
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							EventHandlers															//
@@ -289,25 +338,49 @@ public class Gui {
 		cl.show(mainPanel, "findPanelCard");
 	}
 
-	private void menuSingleOrderButtonActionPerformed(ActionEvent evt){
+	private void menuSingleOrderButtonActionPerformed(Customer customer){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
-		cl.show(mainPanel, "singleOrderPanelCard");
+		cl.show(mainPanel, "singleOrderCard");
+		generateOrder(customer);
 	}
 
-	private void menuExistingButtonActionPerformed(ActionEvent evt){
+	private void generateOrder(Customer customer) {
+
+		String t =	"<html>"+
+						"<table valign='top'>"+
+							"<tr>" +
+								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+							"</tr>"+
+						"</table>"+
+					"</html>";
+		singleOrderCustomerInformationTextpane.setText(t);
+	}
+
+	private void menuSubscriptionButtonActionPerformed(){
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "subscriptionOrderCard");
+	}
+
+	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
 	}
 
-	private void menuSubscriptionButtonActionPerformed(ActionEvent evt){
-		CardLayout cl = (CardLayout)mainPanel.getLayout();
-		cl.show(mainPanel, "subscriptionOrder");
-	}
-
 	private void customerSearchButtonActionPerformed(){
-		DefaultListModel<Customer> nameList = Customer.findCustomer(customerSearchField.getText());
+		nameList = Customer.findCustomer(customerSearchField.getText());
+		MouseListener[] lis = customerList.getMouseListeners(); //Extracts the mouselisteners before overwrite.
+
 		customerList = new JList<Customer>(nameList);
 		customerScrollPane.setViewportView(customerList);
+		for (MouseListener li : lis) {
+			customerList.addMouseListener(li);
+		}
 	}
 
 	private void registerNewButtonActionPerformed(ActionEvent evt){
@@ -331,9 +404,19 @@ public class Gui {
 			showErrorMessage(GUI_NUMBER, 2, new Exception("All fields except note and email needs to be filled."));
 			gtg = false;
 		}
+		Customer customer = new Customer(address, firstname, lastname, phoneNumber, email, postalCode, note);
+		if(Customer.customerExist(customer)){
+			String confirmMessage = "<html>" +
+										"<h3>It seems like the person you are trying to add to the customer database already exists</h3>" +
+										"<p>Please select the person from the list to the right.</p>" +
+									"</html>";
+			int confirm = JOptionPane.showConfirmDialog(ProCatering, confirmMessage, "Are you sure?", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE);
+			System.out.println(confirm);
+			//if(confirm != 0) //TODO FIXME
+				gtg = false;
+		}
 
 		if(gtg){
-			Customer customer = new Customer(address, firstname, lastname, phoneNumber, email, postalCode);
 			String confirmMessage = "<html>" +
 										"<h3>This is the information you put in:</h3>" +
 										"<table>" +
@@ -352,6 +435,7 @@ public class Gui {
 		}
 
 	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
