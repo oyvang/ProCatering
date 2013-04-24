@@ -1,9 +1,13 @@
 package procatering;
 
+import database.DBClean;
 import database.Database;
+import java.sql.SQLException;
 
 import javax.swing.*;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Employee extends Person {
 	private int employeeId = -1;
@@ -191,10 +195,63 @@ public class Employee extends Person {
 		return false;
 	}
 
-	//TODO SKRIV FERDIG METODEN!!!
-	public boolean addNewDish(Dish dish, DefaultListModel catNames, DefaultListModel ingredient) {
-		return false;
-	}
+
+        /**
+         * Adds a new dish to the database, it will also add dish and category names that are not in the database.
+         * @param dish Dish object
+         * @param catNames DefaultListModel<String>
+         * @param ingredient DefaultListModel<String>
+         * @return true if sucsessfully added, else it will return false.
+         */
+        public boolean addNewDish(Dish dish, DefaultListModel<String> catNames, DefaultListModel<String> ingredient) {
+            if(dish == null || catNames.isEmpty()==true ||ingredient.isEmpty()==true){
+                return false;
+            }
+            int en = 0;
+            int to = 0;
+            try{
+                if(db.dishExist(dish.getName())== false) {
+                    for (int i = 0; i < catNames.getSize(); i++) {
+                        System.out.println(db.cateogryExist(catNames.get(i)));
+                        if(db.cateogryExist(catNames.get(i))==false){
+                            System.out.println(db.addCategory(catNames.get(i)));
+                        }
+                    }
+                    for (int i = 0; i < ingredient.getSize(); i++) {
+                        if(db.ingredientExist(ingredient.get(i))== false){
+                            db.addIngredient(ingredient.get(i));
+                        }
+                    }
+                    
+                    if(db.addDish(dish)){
+                        for (int i = 0; i < catNames.getSize(); i++) {
+                            System.out.println(dish.getName() + " " + catNames.get(i));
+                            db.insertDishCat(dish.getName(), catNames.get(i));
+                            
+                        }
+                        for (int i = 0; i < ingredient.getSize(); i++) {
+                            db.insertDishIngredient(dish.getName(), ingredient.get(i));
+                            
+                        }
+                        if(en==catNames.getSize() && to==ingredient.getSize()){
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }catch (SQLException ePrepState) {
+                
+                System.out.println(ePrepState);
+//                gui.Gui.showErrorMessage(Helper.DATABASE_NUMBER, 1, ePrepState);
+                return false;
+                
+                
+                
+            }
+            System.out.println("LOL");
+            return false;
+        }
+       
 
 	public boolean addSubscriptionContent(String weekday, Timestamp deliveryTime) {
 		if (weekday != null && deliveryTime.after(subscription.getOrderDate())) {

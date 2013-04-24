@@ -12,11 +12,18 @@ public class Dish {
     private String name;
     private double price;
     private double cost;
+    private int id = -1;
     
     public Dish (String name, double price, double cost){
         this.name = name;
         this.price = price;
         this.cost = cost;
+    }
+    public Dish (String name, double price, double cost, int id){
+        this.name= name;
+        this.price = price;
+        this.cost = cost;
+        this.id = id;
     }
     
     /** Standard copy constructor */ 
@@ -34,6 +41,9 @@ public class Dish {
     
     public double getCost() {
         return cost;
+    }
+    public int getID() {
+        return id;
     }
     
     public void setPrice(double price) {

@@ -101,7 +101,7 @@ public class DBClean {
 			gui.Gui.showErrorMessage(DATABASECLEAN_NUMBER, 7, ex);
 			return false;
 		}
-		gui.Gui.showErrorMessage(DATABASECLEAN_NUMBER, 8,new SQLException("Error 004: Error trying to fix an error in the database."));
+//		gui.Gui.showErrorMessage(DATABASECLEAN_NUMBER, 8,new SQLException("Error 004: Error trying to fix an error in the database."));
 		return false;
 	}
 
