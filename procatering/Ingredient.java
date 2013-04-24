@@ -10,12 +10,18 @@ package procatering;
  */
 public class Ingredient {
     private String name;
+    private int ingredientID = -1;
     
-    public Ingredient (String name){
+    public Ingredient (int ingredientID,String name){
         this.name=name;
+        this.ingredientID=ingredientID;
     }
     
     public String getName(){
         return name;
+    }
+    
+    public int getIngredientID(){
+        return ingredientID;
     }
 }

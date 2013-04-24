@@ -1,5 +1,6 @@
 package procatering;
 import database.Database;
+import javax.swing.DefaultListModel;
 
 public class Employee extends Person {
 	private int employeeId = -1;
@@ -138,6 +139,11 @@ public class Employee extends Person {
                 order = new Order(c_id, this.getEmployeeId(), "New");
                 return true;
             }
+            return false;
+        }
+        
+        //TODO SKRIV FERDIG METODEN!!!
+        public boolean addNewDish (Dish dish, DefaultListModel catNames, DefaultListModel ingredient){
             return false;
         }
 }
