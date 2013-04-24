@@ -19,6 +19,11 @@ public class Dish {
         this.cost = cost;
     }
     
+    /** Standard copy constructor */ 
+    public Dish(Dish d){
+        this(d.getName(),d.getPrice(),d.getCost());
+    }
+    
     public String getName(){
         return name;
     }
