@@ -14,8 +14,8 @@ public class Order {
     
     private int customerId;
     private int employeeId;
-    private String status;
-    private Timestamp date;
+    private String status;      // Active, Completed or Cancelled
+    private Timestamp orderDate;
     private DefaultListModel<OrderContent> ordercontent;
     
     /* Constructor */
@@ -23,7 +23,7 @@ public class Order {
         customerId = c_id;
         employeeId = e_id;
         this.status = status;
-        this.date = date;
+        this.orderDate = orderDate;
         ordercontent = new DefaultListModel();
 	}
 	
@@ -35,11 +35,17 @@ public class Order {
         return customerId;
     }
     
+    public boolean addDish(Dish dishName, int quantity, int index){
+        if(ordercontent.getElementAt(index).addDish(dishName, quantity)){
+            return true;
+        }
+        return false;
+    }
      /**
-     * Adds the date the order is made
-     * @param date
+     * Adds the orderDate the order is made
+     * @param orderDate
      */
-    public Timestamp getDate(){
+    public Timestamp getCurrentDate(){
         java.util.Date time= new java.util.Date();
 	Timestamp date = new Timestamp(time.getTime());
         return date;
@@ -61,9 +67,9 @@ public class Order {
     /**
      * @param orderObj This ordercontent object will be added to the order list.
      */
-    public boolean addOrderContent(DefaultListModel<Dish> dishes, Timestamp delivery) {
-        if(dishes != null){    
-            ordercontent.addElement(new OrderContent(dishes, delivery));
+    public boolean addOrderContent(Timestamp delivery) {
+        if(delivery != null){    
+            ordercontent.addElement(new OrderContent(delivery));
             return true;
         }
         return false;
@@ -77,7 +83,7 @@ public class Order {
     public String toString() {
         Database db = new Database();
         Customer customer = db.getCustomer(customerId);
-        return customer.getLastName() + ", " + customer.getFirstName()+ " - " + date;
+        return customer.getLastName() + ", " + customer.getFirstName()+ " - " + orderDate;
     }
 }
 

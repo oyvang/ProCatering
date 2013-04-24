@@ -446,7 +446,7 @@ public class Database {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, order.getEmployeeId());
 				prepStat.setInt(2, order.getCustomerId());
-				prepStat.setTimestamp(3, order.getDate());
+				prepStat.setTimestamp(3, order.getOrderDate());
 				prepStat.setString(3, order.getStatus());
 				return true;
 				//TODO SET AUTOCOMMIT == TRUE;

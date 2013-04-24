@@ -1,5 +1,8 @@
 package procatering;
 import database.Database;
+import java.sql.Timestamp;
+import java.util.Date;
+import javax.swing.DefaultListModel;
 
 public class Employee extends Person {
 	private int employeeId;
@@ -141,17 +144,87 @@ public class Employee extends Person {
 	}
         
         /* TODO:
-         * addOrder
-         * order.addContent
+         * addOrder ok
+         * order.addContent ok
          * addSubscription
          * subscription.addContent
-         */
-        
-        public boolean addOrder(int c_id){
+         */     
+        public boolean createOrder(int c_id){
             if(c_id > 0){
-                order = new Order(c_id, this.getEmployeeId(), "New");
+                order = new Order(c_id, this.getEmployeeId(), "Active");
                 return true;
             }
+            return false;
+        }
+        public boolean addOrderContent(Timestamp deliverDate){
+            if(deliverDate.after(order.getCurrentDate())){
+                if(order.addOrderContent(deliverDate)){
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+        
+        public boolean addOrderDishes(DefaultListModel<Dish> dish){
+            if(dish != null){
+                order.getOrderContent()
+                //TODO FIX
+                return true;
+            }
+            
+            return false;
+        }
+        
+        public boolean createSubscription(int c_id){
+            if(c_id > 0){
+                subscription = new Subscription(c_id, this.getEmployeeId());
+                return true;
+            }
+            return false;
+        }
+        public boolean addSubscriptionStartDate(Timestamp startDate){
+            if(startDate != null && startDate.after(subscription.getOrderDate())){
+                subscription.addStartDate(startDate);
+                return true;
+            }
+            return false;
+        }
+        public boolean addSubscriptionEndDate(Timestamp endDate){
+            if(endDate != null && endDate.after(subscription.getStartDate())){
+                subscription.addEndDate(endDate);
+                return true;
+            }
+            return false;
+        }
+        public boolean addSubscriptionContent(DefaultListModel<Dish> dishes, int weekday, Timestamp deliveryTime){
+            if(dishes != null && weekday >0 && weekday <8 && deliveryTime.after(subscription.getOrderDate())){
+                 subscription.addOrderContent(dishes, weekday, deliveryTime);
+                 return true;
+            }
+            return false;
+        }
+        
+        public boolean addSubscription(){
+            DefaultListModel<OrderContent> check1 = subscription.getContent();
+            Timestamp check2 = subscription.getStartDate();
+            if(check1 != null && check1.size()>0 && check2 != null){
+                if(db.addSubscription(new Subscription(subscription))){
+                    subscription = null;
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+        
+        public boolean addNewDish(Dish dish){
+            //TODO: add to all tables needed.
+            //TODO check if exist, and everything needed is inserted.
+            if(dish != null){
+                db.addDish(dish);
+                return true;
+            } 
             return false;
         }
 }
