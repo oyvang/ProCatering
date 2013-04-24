@@ -50,7 +50,9 @@ public class Order {
 	Timestamp date = new Timestamp(time.getTime());
         return date;
     }
-    
+    public Timestamp getOrderDate(){
+        return orderDate;
+    }
     public String getStatus(){
         return status;
     }
@@ -74,6 +76,7 @@ public class Order {
         }
         return false;
     }
+    //TODO: ADDISH
     
     public void addDB(){
         database.Database db = new database.Database();
@@ -81,9 +84,11 @@ public class Order {
     
     @Override
     public String toString() {
-        Database db = new Database();
-        Customer customer = db.getCustomer(customerId);
-        return customer.getLastName() + ", " + customer.getFirstName()+ " - " + orderDate;
+        String output ="Order created: "+orderDate+"\n\n";
+        for (int i = 0; i < ordercontent.size(); i++) {
+            output+= ordercontent.get(i)+"\n"; 
+        }
+        return output;
     }
 }
 

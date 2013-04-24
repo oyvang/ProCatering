@@ -166,13 +166,11 @@ public class Employee extends Person {
             return false;
         }
         
-        public boolean addOrderDishes(DefaultListModel<Dish> dish){
+        public boolean addOrderDishes(Dish dish, int qty, int index){
             if(dish != null){
-                order.getOrderContent()
-                //TODO FIX
+                order.addDish(dish, qty, index);
                 return true;
             }
-            
             return false;
         }
         
@@ -197,9 +195,9 @@ public class Employee extends Person {
             }
             return false;
         }
-        public boolean addSubscriptionContent(DefaultListModel<Dish> dishes, int weekday, Timestamp deliveryTime){
-            if(dishes != null && weekday >0 && weekday <8 && deliveryTime.after(subscription.getOrderDate())){
-                 subscription.addOrderContent(dishes, weekday, deliveryTime);
+        public boolean addSubscriptionContent( String weekday, Timestamp deliveryTime){
+            if(weekday != null && deliveryTime.after(subscription.getOrderDate())){
+                 subscription.addOrderContent(weekday, deliveryTime);
                  return true;
             }
             return false;
@@ -215,16 +213,6 @@ public class Employee extends Person {
                 }
                 return false;
             }
-            return false;
-        }
-        
-        public boolean addNewDish(Dish dish){
-            //TODO: add to all tables needed.
-            //TODO check if exist, and everything needed is inserted.
-            if(dish != null){
-                db.addDish(dish);
-                return true;
-            } 
             return false;
         }
 }

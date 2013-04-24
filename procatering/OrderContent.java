@@ -6,6 +6,7 @@ package procatering;
 
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import javax.swing.DefaultListModel;
 
 /**
@@ -83,18 +84,19 @@ public class OrderContent {
         return false;
     }
     
+    //TODO needs testing
     public DefaultListModel<String> countDishes(DefaultListModel<Dish> dishes){
         DefaultListModel<String> output = new DefaultListModel<>();
         int counter = 1;
-        int distinctDishes = 1;
         for (int i = 0; i < dishes.size(); i++) {
             if(i == 0){
                 output.addElement(dishes.get(i).getName());
-            }else if(dishes.get(i).getName().equals(output.get(distinctDishes))){
+            }else if(dishes.get(i).getName().equals(output.get(output.size()))){
                 counter++;
-            }else if(!dishes.get(i).getName().equals(output.get(distinctDishes))){
-                output.set(distinctDishes, )
-                
+            }else if(!dishes.get(i).getName().equals(output.get(output.size()))){
+                output.set(output.size(), output.get(output.size())+" "+counter);
+                output.addElement(dishes.get(i).toString());
+                counter = 1;
             }
         }
         return output;
@@ -107,14 +109,27 @@ public class OrderContent {
     public void removeDish(int index){
         dishes.removeElementAt(index);
     }
+    
     @Override
     public String toString(){
+        String output ="";
+        DefaultListModel<String> countList = countDishes(dishes);
         if(deliveryDay !=null){
-           String output = deliveryDay+"s: \n"+ 
-                "
-                    
+            //TODO: make deliveryTime to be the time of the day it is to be delivered.
+           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'HH:MM'");
+           output = deliveryDay+"s: "+simpleDateFormat.format(deliveryTime)+"\n";
+            for (int i = 0; i < countList.size(); i++) {
+                output += countList.get(i)+"\n";
+            }
+            return output;
+        }else{
+            //TODO: make deliveryTime to be the date and time.
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:MM");
+            output = deliveryTime+"s: \n";  
+            for (int i = 0; i < countList.size(); i++) {
+                output += countList.get(i)+"\n";
+            }
+            return output;
         }
-        
-        return output;
     }
 }

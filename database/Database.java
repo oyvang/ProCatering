@@ -128,7 +128,10 @@ public class Database {
 			return null;
 		}
 	}
-
+        public boolean addSubscription(procatering.Subscription sub){
+            return false;
+            //TODO: MAKE method .. Ted
+        }
 
 	public procatering.Customer getCustomer(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {

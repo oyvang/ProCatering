@@ -74,15 +74,21 @@ public class Subscription {
     public void addEndDate(Timestamp end){
         endDate = end;
     }
-    
-      public boolean addOrderContent(DefaultListModel<Dish> dishes, int weekDay, Timestamp delivery) {
-        if(dishes != null){    
+    //TODO FIX
+      public boolean addOrderContent(String weekDay, Timestamp delivery) {
+        if(weekDay != null){    
             content.addElement(new OrderContent(weekDay, delivery));
             return true;
         }
         return false;
     }
       
+    public boolean addDish(Dish dishName, int quantity, int index){
+        if(content.getElementAt(index).addDish(dishName, quantity)){
+            return true;
+        }
+        return false;
+    }
     
   /*  public void addToDB(){
        Calendar calendar = Calendar.getInstance();
