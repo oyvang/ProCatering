@@ -30,7 +30,7 @@ public class Order {
      /** Standard copy constructor */ 
     public Order(Order o){
         this(o.getCustomerId(),o.getEmployeeId(),o.getStatus());
-        this.date = o.getDate();
+        this.orderDate = o.getCurrentDate();
         this.ordercontent = o.getOrderContent();
     }
 	
