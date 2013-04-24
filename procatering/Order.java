@@ -26,6 +26,13 @@ public class Order {
         this.date = date;
         ordercontent = new DefaultListModel();
 	}
+    
+     /** Standard copy constructor */ 
+    public Order(Order o){
+        this(o.getCustomerId(),o.getEmployeeId(),o.getStatus());
+        this.date = o.getDate();
+        this.ordercontent = o.getOrderContent();
+    }
 	
     public int getEmployeeId(){
         return employeeId;
