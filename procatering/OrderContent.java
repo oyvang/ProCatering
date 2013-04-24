@@ -6,6 +6,7 @@ package procatering;
 
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import javax.swing.DefaultListModel;
 
 /**
@@ -16,16 +17,16 @@ import javax.swing.DefaultListModel;
 public class OrderContent {
     private DefaultListModel<Dish> dishes;
     private Timestamp deliveryTime;     // timestamp with date and/or time.
-    private int deliveryDay;
+    private String deliveryDay;
     
     /*constructor for order */
-    public OrderContent(DefaultListModel<Dish> dishesInput, Timestamp delivery){
-        dishes = dishesInput;
+    public OrderContent(Timestamp delivery){
         deliveryTime = delivery;        // timestamp with time and date.
     }
     /*constructor for subscription */
-        public OrderContent(DefaultListModel<Dish> dishesInput, int day, Timestamp time){
-        dishes = dishesInput;
+        public OrderContent(String day, Timestamp time){
+        deliveryTime = time;
+        deliveryDay = day;
     }
     public DefaultListModel getDishes(){
         return dishes;
@@ -35,7 +36,7 @@ public class OrderContent {
         return deliveryTime;
     }
 
-    public int getDeliveryDay() {
+    public String getDeliveryDay() {
         return deliveryDay;
     }
         
@@ -44,7 +45,7 @@ public class OrderContent {
      * @param date
      * @return 
      */
-    public boolean addDate(Timestamp date){
+    public boolean addDeliveryTime(Timestamp date){
        if(date != null){
         this.deliveryTime = date;
         return true;
@@ -58,9 +59,9 @@ public class OrderContent {
      * @return boolean
      * @author Tedjk
      */
-    public boolean addDay(int dayNumber){
-       if(dayNumber > 1 || dayNumber < 8){
-        this.deliveryDay = dayNumber;
+    public boolean addDay(String weekDay){
+       if(weekDay!=null){
+        this.deliveryDay = weekDay;
         return true;
        }
        return false;
@@ -83,6 +84,23 @@ public class OrderContent {
         return false;
     }
     
+    //TODO needs testing
+    public DefaultListModel<String> countDishes(DefaultListModel<Dish> dishes){
+        DefaultListModel<String> output = new DefaultListModel<>();
+        int counter = 1;
+        for (int i = 0; i < dishes.size(); i++) {
+            if(i == 0){
+                output.addElement(dishes.get(i).getName());
+            }else if(dishes.get(i).getName().equals(output.get(output.size()))){
+                counter++;
+            }else if(!dishes.get(i).getName().equals(output.get(output.size()))){
+                output.set(output.size(), output.get(output.size())+" "+counter);
+                output.addElement(dishes.get(i).toString());
+                counter = 1;
+            }
+        }
+        return output;
+    }
     /**
      * Removes an element from the dishes list.
      * @param index the index the element for removal lies.
@@ -90,5 +108,28 @@ public class OrderContent {
      */
     public void removeDish(int index){
         dishes.removeElementAt(index);
+    }
+    
+    @Override
+    public String toString(){
+        String output ="";
+        DefaultListModel<String> countList = countDishes(dishes);
+        if(deliveryDay !=null){
+            //TODO: make deliveryTime to be the time of the day it is to be delivered.
+           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'HH:MM'");
+           output = deliveryDay+"s: "+simpleDateFormat.format(deliveryTime)+"\n";
+            for (int i = 0; i < countList.size(); i++) {
+                output += countList.get(i)+"\n";
+            }
+            return output;
+        }else{
+            //TODO: make deliveryTime to be the date and time.
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:MM");
+            output = deliveryTime+"s: \n";  
+            for (int i = 0; i < countList.size(); i++) {
+                output += countList.get(i)+"\n";
+            }
+            return output;
+        }
     }
 }

@@ -2,15 +2,12 @@
 package database;
 
 import gui.Gui;
-import procatering.Customer;
-import procatering.Dish;
-import procatering.Employee;
-import procatering.Helper;
-import procatering.Ingredient;
-import procatering.Category;
+import procatering.*;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static procatering.Helper.DATABASE_NUMBER;
 
@@ -132,8 +129,11 @@ public class Database {
 			return null;
 		}
 	}
+        public boolean addSubscription(procatering.Subscription sub){
+            return false;
+            //TODO: MAKE method .. Ted
+        }
 
-	//TODO DOK!
 	public procatering.Customer getCustomer(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
@@ -437,7 +437,7 @@ public class Database {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, order.getEmployeeId());
 				prepStat.setInt(2, order.getCustomerId());
-				prepStat.setTimestamp(3, order.getDate());
+				prepStat.setTimestamp(3, order.getOrderDate());
 				prepStat.setString(3, order.getStatus());
 				con.commit();
 				con.setAutoCommit(true);
@@ -594,32 +594,6 @@ public class Database {
 		}
 	}
         
-        	public DefaultListModel<procatering.Dish> mostDishes() {
-		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish_id FROM order_dish")) {
-				con.setAutoCommit(false);
-				ResultSet rs = prepStat.executeQuery();
-                                DefaultListModel input;
-                                input = new DefaultListModel();
-				//DefaultListModel<procatering.Dish> output = new DefaultListModel<>();
-				while (rs.next()) {
-					input.addElement(rs);
-				}
-                                Map<Integer, Integer> treeMap = new TreeMap<Integer, Integer>(map);
-				con.commit();
-				con.setAutoCommit(true);
-				return input;
-			} catch (SQLException ePrepState) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				cleanup.dbRollback(con);
-				return null;
-			}
-		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-			return null;
-		}
-	}
-
 	/**
 	 * Remove a dish from the database with the given name. The name will be checked if it is less than 255 sign
 	 * before it tries to connect to the database.

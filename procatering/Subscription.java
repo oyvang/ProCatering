@@ -23,11 +23,50 @@ public class Subscription {
     private DefaultListModel<OrderContent> content;
     private int employeeId;
     private int customerId;     //use whole object if we need many queries.
+    private String status;      // Active, Completed, Pending or Cancelled // TODO: getSubscriptions checks startDate, if started; activate.
 
-    public Subscription() {
+    public Subscription(int e_id, int c_id){
+        java.util.Date time= new java.util.Date();
+        orderDate = new Timestamp(time.getTime());
         this.content = new DefaultListModel<>();
+        employeeId = e_id;
+        customerId = c_id;
+        status = "Pending";
+    }
+    public Subscription(Subscription s){
+        orderDate = s.getOrderDate();
+        content = s.getContent();
+        employeeId = s.getEmployeeId();
+        customerId = s.getCustomerId();
+        status = "Pending";
+    }
+    //TODO add constructor with endDate
+    
+    //TODO add documentation
+
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
     }
     
+    public Timestamp getStartDate() {
+        return startDate;
+    }
+
+    public Timestamp getEndDate() {
+        return endDate;
+    }
+
+    public DefaultListModel<OrderContent> getContent() {
+        return content;
+    }
     public void addStartDate(Timestamp start){
         startDate = start;
     }
@@ -35,10 +74,17 @@ public class Subscription {
     public void addEndDate(Timestamp end){
         endDate = end;
     }
-    
-      public boolean addOrderContent(DefaultListModel<Dish> dishes,int weekDay, Timestamp delivery) {
-        if(dishes != null){    
-            content.addElement(new OrderContent(dishes, weekDay, delivery));
+    //TODO FIX
+      public boolean addOrderContent(String weekDay, Timestamp delivery) {
+        if(weekDay != null){    
+            content.addElement(new OrderContent(weekDay, delivery));
+            return true;
+        }
+        return false;
+    }
+      
+    public boolean addDish(Dish dishName, int quantity, int index){
+        if(content.getElementAt(index).addDish(dishName, quantity)){
             return true;
         }
         return false;
@@ -58,4 +104,6 @@ public class Subscription {
        }
  
     }*/
+
+
 }
