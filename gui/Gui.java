@@ -3,15 +3,23 @@ package gui;
 import com.toedter.calendar.JCalendar;
 import database.SecurityChecker;
 import procatering.Customer;
+import procatering.Helper;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
@@ -34,7 +42,7 @@ public class Gui {
 		frame.setContentPane(new Gui().ProCatering);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
-			UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		}catch (Exception e){
 			System.out.println("Running default");
 		}
@@ -56,7 +64,6 @@ public class Gui {
 	private JButton backendDishButton;
 	private JButton backendEconomicButton;
 	private JPanel topPanel;
-	private JLabel currentPosition_label;
 	private JPanel bottomPanel;
 	private JButton logOutButton;
 	private JPanel mainPanel;
@@ -82,7 +89,7 @@ public class Gui {
 	private JTextArea notesInputArea;
 	private JPanel customerListPanel;
 	private JScrollPane customerScrollPane;
-	private JList<Customer> customerList;
+	private JList customerList;
 	private JButton customerSearchButton;
 	private JTextField customerSearchField;
 	private DefaultListModel<Customer> nameList;
@@ -113,7 +120,6 @@ public class Gui {
 	private JPanel singleOrderSelectDatePanel;
 	private JPanel singleOrderDatePanel;
 	private JPanel singleOrderSelectDishPanel;
-	private JLabel singleOrderProgressLabel;
 	private JComboBox singleOrderAddTimeComboBox;
 	private JButton singleOrderAddTimeButton;
 	private JTextArea singleOrderCustomerInformationTextfield;
@@ -123,11 +129,10 @@ public class Gui {
 	private JCalendar singleOrderDatePicker;
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
+	private JButton button1;
 	private static String errorMessageTitle = "Error";
 
-	private void createUIComponents() {
-		// TODO: place custom component creation code here
-	}
+
 
 	private void initListeners(){
 		/* Login button action listener */
@@ -280,6 +285,40 @@ public class Gui {
 				//To change body of implemented methods use File | Settings | File Templates.
 			}
 		});
+
+		singleOrderDatePicker.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(singleOrderDatePicker.getDate());
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
+
+		singleOrderAddTimeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				singleOrderAddTimeButtonActionPerformed();
+			}
+		});
 	}
 
 	/**
@@ -287,11 +326,11 @@ public class Gui {
 	 */
 	private void editStartValues(){
 		loginErrorMessage_label.setVisible(false);
-
 		singleOrderCustomerInformationTextpane.setContentType("text/html");
 		singleOrderCustomerInformationTextpane.setEditable(false);
 		singleOrderOrderInformationTextpane.setContentType("text/html");
 		singleOrderOrderInformationTextpane.setEditable(false);
+		Helper.addTimes(singleOrderAddTimeComboBox);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -433,6 +472,22 @@ public class Gui {
 				clearCustomerFields();
 			}
 		}
+
+	}
+
+	private void singleOrderAddTimeButtonActionPerformed() {
+		Date date = singleOrderDatePicker.getDate();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		int i = cal.get(Calendar.YEAR);
+		int i1 = cal.get(Calendar.MONTH);
+		int i2 = cal.get(Calendar.DATE);
+		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString());
+
+		DateFormat tar = DateFormat();
+		tar.parse()
+
+		System.out.println(ts);
 
 	}
 

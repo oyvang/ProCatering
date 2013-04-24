@@ -6,8 +6,6 @@ import procatering.*;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.Map;
-import java.util.TreeMap;
 
 import static procatering.Helper.DATABASE_NUMBER;
 
@@ -18,7 +16,7 @@ import static procatering.Helper.DATABASE_NUMBER;
 public class Database {
 	private final String username = "q20";
 	private final String password = "mFW6fL3";
-	private final String URL = "jdbc:mysql://mysql.stud.aadditel.hist.no:3306/q20";
+	private final String URL = "jdbc:mysql://mysql.stud.aitel.hist.no:3306/q20";
 	private final DBClean cleanup = new DBClean();
 
 	//TODO create documentation for all classes
