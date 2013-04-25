@@ -18,7 +18,7 @@ import static procatering.Helper.DATABASE_NUMBER;
 public class Database {
 	private final String username = "q20";
 	private final String password = "mFW6fL3";
-	private final String URL = "jdbc:mysql://mysql.stud.aadditel.hist.no:3306/q20";
+	private final String URL = "jdbc:mysql://mysql.stud.aitel.hist.no:3306/q20";
 	private final DBClean cleanup = new DBClean();
 
 	//TODO create documentation for all classes
@@ -708,8 +708,7 @@ public class Database {
 	 */
 	public DefaultListModel getCategories() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories")
-			) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories")) {
 				con.setAutoCommit(false);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();

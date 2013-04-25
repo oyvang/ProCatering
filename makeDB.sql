@@ -8,7 +8,6 @@
 -- DROP TABLE customer;
 -- DROP TABLE corporate_register;
 -- DROP TABLE employee;
--- DROP TABLE postalcode
 
 CREATE TABLE employee(
     employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

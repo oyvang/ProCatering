@@ -2,6 +2,7 @@
 package procatering;
 
 /**
+ * Class Order
  *
  * @author TEAM 17
  */
@@ -30,7 +31,7 @@ public class Order {
      /** Standard copy constructor */ 
     public Order(Order o){
         this(o.getCustomerId(),o.getEmployeeId(),o.getStatus());
-        this.date = o.getDate();
+        this.orderDate = o.getOrderDate();
         this.ordercontent = o.getOrderContent();
     }
 	
@@ -41,7 +42,15 @@ public class Order {
     public int getCustomerId(){
         return customerId;
     }
-    
+
+    /**
+     * Method addDish
+     * Adds a dish to the order content list within the Order
+     * @param dishName Dish object that are to be added
+     * @param quantity The amount of dishes that is to be added
+     * @param index which OrderContent object in the DefaultListModel that the Dish object is inserted into.
+     * @return boolean, true for successful insertion.
+     */
     public boolean addDish(Dish dishName, int quantity, int index){
         if(ordercontent.getElementAt(index).addDish(dishName, quantity)){
             return true;
@@ -49,32 +58,44 @@ public class Order {
         return false;
     }
      /**
-     * Adds the orderDate the order is made
-     * @param orderDate
+     * Method getCurrentDate
+     * @return a current Timestamp
      */
     public Timestamp getCurrentDate(){
         java.util.Date time= new java.util.Date();
 	Timestamp date = new Timestamp(time.getTime());
         return date;
     }
+
     public Timestamp getOrderDate(){
         return orderDate;
     }
     public String getStatus(){
         return status;
     }
-    
+
+    /**
+     * Method setStatus
+     * Sets the status of an order.
+     * @param status the status for the order. Available statuses for Order: Active, Completed or Cancelled
+     */
     public void setStatus(String status){
         this.status = status;
     }
 
-    public DefaultListModel getOrderContent() {
+    /**
+     * Method getOrderContent
+     * @return a DefaultListModel<OrderContent> with the orderContent of the order ( Dishes, deliveryDate and time )
+     */
+    public DefaultListModel<OrderContent> getOrderContent() {
         return ordercontent;
     }
     
     
     /**
-     * @param orderObj This ordercontent object will be added to the order list.
+     * Method addOrderContent
+     * Creates an OrderContent object for adding of dishes, and adds it to the DefaultListModel<orderContent>
+     * @param delivery Timestamp with the date and time for delivery.
      */
     public boolean addOrderContent(Timestamp delivery) {
         if(delivery != null){    
@@ -88,7 +109,11 @@ public class Order {
     public void addDB(){
         database.Database db = new database.Database();
     }
-    
+
+    /**
+     * Method toString
+     * @return object shows as String with the order created date/time and the content of the order sorted.
+     */
     @Override
     public String toString() {
         String output ="Order created: "+orderDate+"\n\n";
