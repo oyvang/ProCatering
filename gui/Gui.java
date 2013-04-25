@@ -482,12 +482,11 @@ public class Gui {
 		int i = cal.get(Calendar.YEAR);
 		int i1 = cal.get(Calendar.MONTH);
 		int i2 = cal.get(Calendar.DATE);
-		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString());
+		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+		System.out.println(i3);
+		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0);
 
-		DateFormat tar = DateFormat();
-		tar.parse()
-
-		System.out.println(ts);
+		System.out.println(ts.getTime());
 
 	}
 
