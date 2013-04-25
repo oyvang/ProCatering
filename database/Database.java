@@ -594,23 +594,21 @@ public class Database {
 		}
 	}
        
-	/**
-	 * Remove a dish from the database with the given name. The name will be checked if it is less than 255 sign
-	 * before it tries to connect to the database.
-	 *
-	 * @param name
-	 * @return true if sucsessfully deleted, else it will return false.
-	 */
-	public boolean removeDish(String name) {
-		if (Helper.stringChecker(name)) {
+//TODO fix hideDish dokumentation
+	public boolean hideDish(String name) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM dish WHERE dishname = ?")) {
+				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
 					con.setAutoCommit(false);
-					prepStat.setString(1, name);
-					prepStat.executeUpdate();
+                                        prepStat.setInt(1, 0);
+					prepStat.setString(2, Helper.capitalFirst(name));
+					int check = prepStat.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
+                                        if(check==0){
+                                            return false;
+                                        }
 					return true;
+                                       
 				} catch (SQLException ePrepState) {
 					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 					cleanup.dbRollback(con);
@@ -620,9 +618,6 @@ public class Database {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 				return false;
 			}
-
-		}
-		return false;
 	}
         
         /**
@@ -763,20 +758,15 @@ public class Database {
 		}
 	}
 
-	/**
-	 * Adds a new dish into the database. The mothode checks the length of the dish name. The dish name have to
-	 * be less than 255 signs
-	 *
-	 * @param dish Dish object
-	 * @return true if sucsessfully added, else it will return null.
-	 */
+//TODO fix addDish dokumentation
 	public boolean addDish(Dish dish) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
+				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost, status) VALUES (?, ?, ?, ?)")) {
 					con.setAutoCommit(false);
 					prepStat.setString(1, Helper.capitalFirst(dish.getName()));
 					prepStat.setDouble(2, dish.getPrice());
 					prepStat.setDouble(3, dish.getCost());
+                                        prepStat.setInt(4, 1);
 					prepStat.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
@@ -1000,7 +990,7 @@ public class Database {
                             }
                             
                         } catch (SQLException ePrepState) {
-                            System.out.println(ePrepState);
+                            
 //                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
                             cleanup.dbRollback(con);
                             return null;
@@ -1030,9 +1020,6 @@ public class Database {
                 try (Connection con = DriverManager.getConnection(URL, username, password)) {
                     try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO cat_dish (cat_id, dish_id) VALUES (?,?)")) {
                         con.setAutoCommit(false);
-                         
-                                    System.out.println(getDish(Helper.capitalFirst(dishname)).getID());
-                        
                         prepStat.setInt(1, getCategory(Helper.capitalFirst(catname)).getCategoryID());
                         prepStat.setInt(2, getDish(Helper.capitalFirst(dishname)).getID());
                         prepStat.executeUpdate();

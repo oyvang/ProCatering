@@ -14,19 +14,18 @@ import procatering.Employee;
 public class test {
     public static void main(String[] args) {
        Employee e = new Employee("Test", "TEst", "Test", 123654, "Test", "Test");
-    Dish dish = new Dish("Hai", 99,56);
+    Dish dish = new Dish("Jorgie", 99,56);
     DefaultListModel<String> catNames = new DefaultListModel<>();
     
-    catNames.addElement("Category");
+    catNames.addElement("svett");
     
     DefaultListModel<String> ingredient = new DefaultListModel<>();
-    ingredient.addElement("Gullerot");
+    ingredient.addElement("guut");
+ 
+
+//    System.out.println((e.addNewDish(dish, catNames, ingredient))); 
     
-  
-    if(e.addNewDish(dish, catNames, ingredient)) {
-    System.out.println("YAY!"); 
-    }
-    
+        System.out.println(e.removeDish("jorgie"));
     
     }
     

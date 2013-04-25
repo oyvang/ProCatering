@@ -1,17 +1,17 @@
--- LAST UPDATED 25:04:2013-14:01
+-- LAST UPDATED 25:04:2013-16:48
 
--- DROP TABLE dish_ingredient;
--- DROP TABLE ingredient;
--- DROP TABLE cat_dish;
--- DROP TABLE categories;
--- DROP TABLE order_dish;
--- DROP TABLE dish;
--- DROP TABLE orders;
--- DROP TABLE employee_types;
--- DROP TABLE types;
--- DROP TABLE customer;
--- DROP TABLE corporate_register;
--- DROP TABLE employee;
+DROP TABLE dish_ingredient;
+DROP TABLE ingredient;
+DROP TABLE cat_dish;
+DROP TABLE categories;
+DROP TABLE order_dish;
+DROP TABLE dish;
+DROP TABLE orders;
+DROP TABLE employee_types;
+DROP TABLE types;
+DROP TABLE customer;
+DROP TABLE corporate_register;
+DROP TABLE employee;
 
 CREATE TABLE employee(
     employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -60,7 +60,8 @@ CREATE TABLE dish (
     dish_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     dishname VARCHAR (255) NOT NULL UNIQUE,
     price DOUBLE NOT NULL,
-    cost DOUBLE NOT NULL) ENGINE=InnoDB;
+    cost DOUBLE NOT NULL,
+    status INT NOT NULL) ENGINE=InnoDB;
 
 CREATE TABLE categories (
     cat_id  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -164,10 +165,10 @@ INSERT INTO categories (catname) VALUES ('Meat');
 INSERT INTO categories (catname) VALUES ('Ghost');
 INSERT INTO categories (catname) VALUES ('Raw');
 
-INSERT INTO dish (dishname, price, cost) VALUES ('Busters', 1337, 1);
-INSERT INTO dish (dishname, price, cost) VALUES ('Pizza Italia', 156, 50);
-INSERT INTO dish (dishname, price, cost) VALUES ('Mammoth', 666, 600);
-INSERT INTO dish (dishname, price, cost) VALUES ('Salmon', 1337, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Busters', 1337, 1, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Pizza Italia', 156, 50, 0);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Mammoth', 666, 600, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Salmon', 1337, 1, 1);
 
 INSERT INTO cat_dish (cat_id, dish_id) VALUES (1,2);
 INSERT INTO cat_dish (cat_id, dish_id) VALUES (2,4);

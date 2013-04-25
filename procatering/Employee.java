@@ -277,42 +277,38 @@ public class Employee extends Person {
             int en = 0;
             int to = 0;
             try{
-                if(!db.dishExist(dish.getName())) {
+                if(!db.dishExist(Helper.capitalFirst(dish.getName()))) {
                     for (int i = 0; i < catNames.getSize(); i++) {
-                        System.out.println(db.cateogryExist(catNames.get(i)));
-                        if(!db.cateogryExist(catNames.get(i))){
-                            System.out.println(db.addCategory(catNames.get(i)));
+                        if(!db.cateogryExist(Helper.capitalFirst(catNames.get(i)))){
+                            db.addCategory(Helper.capitalFirst(catNames.get(i)));
                         }
                     }
                     for (int i = 0; i < ingredient.getSize(); i++) {
-                        if(!db.ingredientExist(ingredient.get(i))){
-                            db.addIngredient(ingredient.get(i));
+                        if(!db.ingredientExist(Helper.capitalFirst(ingredient.get(i)))){
+                            db.addIngredient(Helper.capitalFirst(ingredient.get(i)));
                         }
                     }
                     
                     if(db.addDish(dish)){
                         for (int i = 0; i < catNames.getSize(); i++) {
-                            System.out.println(dish.getName() + " " + catNames.get(i));
-                            db.insertDishCat(dish.getName(), catNames.get(i));
+                            db.insertDishCat(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(catNames.get(i)));
+                            en++;
                             
                         }
                         for (int i = 0; i < ingredient.getSize(); i++) {
-                            db.insertDishIngredient(dish.getName(), ingredient.get(i));
-                            
+                            db.insertDishIngredient(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(ingredient.get(i)));
+                            to++;
                         }
 						return en == catNames.getSize() && to == ingredient.getSize();
 					}
                 }
             }catch (SQLException ePrepState) {
-                
-                System.out.println(ePrepState);
 //                gui.Gui.showErrorMessage(Helper.DATABASE_NUMBER, 1, ePrepState);
                 return false;
                 
                 
                 
             }
-            System.out.println("LOL");
             return false;
         }
 
@@ -342,4 +338,10 @@ public class Employee extends Person {
 		}
 		return false;
 	}
+    public boolean removeDish(String name){
+        if(db.hideDish(Helper.capitalFirst(name))){
+            return true;
+        }
+        return false;
+    }
 }
