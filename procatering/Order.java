@@ -1,4 +1,3 @@
-
 package procatering;
 
 /**
@@ -34,10 +33,9 @@ public class Order {
 	}
 
 	/**
-	 *
 	 * @param customer_id The id of the Customer
 	 * @param employee_id The id of the Employee
-	 * @param status The initial status of the Order.
+	 * @param status      The initial status of the Order.
 	 */
 	public Order(int customer_id, int employee_id, String status) {
 		customerId = customer_id;
@@ -92,7 +90,16 @@ public class Order {
 		return date;
 	}
 
+	/**
+	 * see procatering.Order.getCreationTime();
+	 *
+	 */
+	@Deprecated
 	public Timestamp getOrderDate() {
+		return creationTime;
+	}
+
+	public Timestamp getCreationTime() {
 		return creationTime;
 	}
 
@@ -146,7 +153,7 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "Order created: " + creationTime.toString().substring(0,16) + "\n\n";
+		String output = "Order created: " + creationTime.toString().substring(0, 16) + "\n\n";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i) + "\n";
 		}

@@ -591,7 +591,7 @@ public class Database {
 			return null;
 		}
 	}
-        
+       
 	/**
 	 * Remove a dish from the database with the given name. The name will be checked if it is less than 255 sign
 	 * before it tries to connect to the database.
@@ -622,7 +622,101 @@ public class Database {
 		}
 		return false;
 	}
-
+        
+        /**
+         * Check the number of dishes sold of a given dish.
+         *
+         * @param dishId 
+         * @returnes a integer of the number of dishes if it exists, 0 if it don't.
+         */
+        public int numbOfDishes(int dishId) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish_id FROM order_dish")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, dishId);
+				ResultSet rs = prepStat.executeQuery();
+				int count = 0;
+				while (rs.next()) {
+					count++;
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return count;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return 0;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return 0;
+		}
+	}
+        
+        
+        /**
+         * Gives dishes arranged by most sold in a given time frame.
+         *
+         * @param from is the start date and time.
+         * @param to is the end date and time.
+         * @returnes strings in a DefaultListModel.
+         */
+        public DefaultListModel<String> topDishesFromTo(Timestamp from, Timestamp to) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, dishname, price, cost, COUNT(order_dish.dish_id) AS number FROM (dish NATURAL JOIN order_dish NATURAL JOIN orders) WHERE time_of_order > ? AND time_of_order < ? ORDER BY number DESC")) {
+				con.setAutoCommit(false);
+                                prepStat.setTimestamp(1, from);
+                                prepStat.setTimestamp(2, to);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement("Number of dishes: "+rs.getInt("number")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+". Dish cost: "+ rs.getDouble("cost"));
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+        
+        /**
+         * Gives the top five dishes arranged by most sold.
+         *
+         * @returnes strings in a DefaultListModel.
+         */
+        //Kanskje få inn en int som bestemmer antall dishes som skal vises?
+        public DefaultListModel<String> topDishes() {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, dishname, price, cost, COUNT(order_dish.dish_id) AS number FROM (dish NATURAL JOIN order_dish NATURAL JOIN orders) ORDER BY number DESC")) {
+				con.setAutoCommit(false);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+                                    if (rs.getRow()<6){
+					output.addElement("Number of dishes: "+rs.getInt("number")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+". Dish cost: "+ rs.getDouble("cost"));
+                                    }
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+        
 	/**
 	 * Adds a new category into the database. This methode only uses the name of the category to create one.
 	 *
