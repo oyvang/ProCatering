@@ -11,6 +11,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -32,7 +34,6 @@ public class Gui {
 	public Gui() {
 		initListeners();
 		editStartValues();
-
     }
 
 	public static void main(String[] args) {
@@ -230,13 +231,8 @@ public class Gui {
 			}
 		});
         /* Subscription Start date add calendar listener */
-        subscriptionDatePicker.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);    //To change body of overridden methods use File | Settings | File Templates.
-                subscriptionActivationDateValueLabel.setText(subscriptionDatePicker.getCalendar().toString());//TODO ted
-            }
-        });
+        //subscriptionActivationDateValueLabel.setText(subscriptionDatePicker.toString());//TODO ted
+        
 		/* Customer registration button */
 		registerNewButton.addActionListener(new ActionListener() {
 			@Override
