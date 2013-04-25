@@ -146,7 +146,7 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "Order created: " + creationTime + "\n\n";
+		String output = "Order created: " + creationTime.toString().substring(0,16) + "\n\n";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i) + "\n";
 		}

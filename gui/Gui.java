@@ -409,6 +409,10 @@ public class Gui {
 		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
 		System.out.println(customer.getCustomerID());
 		loggedInEmployee.createOrder(customer.getCustomerID());
+		singleOrderUpdateTextpane();
+	}
+
+	private void singleOrderUpdateTextpane() {
 		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toString());
 	}
 
@@ -491,13 +495,13 @@ public class Gui {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		int i = cal.get(Calendar.YEAR);
-		int i1 = cal.get(Calendar.MONTH);
+		int i1 = cal.get(Calendar.MONTH);//TODO move.
 		int i2 = cal.get(Calendar.DATE);
 		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
-		System.out.println(i3);
-		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0);
-		System.out.println(ts);
-
+		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0); //TODO Possible fix this... NOT
+		System.out.println(ts); //TODO remove
+		loggedInEmployee.addOrderContent(ts);
+		singleOrderUpdateTextpane();
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
