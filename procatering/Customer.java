@@ -9,19 +9,21 @@ import javax.swing.*;
  */
 public class Customer extends Person{
     private String address;
-    private int customerID;
+	private int customerID;
     private int corporateNum;
     private String corporateName;
 	private String note;
 
 	/**
-	 * Customer object. Extended from Person.
+	 * This constructor should me used when inserting a customer in the database.
+	 *
 	 * @param adr The customers address
-	 * @param fn The customers firstname
-	 * @param ln The customers lastname
+	 * @param fn The customers first name
+	 * @param ln The customers last name
 	 * @param phone The customers phone number
-	 * @param mail The customers email address
+	 * @param mail The customers email
 	 * @param pCode The customers postal code
+	 * @param note The customers special note
 	 * @author Jørgen Lien Sellæg
 	 */
     public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, String note){
@@ -29,20 +31,33 @@ public class Customer extends Person{
         this.address = adr;
 		this.note = note;
     }
+
 	/**
-	 * @author Team17
-	 * //TODO legg til dokumentasjon
+	 * This constructor should me used when extracting a customer from the database.
+	 *
+	 * @param adr The customers address
+	 * @param fn The customers first name
+	 * @param ln The customers last name
+	 * @param phone The customers phone number
+	 * @param mail The customers email
+	 * @param pCode The customers postal code
+	 * @param note The customers special note
+	 * @param cid The customers id in the database.
+	 *
+	 * @author Jørgen Lien Sellæg
 	 */
-    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, int cid){
+    public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, String note, int cid){
         super( fn,  ln,  phone,  mail, pCode);
         this.address = adr;
-        customerID = cid;
+		this.note = note;
+		customerID = cid;
     }
 	/** Standard copy constructor */
 	public Customer(Customer customer){
 		super(customer.getFirstName(), customer.getLastName(), customer.getPhoneNumber(), customer.getEmail(), customer.getPostalCode());
 		this.address = customer.getAddress();
 		this.note = customer.getNote();
+		this.customerID = customer.getCustomerID();
 	}
 	/**
 	 * Regular get method for address.
@@ -80,6 +95,10 @@ public class Customer extends Person{
     public String getCorporateName() {
         return corporateName;
     }
+	/* Gets the customer ID of the customer as it is in the Database. */
+	public int getCustomerID() {
+		return customerID;
+	}
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;

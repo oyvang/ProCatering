@@ -22,7 +22,7 @@ public class Category {
     public String getName(){
         return name;
     }
-    public int getIngredientID() {
+    public int getCategoryID() {
         return categoryID;
     }
 }

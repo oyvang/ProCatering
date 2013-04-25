@@ -1,7 +1,9 @@
 package procatering;
 
 import database.Database;
+
 import javax.swing.*;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
@@ -56,6 +58,7 @@ public class Employee extends Person {
 	public Employee(Employee e) {
 		super(e.getFirstName(), e.getLastName(), e.getPhoneNumber(), e.getEmail(), e.getPostalCode());
 		dob = e.getDob();
+		db = new Database();
 	}
 
 	/**
@@ -72,6 +75,10 @@ public class Employee extends Person {
 		return new Employee(db.getEmployee(employeeId));
 	}
 
+
+	public Order getOrder() {
+		return order;
+	}
 	/**
      * Method addEmployee
 	 * Adds an employee to the database
@@ -87,10 +94,7 @@ public class Employee extends Person {
 	 */
 	public boolean addEmployee(String fn, String ln, String phone, int pCode, String dob, String mail, String pw) {
 		fn = Helper.capitalFirst(fn);
-		if (db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw)) {
-			return true;
-		}
-		return false;
+		return db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw);
 	}
 
 	/**
@@ -105,10 +109,7 @@ public class Employee extends Person {
 	 */
 	public boolean editDish(String name, double newPrice, double cost, String oldName) {
 		name = Helper.capitalFirst(name);
-		if (db.editDish(new Dish(name, newPrice, cost), oldName)) {
-			return true;
-		}
-		return false;
+		return db.editDish(new Dish(name, newPrice, cost), oldName);
 	}
 
 	/**
@@ -130,16 +131,10 @@ public class Employee extends Person {
 	 * Edit a Employee by sending inn a new Employee object. The employee object requires an employee ID
 	 *
 	 * @param input
-	 * @return
+	 * @return //TODO fix docuemtation
 	 */
 	public boolean updateEmployee(Employee input) {
-		if (input.getEmployeeId() < 0) {
-			return false;
-		}
-		if (db.updateEmployee(input)) {
-			return true;
-		}
-		return false;
+		return input.getEmployeeId() >= 0 && db.updateEmployee(input);
 	}
 
 	public boolean changeEmployeePassword(String input, int id) {
@@ -186,10 +181,7 @@ public class Employee extends Person {
      */
 	public boolean addOrderContent(Timestamp deliverDate) {
 		if (deliverDate.after(order.getCurrentDate())) {
-			if (order.addOrderContent(deliverDate)) {
-				return true;
-			}
-			return false;
+			return order.addOrderContent(deliverDate);
 		}
 		return false;
 	}
@@ -271,13 +263,59 @@ public class Employee extends Person {
 		return false;
 	}
 
-    /**
-     * Method addOrderContent
-     * Adds an empty (without dishes) OrderContent object to the Subscription object's orderContent List.
-     * @param weekday Which weekday the order is to be delivered repeatedly.
-     * @param deliveryTime Timestamp containing the time the order is to be delivered repeatedly.
-     * @return boolean, returns true if executed successfully
-     */
+        /**
+         * Adds a new dish to the database, it will also add dish and category names that are not in the database.
+         * @param dish Dish object
+         * @param catNames DefaultListModel<String>
+         * @param ingredient DefaultListModel<String>
+         * @return true if sucsessfully added, else it will return false.
+         */
+        public boolean addNewDish(Dish dish, DefaultListModel<String> catNames, DefaultListModel<String> ingredient) {
+            if(dish == null || catNames.isEmpty() || ingredient.isEmpty()){
+                return false;
+            }
+            int en = 0;
+            int to = 0;
+            try{
+                if(!db.dishExist(dish.getName())) {
+                    for (int i = 0; i < catNames.getSize(); i++) {
+                        System.out.println(db.cateogryExist(catNames.get(i)));
+                        if(!db.cateogryExist(catNames.get(i))){
+                            System.out.println(db.addCategory(catNames.get(i)));
+                        }
+                    }
+                    for (int i = 0; i < ingredient.getSize(); i++) {
+                        if(!db.ingredientExist(ingredient.get(i))){
+                            db.addIngredient(ingredient.get(i));
+                        }
+                    }
+                    
+                    if(db.addDish(dish)){
+                        for (int i = 0; i < catNames.getSize(); i++) {
+                            System.out.println(dish.getName() + " " + catNames.get(i));
+                            db.insertDishCat(dish.getName(), catNames.get(i));
+                            
+                        }
+                        for (int i = 0; i < ingredient.getSize(); i++) {
+                            db.insertDishIngredient(dish.getName(), ingredient.get(i));
+                            
+                        }
+						return en == catNames.getSize() && to == ingredient.getSize();
+					}
+                }
+            }catch (SQLException ePrepState) {
+                
+                System.out.println(ePrepState);
+//                gui.Gui.showErrorMessage(Helper.DATABASE_NUMBER, 1, ePrepState);
+                return false;
+                
+                
+                
+            }
+            System.out.println("LOL");
+            return false;
+        }
+
 	public boolean addSubscriptionContent(String weekday, Timestamp deliveryTime) {
 		if (weekday != null && deliveryTime.after(subscription.getOrderDate())) {
 			subscription.addOrderContent(weekday, deliveryTime);
@@ -304,9 +342,4 @@ public class Employee extends Person {
 		}
 		return false;
 	}
-
-	//TODO SKRIV FERDIG METODEN!!!
-    public boolean addNewDish(Dish dish, DefaultListModel catNames, DefaultListModel ingredient) {
-        return false;
-    }
 }
