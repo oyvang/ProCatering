@@ -1,3 +1,7 @@
+-- LAST UPDATED 25:04:2013-14:01
+
+-- DROP TABLE dish_ingredient;
+-- DROP TABLE ingredient;
 -- DROP TABLE cat_dish;
 -- DROP TABLE categories;
 -- DROP TABLE order_dish;
@@ -24,7 +28,7 @@ CREATE TABLE employee(
 
 CREATE TABLE types(
     type_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL) ENGINE=InnoDB;
+    name VARCHAR(255) NOT NULL UNIQUE ) ENGINE=InnoDB;
 	
 CREATE TABLE corporate_register(
     corporatenumber INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +37,7 @@ CREATE TABLE corporate_register(
    
 CREATE TABLE customer (
     customer_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    corporatenumber INT NOT NULL DEFAULT 0,
+    corporatenumber INT,
     firstname VARCHAR (255) NOT NULL,
     lastname VARCHAR (255) NOT NULL,
     clean_fn VARCHAR (255) NOT NULL,
@@ -49,7 +53,9 @@ CREATE TABLE orders (
     employee_id INT NOT NULL,
     customer_id INT NOT NULL,
     time_of_order timestamp NOT NULL,
-    status VARCHAR(255)) ENGINE=InnoDB;
+    status VARCHAR(255),
+    starts TIMESTAMP,
+    ends TIMESTAMP) ENGINE=InnoDB;
  
 CREATE TABLE dish (
     dish_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +65,7 @@ CREATE TABLE dish (
 
 CREATE TABLE categories (
     cat_id  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    catname VARCHAR (255)) ENGINE=InnoDB;
+    catname VARCHAR (255)UNIQUE) ENGINE=InnoDB;
 
 CREATE TABLE cat_dish (
     cat_id INT NOT NULL,
@@ -67,13 +73,16 @@ CREATE TABLE cat_dish (
     CONSTRAINT cat_dish PRIMARY KEY (cat_id, dish_id)) ENGINE=InnoDB;
     
 CREATE TABLE order_dish (
+    order_dish_id  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     dish_id INT NOT NULL,
-    CONSTRAINT order_dish_pk PRIMARY KEY (order_id, dish_id)) ENGINE=InnoDB;
+    delivery TIMESTAMP,
+    days INT,
+    amount INT NOT NULL) ENGINE=InnoDB;
 
-CREATE TABLE postalcode (
-    postalcode int PRIMARY KEY,
-    place VARCHAR (255)) ENGINE=InnoDB;
+-- CREATE TABLE postalcode (
+--     postalcode int PRIMARY KEY,
+--     place VARCHAR (255)) ENGINE=InnoDB;
 
 CREATE TABLE employee_types (
     employee_id INT NOT NULL,
@@ -82,7 +91,7 @@ CREATE TABLE employee_types (
 
 CREATE TABLE ingredient (
     ingredient_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    ingredientname VARCHAR (255)) ENGINE=InnoDB;
+    ingredientname VARCHAR (255)UNIQUE) ENGINE=InnoDB;
 
 CREATE TABLE dish_ingredient (
     dish_id INT NOT NULL,
@@ -130,6 +139,10 @@ ALTER TABLE dish_ingredient
     ADD CONSTRAINT dish_ingredient_fk2 FOREIGN KEY (ingredient_id) REFERENCES ingredient (ingredient_id);
 
 
+INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (698534157, 'Oracle', 'ORACLE');
+INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (659742358, 'Microsoft', 'MICROSOFT');
+INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (458713549, 'Arm', 'ARM');
+
 INSERT INTO types (name) VALUES ('Admin');
 INSERT INTO types (name) VALUES ('Salesperson');
 INSERT INTO types (name) VALUES ('Chef');
@@ -163,33 +176,29 @@ INSERT INTO cat_dish (cat_id, dish_id) VALUES (5,4);
 INSERT INTO cat_dish (cat_id, dish_id) VALUES (3,3);
 INSERT INTO cat_dish (cat_id, dish_id) VALUES (4,1);
 
-INSERT INTO employee_types(employee_id, type_id) VALUES (4,1);
-INSERT INTO employee_types(employee_id, type_id) VALUES (4,2);
-INSERT INTO employee_types(employee_id, type_id) VALUES (4,3);
-INSERT INTO employee_types(employee_id, type_id) VALUES (4,4);
-INSERT INTO employee_types(employee_id, type_id) VALUES (5,2);
-INSERT INTO employee_types(employee_id, type_id) VALUES (6,2);
-INSERT INTO employee_types(employee_id, type_id) VALUES (6,4);
+INSERT INTO employee_types(employee_id, type_id) VALUES (1,1);
+INSERT INTO employee_types(employee_id, type_id) VALUES (2,2);
+INSERT INTO employee_types(employee_id, type_id) VALUES (3,3);
+INSERT INTO employee_types(employee_id, type_id) VALUES (2,4);
+INSERT INTO employee_types(employee_id, type_id) VALUES (1,2);
+INSERT INTO employee_types(employee_id, type_id) VALUES (3,2);
+INSERT INTO employee_types(employee_id, type_id) VALUES (1,4);
 
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (5,5,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (5,5,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (5,4,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (5,5,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (4,6,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (6,5,CURRENT_TIMESTAMP ,'ACTIVE');
-INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (4,5,CURRENT_TIMESTAMP ,'ACTIVE');
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (1,1,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,2,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (3,3,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,1,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (1,2,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,3,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (3,4,CURRENT_TIMESTAMP ,'ACTIVE');
 
-INSERT INTO order_dish(order_id,dish_id) VALUES (1,3);
-INSERT INTO order_dish(order_id,dish_id) VALUES (2,1);
-INSERT INTO order_dish(order_id,dish_id) VALUES (3,1);
-INSERT INTO order_dish(order_id,dish_id) VALUES (4,4);
-INSERT INTO order_dish(order_id,dish_id) VALUES (5,1);
-INSERT INTO order_dish(order_id,dish_id) VALUES (6,1);
-INSERT INTO order_dish(order_id,dish_id) VALUES (8,2);
-
-INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (698534157, 'Oracle', 'ORACLE');
-INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (659742358, 'Microsoft', 'MICROSOFT');
-INSERT INTO corporate_register(corporatenumber,corporatename,clean_corporatename) VALUES (458713549, 'Arm', 'ARM');
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (1,3,CURRENT_TIMESTAMP, 0001111, 100);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (2,1,CURRENT_TIMESTAMP, NULL, 100);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (3,1,CURRENT_TIMESTAMP, 1010101, 200);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (4,4,CURRENT_TIMESTAMP, 1001000, 2);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (5,1,CURRENT_TIMESTAMP, NULL, 6);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (6,1,CURRENT_TIMESTAMP, NULL, 60);
+INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (7,2,CURRENT_TIMESTAMP, NULL, 4);
 
 INSERT INTO ingredient(ingredientname) VALUES ('Carrot');
 INSERT INTO ingredient(ingredientname) VALUES ('Potato');
