@@ -35,7 +35,7 @@ public class Database {
 	 * @param input a customer object's attributes are inserted to customer table in DB
 	 * @return false if the addition of the customer somehow fails. Returns true if everything went fine.
 	 */
-	public boolean addCustomer(procatering.Customer input) {
+	public boolean addCustomer(Customer input) {
 		if (input == null) {
 			return false;
 		}
@@ -76,7 +76,7 @@ public class Database {
 	 * @param input Takes letters or numbers and searches the customer table for matches within first name, last name, phone number, postal code, and corporate name and number
 	 * @return DefaultListModel containing customer objects
 	 */
-	public DefaultListModel<procatering.Customer> findCustomer(String input) {
+	public DefaultListModel<Customer> findCustomer(String input) {
 			/*Adds wildcard on both sides of the search phrase*/
 		input = "%" + input + "%";
 
@@ -102,11 +102,11 @@ public class Database {
 				con.setAutoCommit(true);
 
                     /* Declares and initializes the return DefaultListModel*/
-				DefaultListModel<procatering.Customer> output = new DefaultListModel<>();
+				DefaultListModel<Customer> output = new DefaultListModel<>();
                     
                     /*creates the objects that has matching attributes to the search phrase*/
 				while (rs.next()) {
-					procatering.Customer inputObject = new procatering.Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id"));
+					Customer inputObject = new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getString("note"), rs.getInt("customer_id"));
                             /*if the customer object has a corporate connection, add to attributes*/
 					if (rs.getString("corporate_register.corporatename") != null) {
 						inputObject.setCorporateNum(rs.getInt("corporate_register.corporatenumber"));
@@ -132,7 +132,7 @@ public class Database {
             //TODO: MAKE method .. Ted
         }
 
-	public procatering.Customer getCustomer(int cid) {
+	public Customer getCustomer(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
 					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer WHERE customer_id = ?")
@@ -143,7 +143,7 @@ public class Database {
 				con.commit();
 				con.setAutoCommit(true);
 				rs.first();
-				return new procatering.Customer(rs.getString("address"), rs.getString("clean_fn"), rs.getString("clean_ln"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getInt("customer_id"));
+				return new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"),rs.getString("note") ,rs.getInt("customer_id"));
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
@@ -219,7 +219,7 @@ public class Database {
 						String ln = rs.getString("lastname");
 						String dob = rs.getString("dob");
 						String phone = rs.getString("phonenumber");
-						String mail = rs.getString("mail");
+						String mail = rs.getString("email");
 						int pCode = rs.getInt("postalcode");
 
 						if (fn != null && ln != null && dob != null && phone != null && mail != null) {
@@ -313,7 +313,7 @@ public class Database {
 						String ln = rs.getString("lastname");
 						String dob = rs.getString("dob");
 						String phone = rs.getString("phonenumber");
-						String mail = rs.getString("mail");
+						String mail = rs.getString("email");
 
 						if (type == null && fn == null && ln == null && dob == null
 								&& phone == null && mail == null) {
@@ -373,7 +373,7 @@ public class Database {
 	}
 
 	//TODO lag dokumentasjon
-	public boolean updateCustomer(procatering.Customer input, int cid) {
+	public boolean updateCustomer(Customer input, int cid) {
 		if (input == null || cid < 1) {
 			return false;
 		}
@@ -462,7 +462,7 @@ public class Database {
 				con.setAutoCommit(true);
 				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status")));
+					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
 				}
 				return output;
 			} catch (SQLException ePrepState) {

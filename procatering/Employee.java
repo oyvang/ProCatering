@@ -1,6 +1,7 @@
 package procatering;
 
 import database.Database;
+
 import javax.swing.*;
 import java.sql.Timestamp;
 
@@ -56,6 +57,7 @@ public class Employee extends Person {
 	public Employee(Employee e) {
 		super(e.getFirstName(), e.getLastName(), e.getPhoneNumber(), e.getEmail(), e.getPostalCode());
 		dob = e.getDob();
+		db = new Database();
 	}
 
 	/**
@@ -72,6 +74,10 @@ public class Employee extends Person {
 		return new Employee(db.getEmployee(employeeId));
 	}
 
+
+	public Order getOrder() {
+		return order;
+	}
 	/**
      * Method addEmployee
 	 * Adds an employee to the database
@@ -130,7 +136,7 @@ public class Employee extends Person {
 	 * Edit a Employee by sending inn a new Employee object. The employee object requires an employee ID
 	 *
 	 * @param input
-	 * @return
+	 * @return //TODO fix docuemtation
 	 */
 	public boolean updateEmployee(Employee input) {
 		if (input.getEmployeeId() < 0) {

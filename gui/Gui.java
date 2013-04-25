@@ -3,7 +3,9 @@ package gui;
 import com.toedter.calendar.JCalendar;
 import database.SecurityChecker;
 import procatering.Customer;
+import procatering.Employee;
 import procatering.Helper;
+import procatering.Order;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static procatering.Helper.DATABASE_NUMBER;
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
 
@@ -130,7 +133,10 @@ public class Gui {
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
 	private JButton button1;
+	private JLabel Label;
+	private JLabel singleOrderCustomerIdLabel;
 	private static String errorMessageTitle = "Error";
+	private Employee loggedInEmployee;
 
 
 
@@ -357,6 +363,7 @@ public class Gui {
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
         if(SecurityChecker.logIn(id, password)){
+			loggedInEmployee = new Employee(Employee.getEmployee(id));
             cl.show(ProCatering,"loggedInCard");
 			employee_ID_input.setText("");
 			password_input.setText("");
@@ -370,6 +377,7 @@ public class Gui {
 	private void logOutButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
 		cl.show(ProCatering, "loggedOutCard");
+		loggedInEmployee = null;
 	}
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
@@ -384,7 +392,6 @@ public class Gui {
 	}
 
 	private void generateOrder(Customer customer) {
-
 		String t =	"<html>"+
 						"<table valign='top'>"+
 							"<tr>" +
@@ -399,6 +406,10 @@ public class Gui {
 						"</table>"+
 					"</html>";
 		singleOrderCustomerInformationTextpane.setText(t);
+		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
+		System.out.println(customer.getCustomerID());
+		loggedInEmployee.createOrder(customer.getCustomerID());
+		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toString());
 	}
 
 	private void menuSubscriptionButtonActionPerformed(){
@@ -485,8 +496,7 @@ public class Gui {
 		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
 		System.out.println(i3);
 		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0);
-
-		System.out.println(ts.getTime());
+		System.out.println(ts);
 
 	}
 
