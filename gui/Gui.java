@@ -12,10 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DateFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -38,7 +35,8 @@ public class Gui {
 	public Gui() {
 		initListeners();
 		editStartValues();
-	}
+
+    }
 
 	public static void main(String[] args) {
 		frame = new JFrame("Gui");
@@ -133,10 +131,47 @@ public class Gui {
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
 	private JButton button1;
+
 	private JLabel Label;
 	private JLabel singleOrderCustomerIdLabel;
-	private static String errorMessageTitle = "Error";
+
 	private Employee loggedInEmployee;
+
+    private JPanel subscriptionMakePanel;
+    private JPanel subscriptionConfirmPanel;
+    private JPanel subscriptionStepPanel;
+    private JPanel subscriptionInformationPanel;
+    private JPanel subscripionStatusPanel;
+    private JPanel subscriptionSelectTimePanel;
+    private JPanel subscriptionSelectDishPanel;
+    private JPanel subscriptionCustomerInformationPanel;
+    private JPanel subscriptionOrderInformationPanel;
+    private JTextPane subscriptionCustomerInformation;
+    private JCalendar subscriptionDatePicker;
+    private JTextPane SubscriptionOrderInformationTextPane;
+    private JPanel subscriptionStartDateSelectionPane;
+    private JPanel subscriptionEndDateSelectionPane;
+    private JComboBox subscriptionThursdayTimeSelector;
+    private JComboBox subscriptionMondayTimeSelector;
+    private JComboBox subscriptionTuesayTimeSelector;
+    private JLabel subscriptionActivationDateValueLabel;
+    private JButton subscriptionActivationDateSubmitButton;
+    private JLabel subscriptionTerminationDateValueLabel;
+    private JButton subscriptionTerminationDateSubmitButton;
+    private JComboBox subscriptionFridayTimeSelector;
+    private JComboBox subscriptionSundayTimeSelector;
+    private JComboBox subscriptionSaturdayTimeSelector;
+    private JComboBox subscriptionWednesdayTimeSelector;
+    private JButton subscriptionMondayTimeSubmitButton;
+    private JButton subscriptionTuesdayTimeSubmitButton;
+    private JButton subscriptionWednesdayTimeSubmitButton;
+    private JButton subscriptionThursdayTimeSubmitButton;
+    private JButton subscriptionFridayTimeSubmitButton;
+    private JButton subscriptionSaturdayTimeSubmitButton;
+    private JButton subscriptionSundayTimeSubmitButton;
+    private JPanel subscriptionTimeSelectionPanel;
+    private JPanel subscriptionWeekdaySelectionPanel;
+    private static String errorMessageTitle = "Error";
 
 
 
@@ -203,6 +238,14 @@ public class Gui {
 
 			}
 		});
+        /* Subscription Start date add calendar listener */
+        subscriptionDatePicker.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);    //To change body of overridden methods use File | Settings | File Templates.
+                subscriptionActivationDateValueLabel.setText(subscriptionDatePicker.getCalendar().toString());//TODO ted
+            }
+        });
 		/* Customer registration button */
 		registerNewButton.addActionListener(new ActionListener() {
 			@Override
@@ -266,7 +309,7 @@ public class Gui {
 					if(option == 0)
 						menuSingleOrderButtonActionPerformed(new Customer((Customer)customerList.getSelectedValue()));
 					if(option == 1)
-						menuSubscriptionButtonActionPerformed();
+						menuSubscriptionButtonActionPerformed(new Customer((Customer)customerList.getSelectedValue()));
 
 				}
 			}
@@ -336,6 +379,10 @@ public class Gui {
 		singleOrderCustomerInformationTextpane.setEditable(false);
 		singleOrderOrderInformationTextpane.setContentType("text/html");
 		singleOrderOrderInformationTextpane.setEditable(false);
+        subscriptionCustomerInformation.setContentType("text/html");
+        subscriptionCustomerInformation.setEditable(false);
+        SubscriptionOrderInformationTextPane.setContentType("text/html");
+        SubscriptionOrderInformationTextPane.setEditable(false);
 		Helper.addTimes(singleOrderAddTimeComboBox);
 	}
 
@@ -416,10 +463,28 @@ public class Gui {
 		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toString());
 	}
 
-	private void menuSubscriptionButtonActionPerformed(){
+	private void menuSubscriptionButtonActionPerformed(Customer customer){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "subscriptionOrderCard");
+        generateSubscription(customer);
 	}
+    private void generateSubscription(Customer customer) {
+
+        String t =	"<html>"+
+                "<table valign='top'>"+
+                "<tr>" +
+                "<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+                "</tr>"+
+                "</table>"+
+                "</html>";
+        subscriptionCustomerInformation.setText(t);
+    }
 
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
@@ -524,4 +589,8 @@ public class Gui {
 	private static void clearCustomerFields(){
 		//TODO Create method
 	}
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }

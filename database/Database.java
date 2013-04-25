@@ -423,7 +423,8 @@ public class Database {
 		}
 	}
 
-	//TODO lag dokumentasjon EIRIK!
+	//TODO lag dokumentasjon EIRIK! / add ordercontent også.
+
 	public boolean addOrder(procatering.Order order) {
 		if (order == null) {
 			return false;
