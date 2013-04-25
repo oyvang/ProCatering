@@ -130,7 +130,17 @@ public class Gui {
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
 	private JButton button1;
-	private static String errorMessageTitle = "Error";
+    private JPanel subscriptionMakePanel;
+    private JPanel subscriptionConfirmPanel;
+    private JPanel subscriptionStepPanel;
+    private JPanel subscriptionInformationPanel;
+    private JPanel subscripionStatusPanel;
+    private JPanel subscriptionSelectTimePanel;
+    private JPanel subscriptionSelectDishPanel;
+    private JPanel subscriptionCustomerInformationPanel;
+    private JPanel subscriptionOrderInformationPanel;
+    private JTextPane subscriptionCustomerInformation;
+    private static String errorMessageTitle = "Error";
 
 
 
@@ -510,4 +520,8 @@ public class Gui {
 	private static void clearCustomerFields(){
 		//TODO Create method
 	}
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }
