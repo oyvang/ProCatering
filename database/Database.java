@@ -6,8 +6,6 @@ import procatering.*;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.Map;
-import java.util.TreeMap;
 
 import static procatering.Helper.DATABASE_NUMBER;
 

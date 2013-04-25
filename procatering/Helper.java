@@ -6,6 +6,10 @@ package procatering;
 
 import database.Database;
 
+import javax.swing.*;
+import java.sql.Time;
+import java.util.Timer;
+
 /**
  *Helper class which is contains help methods
  * @author Ted
@@ -98,6 +102,10 @@ public class Helper {
                 return "N/A";
         }
 	}
-    
 
+
+	public static void addTimes(JComboBox singleOrderAddTimeComboBox) {
+		String[] times = new String[]{"0900","1000","1100","1200","1300","1400","1500"};
+		for (String time : times) singleOrderAddTimeComboBox.addItem(time);
+	}
 }
