@@ -173,6 +173,9 @@ public class Gui {
     private JPanel subscriptionWeekdaySelectionPanel;
 	private JPanel singleOrderProgressPanel;
 	private JTextPane singleOrderProgressLabel;
+	private JComboBox comboBox1;
+	private JList list1;
+	private JList list2;
 	private static String errorMessageTitle = "Error";
 
 
@@ -583,7 +586,8 @@ public class Gui {
 		System.out.println(ts); //TODO remove
 		if(loggedInEmployee.addOrderContent(ts))
 			singleOrderUpdateTextpane();
-		else showErrorMessage(GUI_NUMBER, 4, new Exception("Make sure you have selected a date in the future."));
+		else
+			showErrorMessage(GUI_NUMBER, 4, new Exception("Make sure you have selected a date in the future."));
 	}
 
 	private void singleOrderProgressButtonActionPerfomed() {
