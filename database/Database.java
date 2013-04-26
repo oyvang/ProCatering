@@ -795,18 +795,20 @@ public class Database {
 	}
 
 	/**
+	 * Method getCategories returns a DefaltListModel containing a list of all the categories.
 	 * @return a DefaultListModel with string, or null if no string found in the database
 	 */
 	public DefaultListModel getCategories() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories ORDER BY catname")) {
 				con.setAutoCommit(false);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
 				con.setAutoCommit(true);
-				DefaultListModel output = new DefaultListModel<>();
+				DefaultListModel<Category> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(rs.getString("catname"));
+					Category cat = new Category(rs.getInt("cat_id"), rs.getString("catname"));
+					output.addElement(cat);
 				}
 				return output;
 			} catch (SQLException ePrepState) {
