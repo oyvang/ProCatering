@@ -360,25 +360,19 @@ public class Gui {
 
 				}
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
-			}
 
+			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
 			}
-
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
-			}
 
+			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
 			}
 		});
 
@@ -598,18 +592,18 @@ public class Gui {
     private void generateSubscription(Customer customer) {
 
         String t =	"<html>"+
-                "<table valign='top'>"+
-                "<tr>" +
-                "<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
-                "</tr>"+
-                "<tr>" +
-                "<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
-                "</tr>"+
-                "<tr>" +
-                "<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
-                "</tr>"+
-                "</table>"+
-                "</html>";
+						"<table valign='top'>"+
+							"<tr>" +
+								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+							"</tr>"+
+						"</table>"+
+            		   "</html>";
         subscriptionCustomerInformation.setText(t); //TODO TED TED
         if(loggedInEmployee.createSubscription(customer.getCustomerID())){
             System.out.println("Subscription ojbect created." );
@@ -802,22 +796,21 @@ public class Gui {
 	}
 
 	private void populateSingleOrderLists() {
-		MouseListener[] mouse = singleOrderDishSelectCategoryJList.getMouseListeners();
+	//	MouseListener[] mouse = singleOrderDishSelectCategoryJList.getMouseListeners();
 
 		DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
-		singleOrderDishSelectCategoryJList = new JList<>(categoriesList);
+		//singleOrderDishSelectCategoryJList = new JList<>(categoriesList);
+		singleOrderDishSelectCategoryJList.setModel(categoriesList);
 		singleOrderDishSelectCategoryScrollPane.setViewportView(singleOrderDishSelectCategoryJList);
-
-		for (MouseListener aMouse : mouse) {
-			singleOrderDishSelectCategoryJList.addMouseListener(aMouse);
-		}
+//		for (MouseListener aMouse : mouse) {
+//			singleOrderDishSelectCategoryJList.addMouseListener(aMouse);
+//		}
 
 	}
 
 	private void singleOrderDishSelectCategoryJListActionPerfomed() {
 		Category cat = (Category)singleOrderDishSelectCategoryJList.getSelectedValue();
-		cat.getCategoryID();
-		System.out.println(cat.getCategoryID());
+		singleOrderDishSelectDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////

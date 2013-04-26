@@ -167,10 +167,10 @@ public class Employee extends Person {
                 }
 		return false;
 	}
-        //TODO DOKUMENTASJON
-        public DefaultListModel getDishes(int id){
-                return db.getDishes(id);
-        }
+    //TODO DOKUMENTASJON
+    public DefaultListModel getDishes(int id){
+    	return db.getDishes(id);
+    }
 
 	/**
      * Method toString
