@@ -166,8 +166,8 @@ public class OrderContent {
 		DefaultListModel<String> countList = countDishes(dishes);
 
 		if (deliveryDay != null) {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("'HH:MM'");
-			output = deliveryDay + ": " + simpleDateFormat.format(deliveryTime) + "<br>";
+			String simpleDateFormat = new SimpleDateFormat("HH:mm").format(deliveryTime);
+			output = deliveryDay + ": " + simpleDateFormat + "<br>";
 			if (countList != null){
 				for (int i = 0; i < countList.size(); i++) {
 					output += countList.get(i) + "<br>";

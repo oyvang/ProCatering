@@ -122,7 +122,7 @@ public class Order {
 	 *
 	 * @return a DefaultListModel<OrderContent> with the orderContent of the order ( Dishes, deliveryDate and time )
 	 */
-	public DefaultListModel<OrderContent> getOrderContent() {
+	public DefaultListModel<OrderContent> getOrderContent(){
 		return ordercontent;
 	}
 
