@@ -122,7 +122,7 @@ public class Order {
 	 *
 	 * @return a DefaultListModel<OrderContent> with the orderContent of the order ( Dishes, deliveryDate and time )
 	 */
-	public DefaultListModel<OrderContent> getOrderContent() {
+	public DefaultListModel<OrderContent> getOrderContent(){
 		return ordercontent;
 	}
 
@@ -153,9 +153,9 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "Order created: " + creationTime.toString().substring(0, 16) + "\n\n";
+		String output = "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
-			output += ordercontent.get(i) + "\n";
+			output += ordercontent.get(i) + "<br>";
 		}
 		return output;
 	}

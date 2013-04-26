@@ -2,25 +2,23 @@ package gui;
 
 import com.toedter.calendar.JCalendar;
 import database.SecurityChecker;
-import procatering.Customer;
-import procatering.Employee;
-import procatering.Helper;
-import procatering.Order;
+import procatering.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
-import java.awt.event.*;
-import java.lang.reflect.InvocationTargetException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static procatering.Helper.DATABASE_NUMBER;
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
 
@@ -35,7 +33,6 @@ public class Gui {
 	public Gui() {
 		initListeners();
 		editStartValues();
-
     }
 
 	public static void main(String[] args) {
@@ -130,7 +127,7 @@ public class Gui {
 	private JCalendar singleOrderDatePicker;
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
-	private JButton button1;
+	private JButton singleOrderProgressButton;
 
 	private JLabel Label;
 	private JLabel singleOrderCustomerIdLabel;
@@ -151,27 +148,29 @@ public class Gui {
     private JTextPane SubscriptionOrderInformationTextPane;
     private JPanel subscriptionStartDateSelectionPane;
     private JPanel subscriptionEndDateSelectionPane;
-    private JComboBox subscriptionThursdayTimeSelector;
-    private JComboBox subscriptionMondayTimeSelector;
-    private JComboBox subscriptionTuesayTimeSelector;
+    private JComboBox subscriptionDaySelector;
+    private JComboBox subscriptionTimeSelector;
     private JLabel subscriptionActivationDateValueLabel;
     private JButton subscriptionActivationDateSubmitButton;
     private JLabel subscriptionTerminationDateValueLabel;
     private JButton subscriptionTerminationDateSubmitButton;
-    private JComboBox subscriptionFridayTimeSelector;
-    private JComboBox subscriptionSundayTimeSelector;
-    private JComboBox subscriptionSaturdayTimeSelector;
-    private JComboBox subscriptionWednesdayTimeSelector;
-    private JButton subscriptionMondayTimeSubmitButton;
-    private JButton subscriptionTuesdayTimeSubmitButton;
-    private JButton subscriptionWednesdayTimeSubmitButton;
-    private JButton subscriptionThursdayTimeSubmitButton;
-    private JButton subscriptionFridayTimeSubmitButton;
-    private JButton subscriptionSaturdayTimeSubmitButton;
-    private JButton subscriptionSundayTimeSubmitButton;
+    private JButton subscriptionAddDayButton;
+    private JButton subscriptionRemoveDayButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
-    private static String errorMessageTitle = "Error";
+	private JPanel singleOrderProgressPanel;
+	private JTextPane singleOrderProgressLabel;
+	private JComboBox singleOrderTimesComboBox;
+	private JList<Category> singleOrderDishSelectCategoryJList;
+	private JList singleOrderDishSelectDishJList;
+	private JLabel singleOrderSelectTimeLabel;
+	private JLabel singleOrderDishCategoryLabel;
+	private JLabel singleOrderDishDishLabel;
+	private JScrollPane singleOrderDishSelectCategoryScrollPane;
+	private JScrollPane singleOrderDishSelectDishScrollPane;
+	private JButton singleOrderDishAddButton;
+	private JButton singleOrderProgressBackButton;
+	private static String errorMessageTitle = "Error";
 
 
 
@@ -239,13 +238,61 @@ public class Gui {
 			}
 		});
         /* Subscription Start date add calendar listener */
-        subscriptionDatePicker.addMouseListener(new MouseAdapter() {
+        subscriptionDatePicker.addPropertyChangeListener("calendar", new PropertyChangeListener() {
+
+
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);    //To change body of overridden methods use File | Settings | File Templates.
-                subscriptionActivationDateValueLabel.setText(subscriptionDatePicker.getCalendar().toString());//TODO ted
+            public void propertyChange(PropertyChangeEvent e) { //TODO TED: Fix timestamp format
+                Date date = subscriptionDatePicker.getDate();
+                GregorianCalendar c = new GregorianCalendar();
+                c.setTime(date);
+                int dd = c.get(Calendar.DATE);
+                int mm = c.get(Calendar.MONTH);
+                int yy = c.get(Calendar.YEAR);
+                if(loggedInEmployee.getSubscription().getStartDate() == null){
+                    Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
+                    if(ts.before(loggedInEmployee.getSubscription().getOrderDate())){
+                        subscriptionActivationDateValueLabel.setText(ts.toString()+"to early");
+                        subscriptionActivationDateValueLabel.setForeground(Color.red);
+                    }else{
+                        subscriptionActivationDateValueLabel.setText(ts.toString() );
+                        subscriptionActivationDateValueLabel.setForeground(Color.black);
+                        subscriptionActivationDateSubmitButton.setEnabled(true);
+                    }
+                }else{
+                    Timestamp ts2 = new Timestamp(yy-1900,mm,dd,0,0,0,0);
+                    if(ts2.before(loggedInEmployee.getSubscription().getStartDate())){
+                        subscriptionTerminationDateValueLabel.setText(ts2.toString()+"to early");
+                        subscriptionTerminationDateValueLabel.setForeground(Color.red);
+                    }else{
+                        subscriptionTerminationDateValueLabel.setText(ts2.toString() );
+                        subscriptionTerminationDateValueLabel.setForeground(Color.black);
+                        subscriptionTerminationDateSubmitButton.setEnabled(true);
+                    }
+                }
             }
         });
+        subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionActivationDateSubmitButtonActionPerformed();
+            }
+        });
+        subscriptionTerminationDateSubmitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionTerminationDateSubmitButtonActionPerformed();
+            }
+        });
+        subscriptionAddDayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionDayAddButtonActionPerformed();
+            }
+        });
+
+
+        
 		/* Customer registration button */
 		registerNewButton.addActionListener(new ActionListener() {
 			@Override
@@ -368,6 +415,73 @@ public class Gui {
 				singleOrderAddTimeButtonActionPerformed();
 			}
 		});
+
+        singleOrderProgressButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                singleOrderProgressButtonActionPerfomed();
+                System.out.println("Clicked");
+            }
+        });
+		singleOrderProgressBackButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Back!!!");
+			}
+		});
+
+		singleOrderDishSelectCategoryJList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				singleOrderDishSelectCategoryJListActionPerfomed();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
+		singleOrderDishSelectDishJList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
 	}
 
 	/**
@@ -384,6 +498,13 @@ public class Gui {
         SubscriptionOrderInformationTextPane.setContentType("text/html");
         SubscriptionOrderInformationTextPane.setEditable(false);
 		Helper.addTimes(singleOrderAddTimeComboBox);
+		employee_ID_input.setText("1");
+		password_input.setText("abc");
+
+		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+		singleOrderProgressBackButton.setEnabled(false);
+
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,12 +541,17 @@ public class Gui {
 			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
 		}
 	}
-	//TODO add logOutCode
+
+    private void subscriptionUpdateTextpane() {
+        SubscriptionOrderInformationTextPane.setText(loggedInEmployee.getSubscription().toString());
+    }
+
 	private void logOutButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
 		cl.show(ProCatering, "loggedOutCard");
 		loggedInEmployee = null;
-	}
+		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+	}//TODO add logout
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
@@ -464,10 +590,11 @@ public class Gui {
 	}
 
 	private void menuSubscriptionButtonActionPerformed(Customer customer){
-		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		CardLayout cl = (CardLayout)mainPanel.getLayout(); //TODO HER TED
 		cl.show(mainPanel, "subscriptionOrderCard");
         generateSubscription(customer);
 	}
+
     private void generateSubscription(Customer customer) {
 
         String t =	"<html>"+
@@ -483,7 +610,87 @@ public class Gui {
                 "</tr>"+
                 "</table>"+
                 "</html>";
-        subscriptionCustomerInformation.setText(t);
+        subscriptionCustomerInformation.setText(t); //TODO TED TED
+        if(loggedInEmployee.createSubscription(customer.getCustomerID())){
+            System.out.println("Subscription ojbect created." );
+        }else {
+            System.out.println("Error while trying to create subscription ");
+            }
+        subscriptionUpdateTextpane();
+    }
+    /*	private void generateOrder(Customer customer) {
+		String t =	"<html>"+
+						"<table valign='top'>"+
+							"<tr>" +
+								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+							"</tr>"+
+						"</table>"+
+					"</html>";
+		singleOrderCustomerInformationTextpane.setText(t);
+		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
+		System.out.println(customer.getCustomerID());
+		loggedInEmployee.createOrder(customer.getCustomerID());
+		singleOrderUpdateTextpane();
+	}*/
+
+    private void subscriptionDayAddButtonActionPerformed(){
+        if(true){
+            int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0,2));
+            int m = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(3));
+            String day = subscriptionDaySelector.getSelectedItem().toString();
+            Timestamp time = new Timestamp(0,0,0,t,m,0,0);
+            if(loggedInEmployee.getSubscription().addOrderContent(day, time)){
+                subscriptionUpdateTextpane();
+            }
+        }else{
+            subscriptionAddDayButton.setText("Add Monday");
+        }
+
+    }
+
+    private void subscriptionActivationDateSubmitButtonActionPerformed() {
+        System.out.println("addbutton pushed");
+        Date date = subscriptionDatePicker.getDate();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int yy = cal.get(Calendar.YEAR);
+        int mm = cal.get(Calendar.MONTH);//TODO move.
+        int dd = cal.get(Calendar.DATE);
+        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
+        System.out.println(ts); //TODO remove
+        if(loggedInEmployee.addSubscriptionStartDate(ts)){
+            System.out.println("SubscriptionStartDate added!");
+        }else{
+            System.out.println("Error while trying to make subscription object");
+        }
+        subscriptionUpdateTextpane();
+        subscriptionEndDateSelectionPane.enable();
+        subscriptionTerminationDateValueLabel.enable();
+        subscriptionTerminationDateSubmitButton.enable();
+    }
+    private void subscriptionTerminationDateSubmitButtonActionPerformed(){
+        Date date = subscriptionDatePicker.getDate();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int yy = cal.get(Calendar.YEAR);
+        int mm = cal.get(Calendar.MONTH);//TODO move.
+        int dd = cal.get(Calendar.DATE);
+        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
+        System.out.println(ts); //TODO remove
+        if(loggedInEmployee.addSubscriptionEndDate(ts)){
+            System.out.println("SubscriptionStartDate added!");
+        }else{
+            System.out.println("Error while trying to make subscription object");
+        }
+        subscriptionUpdateTextpane();
     }
 
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
@@ -496,7 +703,7 @@ public class Gui {
 		MouseListener[] lis = customerList.getMouseListeners(); //Extracts the mouselisteners before overwrite.
 
 		customerList = new JList<Customer>(nameList);
-		customerScrollPane.setViewportView(customerList);
+			customerScrollPane.setViewportView(customerList);
 		for (MouseListener li : lis) {
 			customerList.addMouseListener(li);
 		}
@@ -565,8 +772,52 @@ public class Gui {
 		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
 		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0); //TODO Possible fix this... NOT
 		System.out.println(ts); //TODO remove
-		loggedInEmployee.addOrderContent(ts);
-		singleOrderUpdateTextpane();
+		if(loggedInEmployee.addOrderContent(ts))
+			singleOrderUpdateTextpane();
+		else
+			showErrorMessage(GUI_NUMBER, 4, new Exception("Make sure you have selected a date in the future."));
+	}
+
+	private void singleOrderProgressButtonActionPerfomed() {
+		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
+			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
+			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
+		}else{
+			int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+			if(option == 0){
+				singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
+				singleOrderProgressBackButton.setEnabled(true);
+				CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+				cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+				DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+				for (int i = 0; i < ordercontent.size(); i++) {//TODO make it an ordered list
+					singleOrderTimesComboBox.addItem(ordercontent.get(i)); //TODO fix the toString
+				}
+
+				populateSingleOrderLists();
+
+			}
+		}
+	}
+
+	private void populateSingleOrderLists() {
+		MouseListener[] mouse = singleOrderDishSelectCategoryJList.getMouseListeners();
+
+		DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
+		singleOrderDishSelectCategoryJList = new JList<>(categoriesList);
+		singleOrderDishSelectCategoryScrollPane.setViewportView(singleOrderDishSelectCategoryJList);
+
+		for (MouseListener aMouse : mouse) {
+			singleOrderDishSelectCategoryJList.addMouseListener(aMouse);
+		}
+
+	}
+
+	private void singleOrderDishSelectCategoryJListActionPerfomed() {
+		Category cat = (Category)singleOrderDishSelectCategoryJList.getSelectedValue();
+		cat.getCategoryID();
+		System.out.println(cat.getCategoryID());
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,7 +831,11 @@ public class Gui {
 	 * @param exp
 	 */
 	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
+		Boolean debug = false;
+		if(debug)
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
+		else
+			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp.getMessage(), errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**

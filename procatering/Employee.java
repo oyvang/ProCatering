@@ -73,8 +73,8 @@ public class Employee extends Person {
 	 * @param employeeId an integer object that contains the employee id.
 	 * @return an employee object with data from the database. If no information found, the method returns <i>null</i>.
 	 */
-	public Employee getEmployee(Integer employeeId) {
-		
+	public static Employee getEmployee(Integer employeeId) {
+        Database db = new Database();
 		if (employeeId == null || employeeId < 0) {
 			return null;
 		}
@@ -84,7 +84,13 @@ public class Employee extends Person {
 		return null;
 	}
 
-
+    /**
+     * Method getSubscription
+     * @return the subscription object attribute
+     */
+    public Subscription getSubscription(){
+        return subscription;
+    }
 	public Order getOrder() {
 		return order;
 	}
@@ -103,29 +109,21 @@ public class Employee extends Person {
 	 */
 	public boolean addEmployee(String fn, String ln, String phone, int pCode, String dob, String mail, String pw) {
 		fn = Helper.capitalFirst(fn);
-                if(db.employeeExist(new Employee(fn, ln, phone, pCode, dob, mail))){
-                    return false;
-                }
-		return db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw);
+		return !db.employeeExist(new Employee(fn, ln, phone, pCode, dob, mail)) && db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw);
 	}
 
 	/**
-     * Method editDish
+	 *   Method editDish
 	 * Edits a dish to send in a new dish object and the name of the old dish
-	 *
-	 * @param name     String object
-	 * @param newPrice Double
-	 * @param cost     Double
-	 * @param oldName  String object
-	 * @return true if sucsessfully updated, else it will return false
+	 * @param dish Dish object
+	 * @param newPrice the new price
+	 * @param newCost the new cost
+	 * @return true if the database update is successfull, else if false.
 	 */
 	public boolean editDish(Dish dish, double newPrice, double newCost) {
                 dish.setPrice(newPrice);
                 dish.setCost(newCost);
-                if(db.editDish(dish)){
-                    return true;
-                }
-		return false;
+		return db.editDish(dish);
 	}
         
         public Dish getDish(String name){
@@ -154,11 +152,8 @@ public class Employee extends Person {
 	 * @return //TODO fix docuemtation
 	 */
 	public boolean updateEmployee(Employee input) {
-		if(db.updateEmployee(input)){
-                    return true;
-                }
-                return false;
-        }
+		return db.updateEmployee(input);
+	}
 
 	public boolean changeEmployeePassword(String input, int id) {
 		if(input == null || id > -1){
@@ -369,10 +364,13 @@ public class Employee extends Person {
 		}
 		return false;
 	}
+
+
+	public DefaultListModel<Category> getCategories(){
+		return db.getCategories();
+	}
+
     public boolean removeDish(String name){
-        if(db.hideDish(Helper.capitalFirst(name))){
-            return true;
-        }
-        return false;
-    }
+		return db.hideDish(Helper.capitalFirst(name));
+	}
 }

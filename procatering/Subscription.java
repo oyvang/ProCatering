@@ -41,6 +41,21 @@ public class Subscription {
         customerId = c_id;
         status = "Pending";
     }
+    /*
+        private void subscriptionActivationDateSubmitButtonActionPerformed() {
+        Date date = subscriptionDatePicker.getDate();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int yy = cal.get(Calendar.YEAR);
+        int mm = cal.get(Calendar.MONTH);//TODO move.
+        int dd = cal.get(Calendar.DATE);
+        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
+        System.out.println(ts); //TODO remove
+        loggedInEmployee.addSubscriptionStartDate(ts);
+        subscriptionUpdateTextpane();
+    }
+     */
 
     /** Simple copy-constructor */
     public Subscription(Subscription s){
@@ -144,5 +159,25 @@ public class Subscription {
             return true;
         }
         return false;
+    }
+    /**
+     * Method toString
+     * overview of the subscription for presentation in gui
+     * @return String of the subscription object
+     */
+    public String toString(){
+        String output = "<strong>Order date:</strong> "+ getOrderDate()+"<br>";
+        if(getStartDate() != null){
+            output += "<strong>Activation date:</strong> "+ this.getStartDate()+"<br>";
+        }
+        if(getEndDate() != null){
+            output += "<strong>Termination date:</strong> "+ this.getEndDate()+"<br>";
+        }
+        if(this.content != null){
+            for (int i = 0; i<content.size(); i++){
+                output +=content.getElementAt(i).toString();
+            }
+        }
+        return output;
     }
 }
