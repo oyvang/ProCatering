@@ -153,9 +153,9 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "Order created: " + creationTime.toString().substring(0, 16) + "\n\n";
+		String output = "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
-			output += ordercontent.get(i) + "\n";
+			output += ordercontent.get(i) + "<br>";
 		}
 		return output;
 	}
