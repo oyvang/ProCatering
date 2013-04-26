@@ -1,4 +1,6 @@
--- LAST UPDATED 25:04:2013-16:48
+-- LAST UPDATED 26:04:2013-09:56
+--TODO lag en ny atributt i order_dish som holder på total sum av den ene ordren. den kan være null pga subscription
+--TODO days i order_dish set som varchar
 
 DROP TABLE dish_ingredient;
 DROP TABLE ingredient;
