@@ -129,7 +129,7 @@ public class Gui {
 	private JCalendar singleOrderDatePicker;
 	private JTextPane singleOrderCustomerInformationTextpane;
 	private JTextPane singleOrderOrderInformationTextpane;
-	private JButton button1;
+	private JButton singleOrderProgressButton;
 
 	private JLabel Label;
 	private JLabel singleOrderCustomerIdLabel;
@@ -170,7 +170,12 @@ public class Gui {
     private JButton subscriptionSundayTimeSubmitButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
-    private static String errorMessageTitle = "Error";
+	private JPanel singleOrderProgressPanel;
+	private JTextPane singleOrderProgressLabel;
+	private JComboBox comboBox1;
+	private JList list1;
+	private JList list2;
+	private static String errorMessageTitle = "Error";
 
 
 
@@ -386,6 +391,13 @@ public class Gui {
 			}
 		});
 
+        singleOrderProgressButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                singleOrderProgressButtonActionPerfomed();
+                System.out.println("Clicked");
+            }
+        });
 	}
 
 	/**
@@ -402,6 +414,13 @@ public class Gui {
         SubscriptionOrderInformationTextPane.setContentType("text/html");
         SubscriptionOrderInformationTextPane.setEditable(false);
 		Helper.addTimes(singleOrderAddTimeComboBox);
+		employee_ID_input.setText("1");
+		password_input.setText("abc");
+
+		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+
+
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -531,7 +550,7 @@ public class Gui {
 		MouseListener[] lis = customerList.getMouseListeners(); //Extracts the mouselisteners before overwrite.
 
 		customerList = new JList<Customer>(nameList);
-		customerScrollPane.setViewportView(customerList);
+			customerScrollPane.setViewportView(customerList);
 		for (MouseListener li : lis) {
 			customerList.addMouseListener(li);
 		}
@@ -600,8 +619,15 @@ public class Gui {
 		int i3 = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
 		Timestamp ts = new Timestamp(i-1900,i1,i2,i3,0,0,0); //TODO Possible fix this... NOT
 		System.out.println(ts); //TODO remove
-		loggedInEmployee.addOrderContent(ts);
-		singleOrderUpdateTextpane();
+		if(loggedInEmployee.addOrderContent(ts))
+			singleOrderUpdateTextpane();
+		else
+			showErrorMessage(GUI_NUMBER, 4, new Exception("Make sure you have selected a date in the future."));
+	}
+
+	private void singleOrderProgressButtonActionPerfomed() {
+		CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+		cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
