@@ -152,11 +152,8 @@ public class Employee extends Person {
 	 * @return //TODO fix docuemtation
 	 */
 	public boolean updateEmployee(Employee input) {
-		if(db.updateEmployee(input)){
-                    return true;
-                }
-                return false;
-        }
+		return db.updateEmployee(input);
+	}
 
 	public boolean changeEmployeePassword(String input, int id) {
 		if(input == null || id > -1){
