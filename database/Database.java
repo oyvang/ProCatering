@@ -633,7 +633,7 @@ public class Database {
          */
         public int numbOfDishes(int dishId) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish_id FROM order_dish")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish_id FROM order_dish WHERE dish_id = ?")) {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, dishId);
 				ResultSet rs = prepStat.executeQuery();
@@ -657,7 +657,7 @@ public class Database {
         
         
         /**
-         * Gives dishes arranged by most sold in a given time frame.
+         * Gives the top 10 dishes arranged by most sold in a given time frame.
          *
          * @param from is the start date and time.
          * @param to is the end date and time.
@@ -665,14 +665,14 @@ public class Database {
          */
         public DefaultListModel<String> topDishesFromTo(Timestamp from, Timestamp to) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, dishname, price, cost, COUNT(order_dish.dish_id) AS number FROM (dish NATURAL JOIN order_dish NATURAL JOIN orders) WHERE time_of_order > ? AND time_of_order < ? ORDER BY number DESC")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders WHERE time_of_order > ? AND time_of_order < ? GROUP BY dish.dish_id ORDER BY amountsum desc LIMIT 10;")) {
 				con.setAutoCommit(false);
                                 prepStat.setTimestamp(1, from);
                                 prepStat.setTimestamp(2, to);
 				ResultSet rs = prepStat.executeQuery();
 				DefaultListModel output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement("Number of dishes: "+rs.getInt("number")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+". Dish cost: "+ rs.getDouble("cost"));
+					output.addElement("Number of dishes: "+rs.getInt("amountsum")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
 				}
 				con.commit();
 				con.setAutoCommit(true);
@@ -696,13 +696,13 @@ public class Database {
         //Kanskje få inn en int som bestemmer antall dishes som skal vises?
         public DefaultListModel<String> topDishes() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, dishname, price, cost, COUNT(order_dish.dish_id) AS number FROM (dish NATURAL JOIN order_dish NATURAL JOIN orders) ORDER BY number DESC")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum desc")) {
 				con.setAutoCommit(false);
 				ResultSet rs = prepStat.executeQuery();
 				DefaultListModel output = new DefaultListModel<>();
 				while (rs.next()) {
                                     if (rs.getRow()<6){
-					output.addElement("Number of dishes: "+rs.getInt("number")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+". Dish cost: "+ rs.getDouble("cost"));
+					output.addElement("Number of dishes: "+rs.getInt("amountsum")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
                                     }
 				}
 				con.commit();
@@ -717,6 +717,35 @@ public class Database {
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return null;
 		}
+	}
+        
+        
+         /**
+         * Gives the top 10 dishes arranged by profit.
+         *
+         * @returnes strings in a DefaultListModel.
+         */
+            public DefaultListModel<String> topProfit() {
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                    try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(price - cost) AS profit , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders GROUP BY dish.dish_id ORDER BY profit desc LIMIT 10;")) {
+                            con.setAutoCommit(false);
+                            ResultSet rs = prepStat.executeQuery();
+                            DefaultListModel output = new DefaultListModel<>();
+                            while (rs.next()) {
+                                output.addElement("Profit: "+rs.getDouble("profit")+" NOK" + ". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
+                            }
+                            con.commit();
+                            con.setAutoCommit(true);
+                            return output;
+                    } catch (SQLException ePrepState) {
+                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                            cleanup.dbRollback(con);
+                            return null;
+                    }
+            } catch (SQLException eCon) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                    return null;
+            }
 	}
         
 	/**
