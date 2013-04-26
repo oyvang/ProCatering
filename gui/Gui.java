@@ -2,9 +2,7 @@ package gui;
 
 import com.toedter.calendar.JCalendar;
 import database.SecurityChecker;
-import procatering.Customer;
-import procatering.Employee;
-import procatering.Helper;
+import procatering.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -172,9 +170,16 @@ public class Gui {
     private JPanel subscriptionWeekdaySelectionPanel;
 	private JPanel singleOrderProgressPanel;
 	private JTextPane singleOrderProgressLabel;
-	private JComboBox comboBox1;
-	private JList list1;
-	private JList list2;
+	private JComboBox singleOrderTimesComboBox;
+	private JList<Category> singleOrderDishSelectCategoryJList;
+	private JList singleOrderDishSelectDishJList;
+	private JLabel singleOrderSelectTimeLabel;
+	private JLabel singleOrderDishCategoryLabel;
+	private JLabel singleOrderDishDishLabel;
+	private JScrollPane singleOrderDishSelectCategoryScrollPane;
+	private JScrollPane singleOrderDishSelectDishScrollPane;
+	private JButton singleOrderDishAddButton;
+	private JButton singleOrderProgressBackButton;
 	private static String errorMessageTitle = "Error";
 
 
@@ -243,23 +248,23 @@ public class Gui {
 			}
 		});
         /* Subscription Start date add calendar listener */
-        subscriptionDatePicker.addPropertyChangeListener("calendar",new PropertyChangeListener() {
+        subscriptionDatePicker.addPropertyChangeListener("calendar", new PropertyChangeListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                Date date = subscriptionDatePicker.getDate();
-                GregorianCalendar c = new GregorianCalendar();
-                c.setTime(date);
-                // System.out.println(c.get(Calendar.DAY_OF_MONTH));
-                int dd = c.get(Calendar.DATE);
-                int mm = c.get(Calendar.MONTH);
-                int yy = c.get(Calendar.YEAR);
-                Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
-                loggedInEmployee.addSubscriptionStartDate(ts);
-                subscriptionActivationDateValueLabel.setText(""+dd +"/"+mm+" -"+yy );//TODO ted
-                //subscriptionActivationDateValueLabel.setText(""+ts);//TODO ted
-            }
-        });
+			@Override
+			public void propertyChange(PropertyChangeEvent e) {
+				Date date = subscriptionDatePicker.getDate();
+				GregorianCalendar c = new GregorianCalendar();
+				c.setTime(date);
+				// System.out.println(c.get(Calendar.DAY_OF_MONTH));
+				int dd = c.get(Calendar.DATE);
+				int mm = c.get(Calendar.MONTH);
+				int yy = c.get(Calendar.YEAR);
+				Timestamp ts = new Timestamp(yy - 1900, mm, dd, 0, 0, 0, 0);
+				loggedInEmployee.addSubscriptionStartDate(ts);
+				subscriptionActivationDateValueLabel.setText("" + dd + "/" + mm + " -" + yy);//TODO ted
+				//subscriptionActivationDateValueLabel.setText(""+ts);//TODO ted
+			}
+		});
         subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -398,6 +403,65 @@ public class Gui {
                 System.out.println("Clicked");
             }
         });
+		singleOrderProgressBackButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Back!!!");
+			}
+		});
+
+		singleOrderDishSelectCategoryJList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				singleOrderDishSelectCategoryJListActionPerfomed();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
+		singleOrderDishSelectDishJList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
 	}
 
 	/**
@@ -418,7 +482,7 @@ public class Gui {
 		password_input.setText("abc");
 
 		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
-
+		singleOrderProgressBackButton.setEnabled(false);
 
 
 	}
@@ -457,15 +521,17 @@ public class Gui {
 			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
 		}
 	}
+
     private void subscriptionUpdateTextpane() {
         SubscriptionOrderInformationTextPane.setText(loggedInEmployee.getSubscription().toString());
     }
-	//TODO add logOutCode
+
 	private void logOutButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
 		cl.show(ProCatering, "loggedOutCard");
 		loggedInEmployee = null;
-	}
+		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+	}//TODO add logout
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
@@ -508,6 +574,7 @@ public class Gui {
 		cl.show(mainPanel, "subscriptionOrderCard");
         generateSubscription(customer);
 	}
+
     private void generateSubscription(Customer customer) {
 
         String t =	"<html>"+
@@ -526,6 +593,7 @@ public class Gui {
         subscriptionCustomerInformation.setText(t); //TODO TED TED
         loggedInEmployee.createSubscription(customer.getCustomerID());
     }
+
     private void subscriptionActivationDateSubmitButtonActionPerformed() {
         Date date = subscriptionDatePicker.getDate();
         GregorianCalendar cal = new GregorianCalendar();
@@ -626,8 +694,45 @@ public class Gui {
 	}
 
 	private void singleOrderProgressButtonActionPerfomed() {
-		CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
-		cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
+			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
+			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
+		}else{
+			int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+			if(option == 0){
+				singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
+				singleOrderProgressBackButton.setEnabled(true);
+				CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+				cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+				DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+				for (int i = 0; i < ordercontent.size(); i++) {//TODO make it an ordered list
+					singleOrderTimesComboBox.addItem(ordercontent.get(i)); //TODO fix the toString
+				}
+
+				populateSingleOrderLists();
+
+			}
+		}
+	}
+
+	private void populateSingleOrderLists() {
+		MouseListener[] mouse = singleOrderDishSelectCategoryJList.getMouseListeners();
+
+		DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
+		singleOrderDishSelectCategoryJList = new JList<>(categoriesList);
+		singleOrderDishSelectCategoryScrollPane.setViewportView(singleOrderDishSelectCategoryJList);
+
+		for (MouseListener aMouse : mouse) {
+			singleOrderDishSelectCategoryJList.addMouseListener(aMouse);
+		}
+
+	}
+
+	private void singleOrderDishSelectCategoryJListActionPerfomed() {
+		Category cat = (Category)singleOrderDishSelectCategoryJList.getSelectedValue();
+		cat.getCategoryID();
+		System.out.println(cat.getCategoryID());
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -641,7 +746,11 @@ public class Gui {
 	 * @param exp
 	 */
 	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
+		Boolean debug = false;
+		if(debug)
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
+		else
+			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp.getMessage(), errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
