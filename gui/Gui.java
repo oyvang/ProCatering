@@ -150,24 +150,14 @@ public class Gui {
     private JTextPane SubscriptionOrderInformationTextPane;
     private JPanel subscriptionStartDateSelectionPane;
     private JPanel subscriptionEndDateSelectionPane;
-    private JComboBox subscriptionThursdayTimeSelector;
-    private JComboBox subscriptionMondayTimeSelector;
-    private JComboBox subscriptionTuesayTimeSelector;
+    private JComboBox subscriptionDaySelector;
+    private JComboBox subscriptionTimeSelector;
     private JLabel subscriptionActivationDateValueLabel;
     private JButton subscriptionActivationDateSubmitButton;
     private JLabel subscriptionTerminationDateValueLabel;
     private JButton subscriptionTerminationDateSubmitButton;
-    private JComboBox subscriptionFridayTimeSelector;
-    private JComboBox subscriptionSundayTimeSelector;
-    private JComboBox subscriptionSaturdayTimeSelector;
-    private JComboBox subscriptionWednesdayTimeSelector;
-    private JButton subscriptionMondayTimeSubmitButton;
-    private JButton subscriptionTuesdayTimeSubmitButton;
-    private JButton subscriptionWednesdayTimeSubmitButton;
-    private JButton subscriptionThursdayTimeSubmitButton;
-    private JButton subscriptionFridayTimeSubmitButton;
-    private JButton subscriptionSaturdayTimeSubmitButton;
-    private JButton subscriptionSundayTimeSubmitButton;
+    private JButton subscriptionAddDayButton;
+    private JButton subscriptionRemoveDayButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
 	private JPanel singleOrderProgressPanel;
@@ -246,18 +236,34 @@ public class Gui {
         subscriptionDatePicker.addPropertyChangeListener("calendar",new PropertyChangeListener() {
 
             @Override
-            public void propertyChange(PropertyChangeEvent e) {
+            public void propertyChange(PropertyChangeEvent e) { //TODO TED: Fix timestamp format
                 Date date = subscriptionDatePicker.getDate();
                 GregorianCalendar c = new GregorianCalendar();
                 c.setTime(date);
-                // System.out.println(c.get(Calendar.DAY_OF_MONTH));
                 int dd = c.get(Calendar.DATE);
                 int mm = c.get(Calendar.MONTH);
                 int yy = c.get(Calendar.YEAR);
-                Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
-                loggedInEmployee.addSubscriptionStartDate(ts);
-                subscriptionActivationDateValueLabel.setText(""+dd +"/"+mm+" -"+yy );//TODO ted
-                //subscriptionActivationDateValueLabel.setText(""+ts);//TODO ted
+                if(loggedInEmployee.getSubscription().getStartDate() == null){
+                    Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
+                    if(ts.before(loggedInEmployee.getSubscription().getOrderDate())){
+                        subscriptionActivationDateValueLabel.setText(ts.toString()+"to early");
+                        subscriptionActivationDateValueLabel.setForeground(Color.red);
+                    }else{
+                        subscriptionActivationDateValueLabel.setText(ts.toString() );
+                        subscriptionActivationDateValueLabel.setForeground(Color.black);
+                        subscriptionActivationDateSubmitButton.setEnabled(true);
+                    }
+                }else{
+                    Timestamp ts2 = new Timestamp(yy-1900,mm,dd,0,0,0,0);
+                    if(ts2.before(loggedInEmployee.getSubscription().getStartDate())){
+                        subscriptionTerminationDateValueLabel.setText(ts2.toString()+"to early");
+                        subscriptionTerminationDateValueLabel.setForeground(Color.red);
+                    }else{
+                        subscriptionTerminationDateValueLabel.setText(ts2.toString() );
+                        subscriptionTerminationDateValueLabel.setForeground(Color.black);
+                        subscriptionTerminationDateSubmitButton.setEnabled(true);
+                    }
+                }
             }
         });
         subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
@@ -266,6 +272,19 @@ public class Gui {
                 subscriptionActivationDateSubmitButtonActionPerformed();
             }
         });
+        subscriptionTerminationDateSubmitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionTerminationDateSubmitButtonActionPerformed();
+            }
+        });
+        subscriptionAddDayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionDayAddButtonActionPerformed();
+            }
+        });
+
 
         
 		/* Customer registration button */
@@ -504,7 +523,7 @@ public class Gui {
 	}
 
 	private void menuSubscriptionButtonActionPerformed(Customer customer){
-		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		CardLayout cl = (CardLayout)mainPanel.getLayout(); //TODO HER TED
 		cl.show(mainPanel, "subscriptionOrderCard");
         generateSubscription(customer);
 	}
@@ -524,9 +543,54 @@ public class Gui {
                 "</table>"+
                 "</html>";
         subscriptionCustomerInformation.setText(t); //TODO TED TED
-        loggedInEmployee.createSubscription(customer.getCustomerID());
+        if(loggedInEmployee.createSubscription(customer.getCustomerID())){
+            System.out.println("Subscription ojbect created." );
+        }else {
+            System.out.println("Error while trying to create subscription ");
+            }
+        subscriptionUpdateTextpane();
+    }
+    /*	private void generateOrder(Customer customer) {
+		String t =	"<html>"+
+						"<table valign='top'>"+
+							"<tr>" +
+								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+							"</tr>"+
+						"</table>"+
+					"</html>";
+		singleOrderCustomerInformationTextpane.setText(t);
+		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
+		System.out.println(customer.getCustomerID());
+		loggedInEmployee.createOrder(customer.getCustomerID());
+		singleOrderUpdateTextpane();
+	}*/
+
+    private void subscriptionDayAddButtonActionPerformed(){
+        if(subscriptionAddDayButton.getText().equals("Add Monday")){
+            System.out.println(subscriptionDaySelector.getSelectedItem());
+            int t = Integer.parseInt(subscriptionDaySelector.getSelectedItem().toString().substring(0,2));
+            System.out.println("time: "+t);
+            int m = Integer.parseInt(subscriptionDaySelector.getSelectedItem().toString().substring(3));
+            System.out.println("minutt: "+m);
+
+            if(loggedInEmployee.getSubscription().addOrderContent("Monday",new Timestamp(0,0,0,t,m,0,0))){
+                System.out.println("it worked");
+                subscriptionUpdateTextpane();
+                subscriptionAddDayButton.setText("Remove Monday");
+            }
+        }else{
+            subscriptionAddDayButton.setText("Add Monday");
+        }
+
     }
     private void subscriptionActivationDateSubmitButtonActionPerformed() {
+        System.out.println("addbutton pushed");
         Date date = subscriptionDatePicker.getDate();
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -536,7 +600,31 @@ public class Gui {
         int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
         Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
         System.out.println(ts); //TODO remove
-        loggedInEmployee.addSubscriptionStartDate(ts);
+        if(loggedInEmployee.addSubscriptionStartDate(ts)){
+            System.out.println("SubscriptionStartDate added!");
+        }else{
+            System.out.println("Error while trying to make subscription object");
+        }
+        subscriptionUpdateTextpane();
+        subscriptionEndDateSelectionPane.enable();
+        subscriptionTerminationDateValueLabel.enable();
+        subscriptionTerminationDateSubmitButton.enable();
+    }
+    private void subscriptionTerminationDateSubmitButtonActionPerformed(){
+        Date date = subscriptionDatePicker.getDate();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int yy = cal.get(Calendar.YEAR);
+        int mm = cal.get(Calendar.MONTH);//TODO move.
+        int dd = cal.get(Calendar.DATE);
+        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
+        System.out.println(ts); //TODO remove
+        if(loggedInEmployee.addSubscriptionEndDate(ts)){
+            System.out.println("SubscriptionStartDate added!");
+        }else{
+            System.out.println("Error while trying to make subscription object");
+        }
         subscriptionUpdateTextpane();
     }
 
