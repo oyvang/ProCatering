@@ -161,36 +161,38 @@ public class Database {
 	 * @param input
 	 * @param pw
 	 * @return true if successfully added, else it will return false.
+         * employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	 */
 	public boolean addEmployee(Employee input, String pw) {
 		if (input == null || employeeExist(input) == false) {
+                    System.out.println("Employe Exis");
 			return false;
 		}
+                System.out.println("Employe do not exist");
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (
-					PreparedStatement prepStat = con.prepareStatement
-							("INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-				con.setAutoCommit(false);
-				prepStat.setString(1, input.getFirstName());
-				prepStat.setString(2, input.getLastName());
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {                        
+                                con.setAutoCommit(false);
+				prepStat.setString(1, Helper.capitalFirst(input.getFirstName()));
+				prepStat.setString(2, Helper.capitalFirst(input.getLastName()));
 				prepStat.setString(3, input.getFirstName().toUpperCase());
 				prepStat.setString(4, input.getLastName().toUpperCase());
-				prepStat.setString(5, SecurityChecker.MD5(pw));
+				prepStat.setString(5, SecurityChecker.MD5(pw));    
 				prepStat.setString(6, input.getPhoneNumber());
 				prepStat.setInt(7, input.getPostalCode());
 				prepStat.setString(8, input.getDob());
-				prepStat.setString(9, input.getEmail());
+				prepStat.setString(9, input.getEmail().toLowerCase());
+                               
 				prepStat.executeUpdate();
 				con.commit();
 				con.setAutoCommit(true);
 				return true;
 			} catch (Exception ePrepState) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
 				return false;
 			}
 		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+//			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
 	}
@@ -202,7 +204,7 @@ public class Database {
 	 * @return Employe if correct employee id have been given, else it will return null.
 	 */
 	public Employee getEmployee(int id) {
-		if (id < 1) {
+		if (id < -1) {
 			return null;
 		}
         /*creating strings for every attribute in the customer object:*/
@@ -222,14 +224,15 @@ public class Database {
 						String mail = rs.getString("email");
 						int pCode = rs.getInt("postalcode");
 
-						if (fn != null && ln != null && dob != null && phone != null && mail != null) {
-							return new Employee(employeeId, fn, ln, phone, pCode, dob, mail);
-						} else {
+						if (fn == null || ln == null || dob == null || phone== null || mail == null) {
 							return null;
+						} else {
+							return new Employee(employeeId, fn, ln, phone, pCode, dob, mail);
 						}
 					}
 
 				} catch (SQLException ePrepState) {
+                                   
 					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 					cleanup.dbRollback(con);
 					return null;
@@ -247,22 +250,23 @@ public class Database {
 		return null;
 	}
 
-	/**
-	 * Update an employee require an Employee object and an employee id.
-	 * The employee object are supposed to be the updated version of an employee.
-	 * This mean that this methode only update an existing employee by identify the row in the database
-	 * with employee id and update each attribute with the Employee object.
-	 *
-	 * @param input
-	 * @return true if successfully updated, else it will return null.
-	 */
+//TODO FIX DOK: updateEmployee
 	public boolean updateEmployee(procatering.Employee input) {
 		if (input == null) {
 			return false;
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("UPDATE customer SET firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, password = ?, dob = ?, email = ? WHERE employee_id = ?")) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE employee SET firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, phonenumber = ?, postalcode = ?, dob = ?, email = ? WHERE employee_id = ?;")) {
 				con.setAutoCommit(false);
+//                                System.out.println(input.getFirstName());
+//                                System.out.println(input.getLastName());
+//                                System.out.println(input.getFirstName().toUpperCase());
+//                                System.out.println(input.getLastName().toUpperCase());
+//                                System.out.println(input.getPhoneNumber());
+//                                System.out.println(input.getPostalCode());
+//                                System.out.println(input.getDob());
+//                                System.out.println(input.getEmail());
+                                System.out.println(input.getEmployeeId() + " Update her");
 				prepStat.setString(1, input.getFirstName());
 				prepStat.setString(2, input.getLastName());
 				prepStat.setString(3, input.getFirstName().toUpperCase());
@@ -272,17 +276,22 @@ public class Database {
 				prepStat.setString(7, input.getDob());
 				prepStat.setString(8, input.getEmail());
 				prepStat.setInt(9, input.getEmployeeId());
-				prepStat.executeUpdate();
-				con.commit();
+				int check = prepStat.executeUpdate();
+                                con.commit();
 				con.setAutoCommit(true);
-				return true;
+                                if(check>0){
+                                    return true;
+                                }
+                                System.out.println("INGEN UPDATE");
+                                return false;
 			} catch (SQLException ePrepState) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                            System.out.println(ePrepState);
+//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
 				return false;
 			}
 		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+//			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
 	}
@@ -308,15 +317,9 @@ public class Database {
 				try (ResultSet rs = prepStat.executeQuery()) {
 
 					while (rs.next()) {
-						String type = rs.getString("type_id");
 						String fn = rs.getString("firstname");
-						String ln = rs.getString("lastname");
-						String dob = rs.getString("dob");
-						String phone = rs.getString("phonenumber");
-						String mail = rs.getString("email");
 
-						if (type == null && fn == null && ln == null && dob == null
-								&& phone == null && mail == null) {
+						if (fn == null) {
 							return false;
 						} else {
 							return true;
@@ -526,25 +529,18 @@ public class Database {
 		}
 		return null;
 	}
-
-	/**
-	 * editDish require an allready updated Dish object and the old dishname
-	 * to identify the existing row in the database to be updated.
-	 *
-	 * @param dish
-	 * @return true if sucsessfully updated, else it will retun false.
-	 */
-
-	public boolean editDish(Dish dish, String name) {
-		if (Helper.stringChecker(dish.getName()) && Helper.stringChecker(name)) {
-
+        /**
+         * edit an dish in the database. Require that the dish object obtain dish_id. The mothode only change price and cost of the dish.
+         * @param dish Dish object
+         * @return true if sucsessfully updated even if non of the value are different from what is allready in the database, else it will return false.
+         */
+	public boolean editDish(Dish dish) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET dishname = ?, price = ?, cost = ? WHERE dishname = ?")) {
+				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET price = ?, cost = ? WHERE dish_id = ?")) {
 					con.setAutoCommit(false);
-					prepStat.setString(1, dish.getName());
-					prepStat.setDouble(2, dish.getPrice());
-					prepStat.setDouble(3, dish.getCost());
-					prepStat.setString(4, name);
+					prepStat.setDouble(1, dish.getPrice());
+					prepStat.setDouble(2, dish.getCost());
+                                        prepStat.setInt(3, dish.getID());
 					prepStat.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
@@ -559,8 +555,6 @@ public class Database {
 				return false;
 			}
 
-		}
-		return false;
 	}
 
 	/**
@@ -594,23 +588,25 @@ public class Database {
 		}
 	}
        
-	/**
-	 * Remove a dish from the database with the given name. The name will be checked if it is less than 255 sign
-	 * before it tries to connect to the database.
-	 *
-	 * @param name
-	 * @return true if sucsessfully deleted, else it will return false.
-	 */
-	public boolean removeDish(String name) {
-		if (Helper.stringChecker(name)) {
+        /**
+         * Changes the status attrite value in the database from 1 to 0 for the given dishname. 
+         * @param name String object
+         * @return true if sucsessfully updated; return false if nothing have been updated or if something went wrong.
+         */
+	public boolean hideDish(String name) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM dish WHERE dishname = ?")) {
+				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
 					con.setAutoCommit(false);
-					prepStat.setString(1, name);
-					prepStat.executeUpdate();
+                                        prepStat.setInt(1, 0);
+					prepStat.setString(2, Helper.capitalFirst(name));
+					int check = prepStat.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
+                                        if(check==0){
+                                            return false;
+                                        }
 					return true;
+                                       
 				} catch (SQLException ePrepState) {
 					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 					cleanup.dbRollback(con);
@@ -620,9 +616,6 @@ public class Database {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 				return false;
 			}
-
-		}
-		return false;
 	}
         
         /**
@@ -763,20 +756,19 @@ public class Database {
 		}
 	}
 
-	/**
-	 * Adds a new dish into the database. The mothode checks the length of the dish name. The dish name have to
-	 * be less than 255 signs
-	 *
-	 * @param dish Dish object
-	 * @return true if sucsessfully added, else it will return null.
-	 */
+        /**
+         * Adds a dish to the database
+         * @param dish Dish object
+         * @return true if sucsessfully added, else it will return false.
+         */
 	public boolean addDish(Dish dish) {
 			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost) VALUES (?, ?, ?)")) {
+				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost, status) VALUES (?, ?, ?, ?)")) {
 					con.setAutoCommit(false);
 					prepStat.setString(1, Helper.capitalFirst(dish.getName()));
 					prepStat.setDouble(2, dish.getPrice());
 					prepStat.setDouble(3, dish.getCost());
+                                        prepStat.setInt(4, 1);
 					prepStat.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
@@ -1002,7 +994,7 @@ public class Database {
                             }
                             
                         } catch (SQLException ePrepState) {
-                            System.out.println(ePrepState);
+                            
 //                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
                             cleanup.dbRollback(con);
                             return null;
@@ -1032,9 +1024,6 @@ public class Database {
                 try (Connection con = DriverManager.getConnection(URL, username, password)) {
                     try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO cat_dish (cat_id, dish_id) VALUES (?,?)")) {
                         con.setAutoCommit(false);
-                         
-                                    System.out.println(getDish(Helper.capitalFirst(dishname)).getID());
-                        
                         prepStat.setInt(1, getCategory(Helper.capitalFirst(catname)).getCategoryID());
                         prepStat.setInt(2, getDish(Helper.capitalFirst(dishname)).getID());
                         prepStat.executeUpdate();
@@ -1138,6 +1127,37 @@ public class Database {
                 return false;
             }
         }
+       /**
+        * Find dishes who belongs to one spesefic category id.
+        * @param id Integer Category id
+        * @return 
+        */
+        public DefaultListModel<Dish> getDishes(int id) {
+            if(id < 0){
+                return null;
+            }
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT dishname FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
+				con.setAutoCommit(false);
+                                prepStat.setInt(1, id);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+				DefaultListModel<Dish> output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("status")));
+				}
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
         
         
     }

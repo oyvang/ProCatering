@@ -49,8 +49,8 @@ public class Helper {
             if(i>0){
                 output+= " ";
             }
-            if(table[i].equals("and") || table[i].equals("or") || table[i].equals("with")){
-                output += table[i];  
+            if(table[i].equalsIgnoreCase("and") || table[i].equalsIgnoreCase("or") || table[i].equalsIgnoreCase("with") || table[i].equalsIgnoreCase("in") || table[i].equalsIgnoreCase("a") || table[i].equalsIgnoreCase("over")){
+                output += table[i].toLowerCase();  
             }else{
                 output += singleWordCapitalFirst(table[i]); 
             }
