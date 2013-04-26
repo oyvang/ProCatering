@@ -1137,7 +1137,7 @@ public class Database {
                 return null;
             }
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT dishname FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
 				con.setAutoCommit(false);
                                 prepStat.setInt(1, id);
 				ResultSet rs = prepStat.executeQuery();
