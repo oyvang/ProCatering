@@ -348,4 +348,8 @@ public class Employee extends Person {
 		}
 		return false;
 	}
+
+	public DefaultListModel<Category> getCategories(){
+		return db.getCategories();
+	}
 }
