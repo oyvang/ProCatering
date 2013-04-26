@@ -12,8 +12,8 @@ import java.sql.Timestamp;
  * @author Team17
  */
 public class Employee extends Person {
-	private int employeeId = -1;
-	private final String dob;
+	private int employeeId;
+	private String dob;
 	private Database db;
 	private Order order;
 	private Subscription subscription;
@@ -52,6 +52,7 @@ public class Employee extends Person {
 		super(fn, ln, phone, mail, pCode);
 		this.dob = dob;
 		db = new Database();
+                employeeId = -1;
 	}
 
     /** simple copy-constructor*/
@@ -59,6 +60,11 @@ public class Employee extends Person {
 		super(e.getFirstName(), e.getLastName(), e.getPhoneNumber(), e.getEmail(), e.getPostalCode());
 		dob = e.getDob();
 		db = new Database();
+                if(e.getEmployeeId()>-1){
+                    employeeId = e.getEmployeeId();
+                }else{
+                employeeId = -1;
+                }
 	}
 
 	/**
@@ -68,11 +74,14 @@ public class Employee extends Person {
 	 * @return an employee object with data from the database. If no information found, the method returns <i>null</i>.
 	 */
 	public static Employee getEmployee(Integer employeeId) {
-		Database db = new Database();
-		if (employeeId == null || employeeId <= 0) {
+        Database db = new Database();
+		if (employeeId == null || employeeId < 0) {
 			return null;
 		}
-		return new Employee(db.getEmployee(employeeId));
+                if(db.getEmployee(employeeId)!=null){
+                    return new Employee(db.getEmployee(employeeId));
+                }
+		return null;
 	}
 
     /**
@@ -100,23 +109,26 @@ public class Employee extends Person {
 	 */
 	public boolean addEmployee(String fn, String ln, String phone, int pCode, String dob, String mail, String pw) {
 		fn = Helper.capitalFirst(fn);
-		return db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw);
+		return !db.employeeExist(new Employee(fn, ln, phone, pCode, dob, mail)) && db.addEmployee(new Employee(fn, ln, phone, pCode, dob, mail), pw);
 	}
 
 	/**
-     * Method editDish
+	 *   Method editDish
 	 * Edits a dish to send in a new dish object and the name of the old dish
-	 *
-	 * @param name     String object
-	 * @param newPrice Double
-	 * @param cost     Double
-	 * @param oldName  String object
-	 * @return true if sucsessfully updated, else it will return false
+	 * @param dish Dish object
+	 * @param newPrice the new price
+	 * @param newCost the new cost
+	 * @return true if the database update is successfull, else if false.
 	 */
-	public boolean editDish(String name, double newPrice, double cost, String oldName) {
-		name = Helper.capitalFirst(name);
-		return db.editDish(new Dish(name, newPrice, cost), oldName);
+	public boolean editDish(Dish dish, double newPrice, double newCost) {
+                dish.setPrice(newPrice);
+                dish.setCost(newCost);
+		return db.editDish(dish);
 	}
+        
+        public Dish getDish(String name){
+            return db.getDish(name);
+        }
 
 	/**
 	 * type are of object type String
@@ -140,17 +152,25 @@ public class Employee extends Person {
 	 * @return //TODO fix docuemtation
 	 */
 	public boolean updateEmployee(Employee input) {
-		return input.getEmployeeId() >= 0 && db.updateEmployee(input);
+		return db.updateEmployee(input);
 	}
 
 	public boolean changeEmployeePassword(String input, int id) {
-		if (id < 0) {
-			if (db.changeEmployeePassword(input, id)) {
+		if(input == null || id > -1){
+                    if(db.getEmployee(id)==null){
+                        return false;
+                    }
+                   
+                    else if (db.changeEmployeePassword(input, id)) {
 				return true;
 			}
-		}
+                }
 		return false;
 	}
+        //TODO DOKUMENTASJON
+        public DefaultListModel getDishes(int id){
+                return db.getDishes(id);
+        }
 
 	/**
      * Method toString
@@ -283,42 +303,38 @@ public class Employee extends Person {
             int en = 0;
             int to = 0;
             try{
-                if(!db.dishExist(dish.getName())) {
+                if(!db.dishExist(Helper.capitalFirst(dish.getName()))) {
                     for (int i = 0; i < catNames.getSize(); i++) {
-                        System.out.println(db.cateogryExist(catNames.get(i)));
-                        if(!db.cateogryExist(catNames.get(i))){
-                            System.out.println(db.addCategory(catNames.get(i)));
+                        if(!db.cateogryExist(Helper.capitalFirst(catNames.get(i)))){
+                            db.addCategory(Helper.capitalFirst(catNames.get(i)));
                         }
                     }
                     for (int i = 0; i < ingredient.getSize(); i++) {
-                        if(!db.ingredientExist(ingredient.get(i))){
-                            db.addIngredient(ingredient.get(i));
+                        if(!db.ingredientExist(Helper.capitalFirst(ingredient.get(i)))){
+                            db.addIngredient(Helper.capitalFirst(ingredient.get(i)));
                         }
                     }
                     
                     if(db.addDish(dish)){
                         for (int i = 0; i < catNames.getSize(); i++) {
-                            System.out.println(dish.getName() + " " + catNames.get(i));
-                            db.insertDishCat(dish.getName(), catNames.get(i));
+                            db.insertDishCat(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(catNames.get(i)));
+                            en++;
                             
                         }
                         for (int i = 0; i < ingredient.getSize(); i++) {
-                            db.insertDishIngredient(dish.getName(), ingredient.get(i));
-                            
+                            db.insertDishIngredient(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(ingredient.get(i)));
+                            to++;
                         }
 						return en == catNames.getSize() && to == ingredient.getSize();
 					}
                 }
             }catch (SQLException ePrepState) {
-                
-                System.out.println(ePrepState);
 //                gui.Gui.showErrorMessage(Helper.DATABASE_NUMBER, 1, ePrepState);
                 return false;
                 
                 
                 
             }
-            System.out.println("LOL");
             return false;
         }
 
@@ -347,5 +363,14 @@ public class Employee extends Person {
 			return false;
 		}
 		return false;
+	}
+
+
+	public DefaultListModel<Category> getCategories(){
+		return db.getCategories();
+	}
+
+    public boolean removeDish(String name){
+		return db.hideDish(Helper.capitalFirst(name));
 	}
 }
