@@ -1130,7 +1130,7 @@ public class Database {
        /**
         * Find dishes who belongs to one spesefic category id.
         * @param id Integer Category id
-        * @return 
+        * @return //TODO docuemtation
         */
         public DefaultListModel<Dish> getDishes(int id) {
             if(id < 0){
@@ -1147,6 +1147,7 @@ public class Database {
 				while (rs.next()) {
 					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("status")));
 				}
+
 				return output;
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
