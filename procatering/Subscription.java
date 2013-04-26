@@ -145,4 +145,15 @@ public class Subscription {
         }
         return false;
     }
+    /**
+     * Method toString
+     * overview of the subscription for presentation in gui
+     * @return String of the subscription object
+     */
+    public String toString(){
+        String output = "Order date: "+ getOrderDate();
+
+
+        return output;
+    }
 }

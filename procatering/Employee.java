@@ -75,7 +75,13 @@ public class Employee extends Person {
 		return new Employee(db.getEmployee(employeeId));
 	}
 
-
+    /**
+     * Method getSubscription
+     * @return the subscription object attribute
+     */
+    public Subscription getSubscription(){
+        return subscription;
+    }
 	public Order getOrder() {
 		return order;
 	}

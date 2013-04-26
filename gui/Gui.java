@@ -5,24 +5,22 @@ import database.SecurityChecker;
 import procatering.Customer;
 import procatering.Employee;
 import procatering.Helper;
-import procatering.Order;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static procatering.Helper.DATABASE_NUMBER;
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
 
@@ -240,7 +238,30 @@ public class Gui {
 			}
 		});
         /* Subscription Start date add calendar listener */
-        //subscriptionActivationDateValueLabel.setText(subscriptionDatePicker.toString());//TODO ted
+        subscriptionDatePicker.addPropertyChangeListener("calendar",new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                Date date = subscriptionDatePicker.getDate();
+                GregorianCalendar c = new GregorianCalendar();
+                c.setTime(date);
+                // System.out.println(c.get(Calendar.DAY_OF_MONTH));
+                int dd = c.get(Calendar.DATE);
+                int mm = c.get(Calendar.MONTH);
+                int yy = c.get(Calendar.YEAR);
+                Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
+                loggedInEmployee.addSubscriptionStartDate(ts);
+                subscriptionActivationDateValueLabel.setText(""+dd +"/"+mm+" -"+yy );//TODO ted
+                //subscriptionActivationDateValueLabel.setText(""+ts);//TODO ted
+            }
+        });
+        subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionActivationDateSubmitButtonActionPerformed();
+            }
+        });
+
         
 		/* Customer registration button */
 		registerNewButton.addActionListener(new ActionListener() {
@@ -364,6 +385,7 @@ public class Gui {
 				singleOrderAddTimeButtonActionPerformed();
 			}
 		});
+
 	}
 
 	/**
@@ -416,6 +438,9 @@ public class Gui {
 			loginErrorMessage_label.setText("Login unsuccessful. Please check your information");
 		}
 	}
+    private void subscriptionUpdateTextpane() {
+        SubscriptionOrderInformationTextPane.setText(loggedInEmployee.getSubscription().toString());
+    }
 	//TODO add logOutCode
 	private void logOutButtonActionPerformed(ActionEvent evt) {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
@@ -479,7 +504,21 @@ public class Gui {
                 "</tr>"+
                 "</table>"+
                 "</html>";
-        subscriptionCustomerInformation.setText(t);
+        subscriptionCustomerInformation.setText(t); //TODO TED TED
+        loggedInEmployee.createSubscription(customer.getCustomerID());
+    }
+    private void subscriptionActivationDateSubmitButtonActionPerformed() {
+        Date date = subscriptionDatePicker.getDate();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int yy = cal.get(Calendar.YEAR);
+        int mm = cal.get(Calendar.MONTH);//TODO move.
+        int dd = cal.get(Calendar.DATE);
+        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
+        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
+        System.out.println(ts); //TODO remove
+        loggedInEmployee.addSubscriptionStartDate(ts);
+        subscriptionUpdateTextpane();
     }
 
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
