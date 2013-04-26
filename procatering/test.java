@@ -15,39 +15,36 @@ public class test {
     public static void main(String[] args) {
     Employee e = new Employee("bjarne", "jacobsen", "65873248", 123654, "bjarne@procatering.org", "Qwert123");
 
-    Dish dish = new Dish("Jorgie", 99,56);
+    Dish dish = new Dish("taco", 99,56);
     
     DefaultListModel<String> catNames = new DefaultListModel<>();
     DefaultListModel<String> ingredient = new DefaultListModel<>();
     
-    catNames.addElement("svett");      
-    ingredient.addElement("guut");
+    catNames.addElement("meat");      
+    ingredient.addElement("tacokrydder");
  
-
-//        System.out.println((e.addNewDish(dish, catNames, ingredient)));   //funke
+        /** DISHES **/                                                          /** DISHES **/ 
+//       System.out.println((e.addNewDish(dish, catNames, ingredient)));        //ADD
+//       System.out.println(e.hideDish("jorgie"));                              //HIDE
+//       System.out.println(e.activateDish("jorgie"));                          //ACTIVATE
+//       System.out.println(e.editDish(e.getDish("jorgie"), 1000, 500));        //EDIT
     
-//        System.out.println(e.removeDish("jorgie"));   //funke
-        
-//        System.out.println(e.editDish(e.getDish("jorgie"), 1000, 500));   //funke
-    
-//        System.out.println(e.addEmployee("ornulf", "olsen", "65873248", 2500,"03041989", "ornulf@procatering.org", "Qwert123")); // funke
-    
-//        if(e.getEmployee(16)!=null){         //FUNKE
-//           
-//            Employee s = new Employee(e.getEmployee(16));
-//            System.out.println(s.getEmployeeId());
-//      
+        /** EMPLOYEE **/                                                        /** EMPLOYEE **/
+//        System.out.println(e.addEmployee("Ted","sky", "65873248", 2500,
+//            "03041989", "ornulf@procatering.org", "Qwert123"));               // ADD
+//        if(e.getEmployee(16)!=null){         
+//            Employee s = new Employee(e.getEmployee(16));     
 //            if(s !=null){
 //                s.setFirstName("ornulf");
 //                 s.setLastName("olsen");
 //                 System.out.println(e.updateEmployee(s));
 //            }
-//        }
-       // System.out.println(e.changeEmployeePassword("jara", 16));  // FUNKE
+//        }                                                                     //UPDATE
+//        System.out.println(e.changeEmployeePassword("jara", 16));             //PASSWORD
+//        System.out.println(e.removeEmployee(20));                             //REMOVE
     
-//        DefaultListModel en = e.getDishes(1);   // FUNKE
-//        System.out.println(en.get(0));
-    
-    
+        /** CATEGORIES **/                                                      /** CATEGORIES **/
+//        System.out.println(e.removeCategory("svett"));                        //REMOVE
+          System.out.println();
     }
 }

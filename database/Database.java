@@ -164,11 +164,9 @@ public class Database {
          * employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	 */
 	public boolean addEmployee(Employee input, String pw) {
-		if (input == null || employeeExist(input) == false) {
-                    System.out.println("Employe Exis");
+		if (input == null || employeeExist(input) == true) {
 			return false;
 		}
-                System.out.println("Employe do not exist");
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {                        
                                 con.setAutoCommit(false);
@@ -258,15 +256,6 @@ public class Database {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("UPDATE employee SET firstname = ?, lastname = ?, clean_fn = ?, clean_ln = ?, phonenumber = ?, postalcode = ?, dob = ?, email = ? WHERE employee_id = ?;")) {
 				con.setAutoCommit(false);
-//                                System.out.println(input.getFirstName());
-//                                System.out.println(input.getLastName());
-//                                System.out.println(input.getFirstName().toUpperCase());
-//                                System.out.println(input.getLastName().toUpperCase());
-//                                System.out.println(input.getPhoneNumber());
-//                                System.out.println(input.getPostalCode());
-//                                System.out.println(input.getDob());
-//                                System.out.println(input.getEmail());
-                                System.out.println(input.getEmployeeId() + " Update her");
 				prepStat.setString(1, input.getFirstName());
 				prepStat.setString(2, input.getLastName());
 				prepStat.setString(3, input.getFirstName().toUpperCase());
@@ -282,7 +271,6 @@ public class Database {
                                 if(check>0){
                                     return true;
                                 }
-                                System.out.println("INGEN UPDATE");
                                 return false;
 			} catch (SQLException ePrepState) {
                             System.out.println(ePrepState);
@@ -303,8 +291,8 @@ public class Database {
 	 * @return false if the employee does not exist and true if employee exist or the statement is null
 	 *         <p/>
 	 */
-	public boolean employeeExist(Employee employee) {
-		if (employee == null) {
+	public boolean employeeExist(Employee employee) {     
+		if (employee == null) {              
 			return true;
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -315,15 +303,8 @@ public class Database {
 				prepStat.setString(2, employee.getLastName().toUpperCase());
 				prepStat.setString(3, employee.getPhoneNumber());
 				try (ResultSet rs = prepStat.executeQuery()) {
-
 					while (rs.next()) {
-						String fn = rs.getString("firstname");
-
-						if (fn == null) {
-							return false;
-						} else {
-							return true;
-						}
+                                                return true;
 					}
 
 				} catch (SQLException ePrepState) {
@@ -341,7 +322,8 @@ public class Database {
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return true;
 		}
-		return true;
+                
+		return false;
 	}
 
 	/**
@@ -850,29 +832,43 @@ public class Database {
 	 * @param name string object
 	 * @return true f sucsessfully removed, else it will return false.
 	 */
-	public boolean removeCategory(String name) {
-            if(Helper.stringChecker(name)){
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM categories WHERE catname = ?")) {
-					con.setAutoCommit(false);
-					prepStat.setString(1, name);
-					prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-					return true;
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-				return false;
-			}
+        
+        public boolean removeCategory(String name) {
+            if( getCategory(name).getCategoryID() > -1){
+            int id = getCategory(name).getCategoryID();
+            DefaultListModel<Dish> dishId = getAllDishesInACategory(id);
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                for (int i = 0; i < dishId.getSize(); i++) {
+                    try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM cat_dish WHERE cat_id = ? AND dish_id = ?")) {
+                        con.setAutoCommit(false);
+                        prepStat.setInt(1, id);
+                        prepStat.setInt(2, dishId.get(i).getID());
+                        prepStat.executeUpdate();
+                    }
+                }
+                try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM categories WHERE cat_id = ?")) {
+                    con.setAutoCommit(false);
+                    prepStatTo.setInt(1, id);
+                    prepStatTo.executeUpdate();
+                    con.commit();
+                    con.setAutoCommit(true);
+                    return true;
+                    
+                } catch (SQLException ePrepState) {
+                        System.out.println(ePrepState);
+//                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return false;
+                }
+            } catch (SQLException eCon) {
+//                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                return false;
+            }
             }
             return false;
-
-	}
+            
+        }
+  
 
 	public boolean customerExist(Customer customer) {
 		String sql = "SELECT clean_fn, phonenumber FROM customer WHERE clean_fn = ? AND phonenumber = ?";
@@ -1137,7 +1133,7 @@ public class Database {
                 return null;
             }
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT dishname FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
 				con.setAutoCommit(false);
                                 prepStat.setInt(1, id);
 				ResultSet rs = prepStat.executeQuery();
@@ -1146,6 +1142,86 @@ public class Database {
 				DefaultListModel<Dish> output = new DefaultListModel<>();
 				while (rs.next()) {
 					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("status")));
+				}
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+        //TODO GM
+        public boolean removeEmployee(int id) {
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM employee_types WHERE employee_id = ?")){
+                                        con.setAutoCommit(false);
+					prepStat.setInt(1, id);
+                                        prepStat.executeUpdate();
+					
+                                        try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM employee WHERE employee_id = ?")){
+                                            prepStatTo.setInt(1, id);
+                                            prepStatTo.executeUpdate();
+                                            con.commit();
+                                            con.setAutoCommit(true);
+                                           
+                                            return true;
+                                        }
+				} catch (SQLException ePrepState) {
+                                        System.out.println(ePrepState);
+//					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return false;
+				}
+			} catch (SQLException eCon) {
+//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return false;
+			}
+
+	}
+        //TODO GM
+        public boolean activateDish(String name) {
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
+					con.setAutoCommit(false);
+                                        prepStat.setInt(1, 1);
+					prepStat.setString(2, Helper.capitalFirst(name));
+					int check = prepStat.executeUpdate();
+					con.commit();
+					con.setAutoCommit(true);
+                                        if(check==0){
+                                            return false;
+                                        }
+					return true;
+                                       
+				} catch (SQLException ePrepState) {
+					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return false;
+				}
+			} catch (SQLException eCon) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return false;
+			}
+	}
+        //TODO GM
+         public DefaultListModel<Dish> getAllDishesInACategory(int id) {
+            if(id < 0){
+                return null;
+            }
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ?")) {
+				con.setAutoCommit(false);
+                                prepStat.setInt(1, id);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+				DefaultListModel<Dish> output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("dish_id")));
 				}
 				return output;
 			} catch (SQLException ePrepState) {

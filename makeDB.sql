@@ -129,7 +129,7 @@ ALTER TABLE customer
     ADD CONSTRAINT customer_fk2 FOREIGN KEY (postalcode) REFERENCES postalcode (postalcode);
 
 ALTER TABLE cat_dish
-    ADD CONSTRAINT cat_dish_fk1 FOREIGN KEY (cat_id) REFERENCES categories (cat_id);
+    ADD CONSTRAINT cat_dish_fk1 FOREIGN KEY (cat_id) REFERENCES categories (cat_id) --ON DELETE CASCADE; mulighet
 
 ALTER TABLE cat_dish
     ADD CONSTRAINT cat_dish_fk2 FOREIGN KEY (dish_id) REFERENCES dish (dish_id);
@@ -149,6 +149,7 @@ INSERT INTO types (name) VALUES ('Admin');
 INSERT INTO types (name) VALUES ('Salesperson');
 INSERT INTO types (name) VALUES ('Chef');
 INSERT INTO types (name) VALUES ('Driver');
+INSERT INTO types (name) VALUES ('Deactive');
 
 INSERT INTO customer (firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note) VALUES('Jørgen Lien', 'Sellæg', 'JØRGEN LIEN', 'SELLÆG', '93478353', 'jorgen@guut.org', 'Asylveita 3', 7012, 'He has been a customer for years. VIP');
 INSERT INTO customer (firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note) VALUES('Geir Morten', 'Larsen', 'GEIR MORTEN', 'LARSEN', '94883883', 'geir@guut.org', 'Tynset 3', 2500, null );
