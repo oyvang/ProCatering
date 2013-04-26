@@ -572,17 +572,13 @@ public class Gui {
 	}*/
 
     private void subscriptionDayAddButtonActionPerformed(){
-        if(subscriptionAddDayButton.getText().equals("Add Monday")){
-            System.out.println(subscriptionDaySelector.getSelectedItem());
-            int t = Integer.parseInt(subscriptionDaySelector.getSelectedItem().toString().substring(0,2));
-            System.out.println("time: "+t);
-            int m = Integer.parseInt(subscriptionDaySelector.getSelectedItem().toString().substring(3));
-            System.out.println("minutt: "+m);
-
-            if(loggedInEmployee.getSubscription().addOrderContent("Monday",new Timestamp(0,0,0,t,m,0,0))){
-                System.out.println("it worked");
+        if(true){
+            int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0,2));
+            int m = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(3));
+            String day = subscriptionDaySelector.getSelectedItem().toString();
+            Timestamp time = new Timestamp(0,0,0,t,m,0,0);
+            if(loggedInEmployee.getSubscription().addOrderContent(day, time)){
                 subscriptionUpdateTextpane();
-                subscriptionAddDayButton.setText("Remove Monday");
             }
         }else{
             subscriptionAddDayButton.setText("Add Monday");
