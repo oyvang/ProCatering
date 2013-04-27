@@ -132,16 +132,38 @@ public class Subscription {
 
     /**
      * Method addOrderContent
-     * Adds an empty (with no dishes) OrderContent object to the list of ordercontent
+     * Adds an empty (with no dishes) OrderContent object to the list of ordercontent,
+     * If the day already is added, nothing gets added
      * @param weekDay String The day this order is to be delivered repeatedly ( Full name of day with capital first letter )
      * @param delivery Timestamp of the time of the weekDay the order is delivered repeatedly
      * @return boolean returns true if executed successfully with correct argument input
      */
     //TODO FIX
-      public boolean addOrderContent(String weekDay, Timestamp delivery) {
-        if(weekDay != null){    
+    public boolean addOrderContent(String weekDay, Timestamp delivery) {
+        if(weekDay != null){
+            for (int i = 0; i<content.size();i++){
+                if(content.getElementAt(i).getDeliveryDay().equals(weekDay)){
+                    return false;
+                }
+            }
             content.addElement(new OrderContent(weekDay, delivery));
             return true;
+        }
+        return false;
+    }
+
+    /**
+     *Method removeOrderContent
+     * removes an ordercontent thad is added on a given day
+     * @param weekDay String of day of week, Capital first letter.
+     * @return boolean, if successfully removed; true
+     */
+    public boolean removeOrderContent(String weekDay){
+        for (int i = 0; i<content.size(); i++){
+            if(content.get(i).getDeliveryDay().equals(weekDay)){
+                content.removeElementAt(i);
+                return true;
+            }
         }
         return false;
     }
