@@ -5,10 +5,9 @@
 package procatering;
 
 
-import java.lang.reflect.InvocationTargetException;
+import javax.swing.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import javax.swing.DefaultListModel;
 
 /**
  * content of an order or subscription, with deliveryDate( for order and subscription ) or deliveryDay( for subscription )
@@ -147,15 +146,12 @@ public class OrderContent {
 //			}
 //		}
 //		return output;
-
-
-
 		if (dishes == null)
 			return null;
 		DefaultListModel<String> output = new DefaultListModel<>();
 		output.addElement("<table>");
 		for (int i = 0; i < dishes.getSize(); i++) {
-			output.addElement("<tr><td>1x</td><td>"+dishes.get(i).getName()+"</td><td>"+dishes.get(i).getPrice()+"</td></tr>");
+			output.addElement("<tr><td halign='left'></td><td halign='left'>"+dishes.get(i).getName()+"</td><td halign='right'>"+dishes.get(i).getPrice()+"</td></tr>");
 		}
 		output.addElement("</table>");
 		return output;
@@ -191,11 +187,36 @@ public class OrderContent {
 			}
 			return output;
 		} else {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy'-'HH:mm"); //TODO maybe fix locale.
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy' - 'HH:mm"); //TODO maybe fix locale.
 			output = simpleDateFormat.format(deliveryTime) + ":<br>";
 			if (countList != null){
 				for (int i = 0; i < countList.size(); i++) {
 					output += countList.get(i) + "<br>";
+				}
+			}
+			return output;
+		}
+	}
+
+	public String toHtml() {
+		String output = "";
+		DefaultListModel<String> countList = countDishes(dishes);
+
+		if (deliveryDay != null) {
+			String simpleDateFormat = new SimpleDateFormat("HH:mm").format(deliveryTime);
+			output = deliveryDay + ": " + simpleDateFormat + "<br>";
+			if (countList != null){
+				for (int i = 0; i < countList.size(); i++) {
+					output += countList.get(i);
+				}
+			}
+			return output;
+		} else {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy' - 'HH:mm"); //TODO maybe fix locale.
+			output = simpleDateFormat.format(deliveryTime);
+			if (countList != null){
+				for (int i = 0; i < countList.size(); i++) {
+					output += countList.get(i);
 				}
 			}
 			return output;

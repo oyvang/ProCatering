@@ -153,11 +153,24 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		String output = "";
+		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
-			output += ordercontent.get(i) + "<br>";
+			output += ordercontent.get(i);
 		}
 		return output;
+	}
+	/** Method returns a html representation of the object.
+	 * @return a html document representation of the object.
+	 *
+	 * */
+	public String toHtml() {
+		String output = "<html>";
+		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		for (int i = 0; i < ordercontent.size(); i++) {
+			output += ordercontent.get(i).toHtml();
+		}
+		return output+"</html>";
 	}
 }
 

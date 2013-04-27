@@ -177,7 +177,7 @@ public class Subscription {
             for (int i = 0; i<content.size(); i++){
                 output +=content.getElementAt(i).toString();
             }
-        }
+		}
         return output;
     }
 }
