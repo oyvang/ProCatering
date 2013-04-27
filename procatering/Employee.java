@@ -167,10 +167,10 @@ public class Employee extends Person {
                 }
 		return false;
 	}
-        //TODO DOKUMENTASJON
-        public DefaultListModel getDishes(int id){
-                return db.getDishes(id);
-        }
+    //TODO DOKUMENTASJON
+    public DefaultListModel getDishes(int id){
+    	return db.getDishes(id);
+    }
 
 	/**
      * Method toString
@@ -365,12 +365,24 @@ public class Employee extends Person {
 		return false;
 	}
 
-
-	public DefaultListModel<Category> getCategories(){
-		return db.getCategories();
-	}
-
-    public boolean removeDish(String name){
+    //TODO GM
+    public DefaultListModel<Category> getCategories(){
+            return db.getCategories();
+    }
+    //TODO GM
+    public boolean hideDish(String name){
 		return db.hideDish(Helper.capitalFirst(name));
 	}
+    //TODO GM
+    public boolean activateDish(String name){
+            return db.activateDish(Helper.capitalFirst(name));
+    }
+    //TODO GM
+    public boolean removeEmployee(int id){
+        return db.employeeExist(db.getEmployee(id)) && db.removeEmployee(id);
+    }
+    //TODO GM
+    public boolean removeCategory (String name){
+        return db.removeCategory(Helper.capitalFirst(name));
+    }
 }
