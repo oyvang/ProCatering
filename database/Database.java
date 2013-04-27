@@ -440,7 +440,7 @@ public class Database {
 	//TODO DOK!
 	public DefaultListModel<procatering.Order> getOrder(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM orders LEFT JOIN customer ON customer.customer_id = orders.customer_id WHERE orders.customer_id = ?")) {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, cid);
 				ResultSet rs = prepStat.executeQuery();
@@ -668,7 +668,6 @@ public class Database {
          *
          * @returnes strings in a DefaultListModel.
          */
-        //Kanskje få inn en int som bestemmer antall dishes som skal vises?
         public DefaultListModel<String> topDishes() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum desc")) {
@@ -722,6 +721,63 @@ public class Database {
                     return null;
             }
 	}
+            
+        /**
+         * Lists out all the orders in a given time frame and arranges them in order of date.
+         *
+         * @param from is the start date and time.
+         * @param to is the end date and time.
+         * @returnes strings in a DefaultListModel.
+         */
+        public DefaultListModel<String> getOrdersFromTo(Timestamp from, Timestamp to) {
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, customer.lastname, customer.firstname, employee.employee_id, time_of_order, COUNT(orders.order_id) \"nu\", SUM(amount*quantity) \"sum\" FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN employee ON employee.employee_id = orders.employee_id JOIN customer ON customer.customer_id = orders.customer_id JOIN dish ON order_dish.dish_id = dish.dish_id WHERE time_of_order > ? AND time_of_order < ? GROUP BY order_dish.order_id ORDER BY orders.time_of_order desc")) {
+                    con.setAutoCommit(false);
+                    prepStat.setTimestamp(1, from);
+                    prepStat.setTimestamp(2, to);
+                    ResultSet rs = prepStat.executeQuery();
+                    DefaultListModel output = new DefaultListModel<>();
+                    while (rs.next()) {
+                        output.addElement("Order ID: " + rs.getInt("order_id") + ". Order sum: " + rs.getDouble("sum") + " NOK" + ". Kunde: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Employee ID: " + rs.getInt("employee_id") + ". Order time: " + rs.getTimestamp("time_of_order"));
+                    }
+                    con.commit();
+                    con.setAutoCommit(true);
+                    return output;
+                } catch (SQLException ePrepState) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return null;
+                }
+            } catch (SQLException eCon) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                return null;
+            }
+        }
+        
+        
+        // gjør ferdig denne den nisse(eirik)
+        public DefaultListModel<String> bigSpender() {
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) \"nu\", SUM(amount*quantity) \"sum\" FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN employee ON employee.employee_id = orders.employee_id JOIN customer ON customer.customer_id = orders.customer_id JOIN dish ON order_dish.dish_id = dish.dish_id GROUP BY customer.customer_id ORDER BY sum desc")) {
+                    con.setAutoCommit(false);
+                    ResultSet rs = prepStat.executeQuery();
+                    DefaultListModel output = new DefaultListModel<>();
+                    while (rs.next()) {
+                        output.addElement("Order ID: " + rs.getInt("order_id") + ". Order sum: " + rs.getDouble("sum") + " NOK" + ". Kunde: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Employee ID: " + rs.getInt("employee_id") + ". Order time: " + rs.getTimestamp("time_of_order"));
+                    }
+                    con.commit();
+                    con.setAutoCommit(true);
+                    return output;
+                } catch (SQLException ePrepState) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    cleanup.dbRollback(con);
+                    return null;
+                }
+            } catch (SQLException eCon) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+                return null;
+            }
+        }
         
 	/**
 	 * Adds a new category into the database. This methode only uses the name of the category to create one.
