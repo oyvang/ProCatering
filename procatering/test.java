@@ -45,6 +45,6 @@ public class test {
     
         /** CATEGORIES **/                                                      /** CATEGORIES **/
 //        System.out.println(e.removeCategory("svett"));                        //REMOVE
-          System.out.println();
+//          System.out.println(e.addCatergory("mad-corck"));                    //ADD
     }
 }
