@@ -185,6 +185,8 @@ public class Gui {
     private JScrollPane subscriptionSelectCategoryScrollPane;
     private JPanel subscriptionSelectDishJListPanel;
     private JScrollPane subscriptionSelectDishScrollPane;
+    private JSpinner spinner1;
+    private JButton button1;
     private static String errorMessageTitle = "Error";
 
 
