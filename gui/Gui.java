@@ -174,7 +174,7 @@ public class Gui {
 	private JPanel singleOrderAddPanel;
     private JList subscriptionSelectCategoryJList;
     private JList subscriptionSelectDishJList;
-    private JTextField subscriptionProgressTextArea;
+    private JTextPane subscriptionProgressTextArea;
     private JButton subscriptionBackButton;
     private JButton subscriptionNextButton;
     private JPanel subscriptionProgressAreaPanel;
@@ -185,8 +185,8 @@ public class Gui {
     private JScrollPane subscriptionSelectCategoryScrollPane;
     private JPanel subscriptionSelectDishJListPanel;
     private JScrollPane subscriptionSelectDishScrollPane;
-    private JSpinner spinner1;
-    private JButton button1;
+    private JSpinner subscriptionDishCountSpinner;
+    private JButton subscriptionDishAddButtion;
     private static String errorMessageTitle = "Error";
 
 
@@ -318,6 +318,12 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 subscriptionNextButtonActionPerformed();
                 System.out.println("Subscription progress Next Clicked");
+            }
+        });
+        subscriptionDishAddButtion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setSubscriptionDishAddButtionActionPerformed();
             }
         });
 
@@ -627,6 +633,7 @@ public class Gui {
 		CardLayout cl = (CardLayout)mainPanel.getLayout(); //TODO HER TED
 		cl.show(mainPanel, "subscriptionOrderCard");
         generateSubscription(customer);
+        subscriptionProgressTextArea.setText("<html><b>Select Day/Time</b> - Select dishes - Overview </html>");
 	}
 
     private void generateSubscription(Customer customer) {
@@ -731,9 +738,18 @@ public class Gui {
         if(loggedInEmployee.getSubscription().getContent().isEmpty()){
             CardLayout cl = (CardLayout)subscriptionStepPanel.getLayout();
             cl.show(subscriptionStepPanel, "subscriptionSelectTimeCard");
-            showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
-        }else{
-            int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+            showErrorMessage(GUI_NUMBER, 5, new Exception("Please select Days before you can continue"));
+        }else if(!loggedInEmployee.getSubscription().getContent().getElementAt(0).getDishes().isEmpty()){ // If there is dishes added to the first element TODO: possible creating error if added day without dishes
+            int option = JOptionPane.showOptionDialog(ProCatering, "Have you added all the Dishes into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+            if(option == 0){
+                subscriptionProgressTextArea.setText("<html>Select Day/Time - Select dishes -<b> Overview </b></html>");
+                subscriptionBackButton.setEnabled(true);
+                CardLayout cl = (CardLayout)subscriptionOrderPanel.getLayout();
+                cl.show(subscriptionOrderPanel, "subscriptionConfirmCard");
+                //popilateSubscriptionConfirmList();     TODO
+            }
+        }else {
+            int option = JOptionPane.showOptionDialog(ProCatering, "Have you added all the Days/times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
             if(option == 0){
                 subscriptionProgressTextArea.setText("<html>Select Day/Time - <b>Select dishes</b> - Overview </html>");
                 subscriptionBackButton.setEnabled(true);
@@ -748,6 +764,22 @@ public class Gui {
 
             }
         }
+    }
+    private void setSubscriptionDishAddButtionActionPerformed() {
+        Dish dish = (Dish)subscriptionSelectDishJList.getSelectedValue();
+        System.out.println("dish = " + dish);
+        int q = Integer.parseInt(subscriptionDishCountSpinner.getValue().toString());
+        System.out.println("q = "+q);
+        int i =  subscriptionSelectDayComboBox.getSelectedIndex();
+        System.out.println("i = "+i);
+
+        //System.out.println(singleOrderTimesComboBox.getSelectedItem());
+        if(loggedInEmployee.getSubscription().addDish(dish, q, i)){
+            System.out.println("DET GIKK BRA");
+            subscriptionUpdateTextpane();
+        }
+        else
+            System.out.println("Alt gikk GALT!");
     }
     private void populateSubscriptionCategoryLists() {
         DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
