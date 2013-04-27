@@ -138,7 +138,7 @@ public class Gui {
     private JPanel subscriptionConfirmPanel;
     private JPanel subscriptionStepPanel;
     private JPanel subscriptionInformationPanel;
-    private JPanel subscripionStatusPanel;
+    private JPanel subscripionProgressPanel;
     private JPanel subscriptionSelectTimePanel;
     private JPanel subscriptionSelectDishPanel;
     private JPanel subscriptionCustomerInformationPanel;
@@ -172,7 +172,20 @@ public class Gui {
 	private JButton singleOrderProgressBackButton;
 	private JSpinner singleOrderDishSpinner;
 	private JPanel singleOrderAddPanel;
-	private static String errorMessageTitle = "Error";
+    private JList subscriptionSelectCategoryJList;
+    private JList subscriptionSelectDishJList;
+    private JTextField subscriptionProgressTextArea;
+    private JButton subscriptionBackButton;
+    private JButton subscriptionNextButton;
+    private JPanel subscriptionProgressAreaPanel;
+    private JPanel subscriptionProgressButtonPanel;
+    private JComboBox subscriptionSelectDayComboBox;
+    private JComboBox subscriptionEmergencySpacerComboBox;
+    private JPanel subscriptionSelectCategoryJListPanel;
+    private JScrollPane subscriptionSelectCategoryScrollPane;
+    private JPanel subscriptionSelectDishJListPanel;
+    private JScrollPane subscriptionSelectDishScrollPane;
+    private static String errorMessageTitle = "Error";
 
 
 
@@ -296,6 +309,13 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 subscriptionDayRemoveButtonActionPerformed();
+            }
+        });
+        subscriptionNextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionNextButtonActionPerformed();
+                System.out.println("Subscription progress Next Clicked");
             }
         });
 
@@ -432,6 +452,32 @@ public class Gui {
 			}
 		});
 
+        subscriptionSelectCategoryJList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                subscriptionSelectCategoryJListActionPerformed();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 		singleOrderDishSelectCategoryJList.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -548,6 +594,7 @@ public class Gui {
 		cl.show(mainPanel, "singleOrderCard");
 		generateOrder(customer);
 	}
+
 
 	private void generateOrder(Customer customer) {
 		String t =	"<html>"+
@@ -678,6 +725,37 @@ public class Gui {
         }
         subscriptionUpdateTextpane();
     }
+    private void subscriptionNextButtonActionPerformed() {
+        if(loggedInEmployee.getSubscription().getContent().isEmpty()){
+            CardLayout cl = (CardLayout)subscriptionStepPanel.getLayout();
+            cl.show(subscriptionStepPanel, "subscriptionSelectTimeCard");
+            showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
+        }else{
+            int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+            if(option == 0){
+                subscriptionProgressTextArea.setText("<html>Select Day/Time - <b>Select dishes</b> - Overview </html>");
+                subscriptionBackButton.setEnabled(true);
+                CardLayout cl = (CardLayout)subscriptionStepPanel.getLayout();
+                cl.show(subscriptionStepPanel, "subscriptionSelectDishCard");
+                DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getSubscription().getContent();
+                for (int i = 0; i < ordercontent.size(); i++) {//TODO make it an ordered list
+                    subscriptionSelectDayComboBox.addItem(ordercontent.get(i)); //TODO fix the toString
+                }
+
+                populateSubscriptionCategoryLists();
+
+            }
+        }
+    }
+    private void populateSubscriptionCategoryLists() {
+        DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
+        subscriptionSelectCategoryJList.setModel(categoriesList);
+        subscriptionSelectCategoryScrollPane.setViewportView(subscriptionSelectCategoryJList);
+    }
+    private void subscriptionSelectCategoryJListActionPerformed() {
+        Category cat = (Category)subscriptionSelectCategoryJList.getSelectedValue();
+        subscriptionSelectDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
+    }
 
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
@@ -800,7 +878,7 @@ public class Gui {
 
 	private void singleOrderDishAddButtonActionPerformed() {
 		Dish dish = (Dish)singleOrderDishSelectDishJList.getSelectedValue();
-		System.out.println("dish = "+dish);
+		System.out.println("dish = " + dish);
 		int q = Integer.parseInt(singleOrderDishSpinner.getValue().toString());
 		System.out.println("q = "+q);
 		int i =  singleOrderTimesComboBox.getSelectedIndex();
