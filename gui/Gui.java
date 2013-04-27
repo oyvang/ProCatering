@@ -293,6 +293,12 @@ public class Gui {
                 subscriptionDayAddButtonActionPerformed();
             }
         });
+        subscriptionRemoveDayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionDayRemoveButtonActionPerformed();
+            }
+        });
 
 
         
@@ -620,18 +626,19 @@ public class Gui {
 	}*/
 
     private void subscriptionDayAddButtonActionPerformed(){
-        if(true){
-            int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0,2));
-            int m = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(3));
-            String day = subscriptionDaySelector.getSelectedItem().toString();
-            Timestamp time = new Timestamp(0,0,0,t,m,0,0);
-            if(loggedInEmployee.getSubscription().addOrderContent(day, time)){
-                subscriptionUpdateTextpane();
-            }
-        }else{
-            subscriptionAddDayButton.setText("Add Monday");
+        int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0,2));
+        int m = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(3));
+        String day = subscriptionDaySelector.getSelectedItem().toString();
+        Timestamp time = new Timestamp(0,0,0,t,m,0,0);
+        if(loggedInEmployee.getSubscription().addOrderContent(day, time)){
+            subscriptionUpdateTextpane();
         }
-
+    }
+    private void subscriptionDayRemoveButtonActionPerformed(){
+        String day = subscriptionDaySelector.getSelectedItem().toString();
+        if(loggedInEmployee.getSubscription().removeOrderContent(day)){
+            subscriptionUpdateTextpane();
+        }
     }
 
     private void subscriptionActivationDateSubmitButtonActionPerformed() {

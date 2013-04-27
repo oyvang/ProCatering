@@ -395,7 +395,7 @@
                   <card name="singleOrderCard"/>
                 </constraints>
                 <properties>
-                  <visible value="true"/>
+                  <visible value="false"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -786,17 +786,13 @@
                                         </constraints>
                                         <properties>
                                           <model>
-                                            <item value="Time"/>
-                                            <item value="07:00"/>
-                                            <item value="08:00"/>
-                                            <item value="09:00"/>
-                                            <item value="10:00"/>
-                                            <item value="11:00"/>
-                                            <item value="12:00"/>
-                                            <item value="13:00"/>
-                                            <item value="14:00"/>
-                                            <item value="15:00"/>
-                                            <item value="16:00"/>
+                                            <item value="Monday"/>
+                                            <item value="Tuesday"/>
+                                            <item value="Wednesday"/>
+                                            <item value="Thursday"/>
+                                            <item value="Friday"/>
+                                            <item value="Saturday"/>
+                                            <item value="Sunday"/>
                                           </model>
                                           <name value=""/>
                                         </properties>
@@ -807,13 +803,16 @@
                                         </constraints>
                                         <properties>
                                           <model>
-                                            <item value="Monday"/>
-                                            <item value="Tuesday"/>
-                                            <item value="Wednesday"/>
-                                            <item value="Thursday"/>
-                                            <item value="Friday"/>
-                                            <item value="Saturday"/>
-                                            <item value="Sunday"/>
+                                            <item value="07:00"/>
+                                            <item value="08:00"/>
+                                            <item value="09:00"/>
+                                            <item value="10:00"/>
+                                            <item value="11:00"/>
+                                            <item value="12:00"/>
+                                            <item value="13:00"/>
+                                            <item value="14:00"/>
+                                            <item value="15:00"/>
+                                            <item value="16:00"/>
                                           </model>
                                         </properties>
                                       </component>
