@@ -129,7 +129,7 @@ public class Gui {
 	private JTextPane singleOrderOrderInformationTextpane;
 	private JButton singleOrderProgressButton;
 
-	private JLabel Label;
+	private JLabel customerIdLabel;
 	private JLabel singleOrderCustomerIdLabel;
 
 	private Employee loggedInEmployee;
@@ -170,6 +170,8 @@ public class Gui {
 	private JScrollPane singleOrderDishSelectDishScrollPane;
 	private JButton singleOrderDishAddButton;
 	private JButton singleOrderProgressBackButton;
+	private JSpinner singleOrderDishSpinner;
+	private JPanel singleOrderAddPanel;
 	private static String errorMessageTitle = "Error";
 
 
@@ -360,25 +362,19 @@ public class Gui {
 
 				}
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
-			}
 
+			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
 			}
-
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
-			}
 
+			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
 			}
 		});
 
@@ -390,22 +386,22 @@ public class Gui {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				//To change body of implemented methods use File | Settings | File Templates.
+
 			}
 		});
 
@@ -456,33 +452,16 @@ public class Gui {
 
 			}
 		});
-		singleOrderDishSelectDishJList.addMouseListener(new MouseListener() {
+
+		singleOrderDishAddButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-
+			public void actionPerformed(ActionEvent e) {
+				singleOrderDishAddButtonActionPerformed();
 			}
 		});
+
 	}
+
 
 	/**
 	 * Method editStartValues sets the visibility of elements in the gui.
@@ -498,8 +477,8 @@ public class Gui {
         SubscriptionOrderInformationTextPane.setContentType("text/html");
         SubscriptionOrderInformationTextPane.setEditable(false);
 		Helper.addTimes(singleOrderAddTimeComboBox);
-		employee_ID_input.setText("1");
-		password_input.setText("abc");
+		employee_ID_input.setText("1");//TODO remove
+		password_input.setText("abc");//TODO remove
 
 		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
 		singleOrderProgressBackButton.setEnabled(false);
@@ -598,18 +577,18 @@ public class Gui {
     private void generateSubscription(Customer customer) {
 
         String t =	"<html>"+
-                "<table valign='top'>"+
-                "<tr>" +
-                "<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
-                "</tr>"+
-                "<tr>" +
-                "<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
-                "</tr>"+
-                "<tr>" +
-                "<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
-                "</tr>"+
-                "</table>"+
-                "</html>";
+						"<table valign='top'>"+
+							"<tr>" +
+								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
+							"</tr>"+
+							"<tr>" +
+								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
+							"</tr>"+
+						"</table>"+
+            		   "</html>";
         subscriptionCustomerInformation.setText(t); //TODO TED TED
         if(loggedInEmployee.createSubscription(customer.getCustomerID())){
             System.out.println("Subscription ojbect created." );
@@ -802,22 +781,31 @@ public class Gui {
 	}
 
 	private void populateSingleOrderLists() {
-		MouseListener[] mouse = singleOrderDishSelectCategoryJList.getMouseListeners();
-
 		DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
-		singleOrderDishSelectCategoryJList = new JList<>(categoriesList);
+		singleOrderDishSelectCategoryJList.setModel(categoriesList);
 		singleOrderDishSelectCategoryScrollPane.setViewportView(singleOrderDishSelectCategoryJList);
-
-		for (MouseListener aMouse : mouse) {
-			singleOrderDishSelectCategoryJList.addMouseListener(aMouse);
-		}
-
 	}
 
 	private void singleOrderDishSelectCategoryJListActionPerfomed() {
 		Category cat = (Category)singleOrderDishSelectCategoryJList.getSelectedValue();
-		cat.getCategoryID();
-		System.out.println(cat.getCategoryID());
+		singleOrderDishSelectDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
+	}
+
+	private void singleOrderDishAddButtonActionPerformed() {
+		Dish dish = (Dish)singleOrderDishSelectDishJList.getSelectedValue();
+		System.out.println("dish = "+dish);
+		int q = Integer.parseInt(singleOrderDishSpinner.getValue().toString());
+		System.out.println("q = "+q);
+		int i =  singleOrderTimesComboBox.getSelectedIndex();
+		System.out.println("i = "+i);
+
+		//System.out.println(singleOrderTimesComboBox.getSelectedItem());
+		if(loggedInEmployee.getOrder().addDish(dish, q, i)){
+			System.out.println("DET GIKK BRA");
+			singleOrderUpdateTextpane();
+		}
+		else
+			System.out.println("Alt gikk GALT!");
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
