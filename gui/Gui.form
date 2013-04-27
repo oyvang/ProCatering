@@ -395,7 +395,7 @@
                   <card name="singleOrderCard"/>
                 </constraints>
                 <properties>
-                  <visible value="true"/>
+                  <visible value="false"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -642,7 +642,7 @@
                                 <properties>
                                   <background color="-2697514"/>
                                   <contentType value="text/html"/>
-                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;&#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#13;&#10;      &#13;&#10;    &lt;/p&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
+                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
                                 </properties>
                               </component>
                             </children>
@@ -764,17 +764,13 @@
                                         </constraints>
                                         <properties>
                                           <model>
-                                            <item value="Time"/>
-                                            <item value="07:00"/>
-                                            <item value="08:00"/>
-                                            <item value="09:00"/>
-                                            <item value="10:00"/>
-                                            <item value="11:00"/>
-                                            <item value="12:00"/>
-                                            <item value="13:00"/>
-                                            <item value="14:00"/>
-                                            <item value="15:00"/>
-                                            <item value="16:00"/>
+                                            <item value="Monday"/>
+                                            <item value="Tuesday"/>
+                                            <item value="Wednesday"/>
+                                            <item value="Thursday"/>
+                                            <item value="Friday"/>
+                                            <item value="Saturday"/>
+                                            <item value="Sunday"/>
                                           </model>
                                           <name value=""/>
                                         </properties>
@@ -785,13 +781,16 @@
                                         </constraints>
                                         <properties>
                                           <model>
-                                            <item value="Monday"/>
-                                            <item value="Tuesday"/>
-                                            <item value="Wednesday"/>
-                                            <item value="Thursday"/>
-                                            <item value="Friday"/>
-                                            <item value="Saturday"/>
-                                            <item value="Sunday"/>
+                                            <item value="07:00"/>
+                                            <item value="08:00"/>
+                                            <item value="09:00"/>
+                                            <item value="10:00"/>
+                                            <item value="11:00"/>
+                                            <item value="12:00"/>
+                                            <item value="13:00"/>
+                                            <item value="14:00"/>
+                                            <item value="15:00"/>
+                                            <item value="16:00"/>
                                           </model>
                                         </properties>
                                       </component>

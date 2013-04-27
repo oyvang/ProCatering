@@ -646,12 +646,10 @@ public class Gui {
             String day = subscriptionDaySelector.getSelectedItem().toString();
             Timestamp time = new Timestamp(0,0,0,t,m,0,0);
             if(loggedInEmployee.getSubscription().addOrderContent(day, time)){
+                System.out.println("det funka");
                 subscriptionUpdateTextpane();
             }
-        }else{
-            subscriptionAddDayButton.setText("Add Monday");
         }
-
     }
 
     private void subscriptionActivationDateSubmitButtonActionPerformed() {
