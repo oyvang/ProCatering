@@ -28,8 +28,8 @@ public class test {
 //       System.out.println(e.hideDish("jorgie"));                              //HIDE
 //       System.out.println(e.activateDish("jorgie"));                          //ACTIVATE
 //       System.out.println(e.editDish(e.getDish("jorgie"), 1000, 500));        //EDIT
-    
-        /** EMPLOYEE **/                                                        /** EMPLOYEE **/
+//   
+//      /** EMPLOYEE **/                                                        /** EMPLOYEE **/
 //        System.out.println(e.addEmployee("Ted","sky", "65873248", 2500,
 //            "03041989", "ornulf@procatering.org", "Qwert123"));               // ADD
 //        if(e.getEmployee(16)!=null){         
@@ -42,9 +42,16 @@ public class test {
 //        }                                                                     //UPDATE
 //        System.out.println(e.changeEmployeePassword("jara", 16));             //PASSWORD
 //        System.out.println(e.removeEmployee(20));                             //REMOVE
-    
-        /** CATEGORIES **/                                                      /** CATEGORIES **/
+//    
+//      /** CATEGORIES **/                                                      /** CATEGORIES **/
 //        System.out.println(e.removeCategory("svett"));                        //REMOVE
 //          System.out.println(e.addCatergory("mad-corck"));                    //ADD
+    
+        /** ORDERS **/                                                          /**ORDERS**/
+//        for (int i = 0; i < e.findOrders("o").getSize(); i++) {
+//            System.out.println(e.findOrders("o").get(i));
+//        }                                                                     //Search
+          System.out.println(e.getOrder(2));
+          
     }
 }

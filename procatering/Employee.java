@@ -400,4 +400,13 @@ public class Employee extends Person {
         }
         return db.addCategory(Helper.capitalFirst(name));
     }
+    public DefaultListModel findOrders(String input) {
+        return db.findOrder(input);
+    }
+    public Customer getOrder(int customerID){
+        if(customerID < 0){
+            return null;
+        }
+        return db.getCustomer(customerID);
+    }
 }
