@@ -5,6 +5,7 @@
 package procatering;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultListModel;
@@ -26,6 +27,7 @@ public class OrderContent {
 	 */
 	public OrderContent(Timestamp delivery) {
 		deliveryTime = delivery;
+		this.dishes = new DefaultListModel<>();
 	}
 
 	/**
@@ -37,6 +39,7 @@ public class OrderContent {
 	public OrderContent(String day, Timestamp time) {
 		deliveryTime = time;
 		deliveryDay = day;
+		this.dishes = new DefaultListModel<>();
 	}
 
 	/**
@@ -125,23 +128,36 @@ public class OrderContent {
 	 */
 	//TODO needs testing
 	private DefaultListModel<String> countDishes(DefaultListModel<Dish> dishes) {
-		DefaultListModel<String> output = new DefaultListModel<>();
-		int counter = 1;
+//		if (dishes == null)
+//			return null;
+//
+//		DefaultListModel<String> output = new DefaultListModel<>();
+//		int counter = 1;
+//
+//		for (int i = 0; i < dishes.size(); i++) {
+//			System.out.println(i);
+//			if (i == 0) {    // kan man ikke sette denna sjekken før for løkka? vet ikke om det blir noe bedre, for om dishes = 0 så vil ikke denna komme pga 0 < 0 funk it?
+//				output.addElement(dishes.get(i).getName());
+//			} else if (dishes.get(i).getName().equals(output.get(output.size()))) {
+//				counter++;
+//			} else if (!dishes.get(i).getName().equals(output.get(output.size()))) {
+//				output.set(output.size(), output.get(output.size()) + " " + counter);
+//				output.addElement(dishes.get(i).toString());
+//				counter = 1;
+//			}
+//		}
+//		return output;
+
+
 
 		if (dishes == null)
 			return null;
-
-		for (int i = 0; i < dishes.size(); i++) {
-			if (i == 0) {
-				output.addElement(dishes.get(i).getName());
-			} else if (dishes.get(i).getName().equals(output.get(output.size()))) {
-				counter++;
-			} else if (!dishes.get(i).getName().equals(output.get(output.size()))) {
-				output.set(output.size(), output.get(output.size()) + " " + counter);
-				output.addElement(dishes.get(i).toString());
-				counter = 1;
-			}
+		DefaultListModel<String> output = new DefaultListModel<>();
+		output.addElement("<table>");
+		for (int i = 0; i < dishes.getSize(); i++) {
+			output.addElement("<tr><td>1x</td><td>"+dishes.get(i).getName()+"</td><td>"+dishes.get(i).getPrice()+"</td></tr>");
 		}
+		output.addElement("</table>");
 		return output;
 	}
 
