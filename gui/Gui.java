@@ -174,6 +174,7 @@ public class Gui {
 	private JSpinner singleOrderDishSpinner;
 	private JPanel singleOrderAddPanel;
 	private static String errorMessageTitle = "Error";
+	private static String currentStepCard;
 
 
 
@@ -276,11 +277,11 @@ public class Gui {
             }
         });
         subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                subscriptionActivationDateSubmitButtonActionPerformed();
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				subscriptionActivationDateSubmitButtonActionPerformed();
+			}
+		});
         subscriptionTerminationDateSubmitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -423,7 +424,6 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 singleOrderProgressButtonActionPerfomed();
-                System.out.println("Clicked");
             }
         });
 		singleOrderProgressBackButton.addActionListener(new ActionListener() {
@@ -769,21 +769,26 @@ public class Gui {
 		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
 			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
 			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
+			currentStepCard = "singleOrderSelectDateCard";
 			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
 		}else{
-			int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
-			if(option == 0){
-				singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
-				singleOrderProgressBackButton.setEnabled(true);
-				CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
-				cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
-				DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
-				ArrayList<String> jBoxLabels = new ArrayList<>();
-				for (int i = 0; i < ordercontent.size(); i++) {
-					jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
-					singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
+			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
+			if(currentStepCard.equals("singleOrderSelectDateCard")){
+				int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+				if(option == 0){
+					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
+					singleOrderProgressBackButton.setEnabled(true);
+					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+					ArrayList<String> jBoxLabels = new ArrayList<>();
+					for (int i = 0; i < ordercontent.size(); i++) {
+						jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
+						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
+					}
+					populateSingleOrderLists();
 				}
-				populateSingleOrderLists();
+			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
+				//CODE FOR THE overview
 			}
 		}
 	}
