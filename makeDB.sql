@@ -1,6 +1,4 @@
 -- LAST UPDATED 26:04:2013-09:56
---TODO lag en ny atributt i order_dish som holder på total sum av den ene ordren. den kan være null pga subscription
---TODO days i order_dish set som varchar
 
 DROP TABLE dish_ingredient;
 DROP TABLE ingredient;
@@ -54,8 +52,8 @@ CREATE TABLE orders (
     employee_id INT NOT NULL,
     customer_id INT NOT NULL,
     time_of_order timestamp NOT NULL,
-    status VARCHAR(255),
-    starts TIMESTAMP,
+    status VARCHAR(255), NOT NULL
+    starts TIMESTAMP, --Maybe this is NOT NULL
     ends TIMESTAMP) ENGINE=InnoDB;
  
 CREATE TABLE dish (
@@ -79,8 +77,9 @@ CREATE TABLE order_dish (
     order_id INT NOT NULL,
     dish_id INT NOT NULL,
     delivery TIMESTAMP,
-    days INT,
-    amount INT NOT NULL) ENGINE=InnoDB;
+    days VARCHAR,
+    quantity INT NOT NULL,
+    amount DOUBLE NOT NULL) ENGINE=InnoDB;
 
 -- CREATE TABLE postalcode (
 --     postalcode int PRIMARY KEY,
@@ -195,13 +194,13 @@ INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VA
 INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,3,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
 INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (3,4,CURRENT_TIMESTAMP ,'ACTIVE');
 
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (1,3,CURRENT_TIMESTAMP, 0001111, 100);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (2,1,CURRENT_TIMESTAMP, NULL, 100);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (3,1,CURRENT_TIMESTAMP, 1010101, 200);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (4,4,CURRENT_TIMESTAMP, 1001000, 2);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (5,1,CURRENT_TIMESTAMP, NULL, 6);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (6,1,CURRENT_TIMESTAMP, NULL, 60);
-INSERT INTO order_dish(order_id,dish_id, delivery, days, amount) VALUES (7,2,CURRENT_TIMESTAMP, NULL, 4);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (1,1,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,2,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (3,3,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,1,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (1,2,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status,starts,ends) VALUES (2,3,CURRENT_TIMESTAMP ,'ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO orders(employee_id,customer_id,time_of_order, status) VALUES (3,4,CURRENT_TIMESTAMP ,'ACTIVE');
 
 INSERT INTO ingredient(ingredientname) VALUES ('Carrot');
 INSERT INTO ingredient(ingredientname) VALUES ('Potato');
