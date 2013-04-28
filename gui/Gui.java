@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -172,6 +173,8 @@ public class Gui {
 	private JButton singleOrderProgressBackButton;
 	private JSpinner singleOrderDishSpinner;
 	private JPanel singleOrderAddPanel;
+	private static String errorMessageTitle = "Error";
+	private static String currentStepCard;
     private JList subscriptionSelectCategoryJList;
     private JList subscriptionSelectDishJList;
     private JTextPane subscriptionProgressTextArea;
@@ -188,7 +191,6 @@ public class Gui {
     private JSpinner subscriptionDishCountSpinner;
     private JButton subscriptionDishAddButtion;
     private JTextPane subscriptionConfirmCustomerTextPane;
-    private static String errorMessageTitle = "Error";
 
 
 
@@ -291,11 +293,11 @@ public class Gui {
             }
         });
         subscriptionActivationDateSubmitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                subscriptionActivationDateSubmitButtonActionPerformed();
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				subscriptionActivationDateSubmitButtonActionPerformed();
+			}
+		});
         subscriptionTerminationDateSubmitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -451,7 +453,6 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 singleOrderProgressButtonActionPerfomed();
-                System.out.println("Clicked");
             }
         });
 		singleOrderProgressBackButton.addActionListener(new ActionListener() {
@@ -627,7 +628,7 @@ public class Gui {
 	}
 
 	private void singleOrderUpdateTextpane() {
-		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toString());
+		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toHtml());
 	}
 
 	private void menuSubscriptionButtonActionPerformed(Customer customer){
@@ -694,9 +695,9 @@ public class Gui {
             System.out.println("Error while trying to make subscription object");
         }
         subscriptionUpdateTextpane();
-        subscriptionEndDateSelectionPane.enable();
-        subscriptionTerminationDateValueLabel.enable();
-        subscriptionTerminationDateSubmitButton.enable();
+        subscriptionEndDateSelectionPane.setEnabled(true);
+        subscriptionTerminationDateValueLabel.setEnabled(true);
+        subscriptionTerminationDateSubmitButton.setEnabled(true);
     }
     private void subscriptionTerminationDateSubmitButtonActionPerformed(){
         Date date = subscriptionDatePicker.getDate();
@@ -861,21 +862,26 @@ public class Gui {
 		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
 			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
 			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
+			currentStepCard = "singleOrderSelectDateCard";
 			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
 		}else{
-			int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
-			if(option == 0){
-				singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
-				singleOrderProgressBackButton.setEnabled(true);
-				CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
-				cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
-				DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
-				for (int i = 0; i < ordercontent.size(); i++) {//TODO make it an ordered list
-					singleOrderTimesComboBox.addItem(ordercontent.get(i)); //TODO fix the toString
+			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
+			if(currentStepCard.equals("singleOrderSelectDateCard")){
+				int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+				if(option == 0){
+					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
+					singleOrderProgressBackButton.setEnabled(true);
+					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+					ArrayList<String> jBoxLabels = new ArrayList<>();
+					for (int i = 0; i < ordercontent.size(); i++) {
+						jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
+						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
+					}
+					populateSingleOrderLists();
 				}
-
-				populateSingleOrderLists();
-
+			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
+				//CODE FOR THE overview
 			}
 		}
 	}
