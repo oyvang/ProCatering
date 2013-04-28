@@ -188,14 +188,15 @@ public class Subscription {
      * @return String of the subscription object
      */
     public String toString(){
-        String output = "<strong>Order date:</strong> "+ getOrderDate()+"<br>";
+        String output = "<b>Order created:</b> "+ getOrderDate().toString().substring(0,16)+"<br>";
         if(getStartDate() != null){
-            output += "<strong>Activation date:</strong> "+ this.getStartDate()+"<br>";
+            output += "<b>Activation date:</b> "+ this.getStartDate().toString().substring(0,11)+"<br>";
         }
         if(getEndDate() != null){
-            output += "<strong>Termination date:</strong> "+ this.getEndDate()+"<br>";
+            output += "<b>Termination date:</b> "+ this.getEndDate().toString().substring(0,11)+"<br>";
         }
         if(this.content != null){
+            output+= "<b>Days:</b><br>";
             for (int i = 0; i<content.size(); i++){
                 output +=content.getElementAt(i).toString();
             }

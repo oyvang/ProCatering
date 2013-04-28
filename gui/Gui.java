@@ -190,11 +190,15 @@ public class Gui {
     private JScrollPane subscriptionSelectDishScrollPane;
     private JSpinner subscriptionDishCountSpinner;
     private JButton subscriptionDishAddButtion;
-    private JTextPane subscriptionConfirmCustomerTextPane;
+    private JTextPane subscriptionConfirmContactInformationTextPane;
+    private JPanel subscriptionProgressConfirmTextPanel;
+    private JTextPane subscriptionProgressConfirmTextPane;
+    private JButton subscriptionUnconfirmButton;
+    private JTextPane subscriptionConfirmOrderInformationTextPane;
+    private JTextPane subscriptionConfirmPaymenttInformationTextPane;
 
 
-
-	private void initListeners(){
+    private void initListeners(){
 		/* Login button action listener */
 		loginButton.addActionListener(new ActionListener() {
 			@Override
@@ -724,11 +728,7 @@ public class Gui {
         }else if(!loggedInEmployee.getSubscription().getContent().getElementAt(0).getDishes().isEmpty()){ // If there is dishes added to the first element TODO: possible creating error if added day without dishes
             int option = JOptionPane.showOptionDialog(ProCatering, "Have you added all the Dishes into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
             if(option == 0){
-                subscriptionProgressTextArea.setText("<html>Select Day/Time - Select dishes -<b> Overview </b></html>");
-                subscriptionBackButton.setEnabled(true);
-                CardLayout cl = (CardLayout)subscriptionOrderPanel.getLayout();
-                cl.show(subscriptionOrderPanel, "subscriptionConfirmCard");
-                //popilateSubscriptionConfirmList();     TODO
+                subscriptionPopulateConfirmPane();
             }
         }else {
             int option = JOptionPane.showOptionDialog(ProCatering, "Have you added all the Days/times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
@@ -746,6 +746,16 @@ public class Gui {
 
             }
         }
+    }
+    public void subscriptionPopulateConfirmPane(){
+
+        CardLayout cl = (CardLayout)subscriptionOrderPanel.getLayout();
+        cl.show(subscriptionOrderPanel, "subscriptionConfirmCard");
+        subscriptionProgressConfirmTextPane.setText("<html>Select Day/Time - Select dishes -<b> Overview </b></html>");
+        subscriptionConfirmContactInformationTextPane.setText(  "Contact Information:<br>" +
+                Customer.findCustomer(""+loggedInEmployee.getSubscription().getCustomerId()).getElementAt(0));//TODO FIX
+        subscriptionConfirmOrderInformationTextPane.setText("Order INFO");//TODO FIX
+        subscriptionConfirmPaymenttInformationTextPane.setText("Payment INFO");//TODO FIX
     }
     private void setSubscriptionDishAddButtionActionPerformed() {
         Dish dish = (Dish)subscriptionSelectDishJList.getSelectedValue();
