@@ -187,6 +187,7 @@ public class Gui {
     private JScrollPane subscriptionSelectDishScrollPane;
     private JSpinner subscriptionDishCountSpinner;
     private JButton subscriptionDishAddButtion;
+    private JTextPane subscriptionConfirmCustomerTextPane;
     private static String errorMessageTitle = "Error";
 
 
@@ -659,26 +660,6 @@ public class Gui {
             }
         subscriptionUpdateTextpane();
     }
-    /*	private void generateOrder(Customer customer) {
-		String t =	"<html>"+
-						"<table valign='top'>"+
-							"<tr>" +
-								"<td>"+customer.getFirstName()+"</td></td>"+customer.getLastName()+"</td>"+
-							"</tr>"+
-							"<tr>" +
-								"<td>Address: </td><td>"+customer.getAddress()+"<br>"+customer.getPostalCode()+" "+customer.getPostPlace(String.valueOf(customer.getPostalCode()))+"</td>"+
-							"</tr>"+
-							"<tr>" +
-								"<td>Phone number: </td><td>"+customer.getPhoneNumber()+"</td>"+
-							"</tr>"+
-						"</table>"+
-					"</html>";
-		singleOrderCustomerInformationTextpane.setText(t);
-		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
-		System.out.println(customer.getCustomerID());
-		loggedInEmployee.createOrder(customer.getCustomerID());
-		singleOrderUpdateTextpane();
-	}*/
 
     private void subscriptionDayAddButtonActionPerformed(){
         int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0,2));
