@@ -755,15 +755,19 @@ public class Database {
         }
         
         
-        // gjør ferdig denne den nisse(eirik)
+        /**
+         * Gives the top 10 customers arranged by money used.
+         *
+         * @returnes strings in a DefaultListModel.
+         */
         public DefaultListModel<String> bigSpender() {
             try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) \"nu\", SUM(amount*quantity) \"sum\" FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN employee ON employee.employee_id = orders.employee_id JOIN customer ON customer.customer_id = orders.customer_id JOIN dish ON order_dish.dish_id = dish.dish_id GROUP BY customer.customer_id ORDER BY sum desc")) {
+                try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) 'nu', SUM(amount*quantity) 'sum' FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN customer ON customer.customer_id = orders.customer_id GROUP BY customer.customer_id ORDER BY sum desc LIMIT 10")) {
                     con.setAutoCommit(false);
                     ResultSet rs = prepStat.executeQuery();
                     DefaultListModel output = new DefaultListModel<>();
                     while (rs.next()) {
-                        output.addElement("Order ID: " + rs.getInt("order_id") + ". Order sum: " + rs.getDouble("sum") + " NOK" + ". Kunde: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Employee ID: " + rs.getInt("employee_id") + ". Order time: " + rs.getTimestamp("time_of_order"));
+                        output.addElement("Customer ID: " + rs.getInt("Customer ID: " + rs.getInt("customer_id") + ". Name: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Sum of all orders: " + rs.getDouble("sum") + " NOK. In " + rs.getString("nu") + " order(s)"));
                     }
                     con.commit();
                     con.setAutoCommit(true);
