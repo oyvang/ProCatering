@@ -154,7 +154,7 @@ public class Order {
 	@Override
 	public String toString() {
 		String output = "";
-		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		output += "Order created: " + creationTime.toString().substring(0, 16);
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i);
 		}
@@ -172,5 +172,29 @@ public class Order {
 		}
 		return output+"</html>";
 	}
+
+	public String confirmToHtml() {
+		String output = "<html>";
+		for (int i = 0; i < ordercontent.size(); i++) {
+			output += ordercontent.get(i).toHtml();
+		}
+		return output+"</html>";
+	}
+
+
+	public double[] getSum(double discount){
+		Double total = 0.0;
+		for (int i = 0; i < ordercontent.size(); i++) {
+			DefaultListModel<Dish> d = ordercontent.get(i).getDishes();
+			for (int j = 0; j < d.size(); j++) {
+				total += d.get(i).getPrice();
+			}
+		}
+		Double sum = total;
+		discount *= total;
+
+		return new double[]{sum, discount, total};
+	}
+
 }
 
