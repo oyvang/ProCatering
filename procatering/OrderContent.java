@@ -166,6 +166,32 @@ public class OrderContent {
 	public void removeDish(int index) {
 		dishes.removeElementAt(index);
 	}
+        
+        /**
+         * Count equal dishes in the DefaultModelList "dishes".
+         * @param dish Dish object
+         * @return a DefaultListModel<String> with string objects example (13x Taco)
+         */
+        public DefaultListModel<String> countDish(){
+            int counter = 0;
+            DefaultListModel<String> output = new DefaultListModel();
+            DefaultListModel<Dish> temp = new DefaultListModel();
+            for (int i = 0; i < dishes.getSize(); i++) {
+                if(!temp.contains(dishes.get(i))){
+                   temp.addElement(dishes.get(i)); 
+                }
+            }
+            for (int i = 0; i < temp.getSize(); i++) {
+                for (int j = 0; j < dishes.getSize(); j++) {
+                   if(temp.get(i).getID()==dishes.get(j).getID()){
+                     counter++;  
+                   }
+                }
+             output.addElement(counter + "x " + temp.get(i).getName());
+             
+            }
+            return output;
+        }
 
 	/**
 	 * Method toString

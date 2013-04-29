@@ -112,7 +112,7 @@ public class Database {
 						inputObject.setCorporateNum(rs.getInt("corporate_register.corporatenumber"));
 						inputObject.setCorporateName(rs.getString("corporate_register.corporatename"));
 					}
-                            /*Adds the object to the DefaultListModel*/
+							/*Adds the object to the DefaultListModel*/
 					output.addElement(inputObject);
 				}
                     /*returns the List of cusomer objects with a match to the search phrase*/
@@ -438,6 +438,7 @@ public class Database {
 		}
 	}
 
+
 	//TODO DOK!
 	public DefaultListModel<procatering.Order> getOrder(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -462,7 +463,6 @@ public class Database {
 			return null;
 		}
 	}
-
 
 	/**
 	 * The methode check the dishName length, it has to be less than 255 signs.
@@ -1221,10 +1221,10 @@ public class Database {
 	}
 
 	/**
-	 * Find dishes who belongs to one spesefic category id.
+	 * Find dishes who belongs to one spesefic category id and are activated (not hided).
 	 *
 	 * @param id Integer Category id
-	 * @return //TODO docuemtation
+	 * @return a DefaultListModel<Dish> with Dish objects that are active, else it will retun null
 	 */
 	public DefaultListModel<Dish> getDishes(int id) {
 		if (id < 0) {
@@ -1254,7 +1254,12 @@ public class Database {
 		}
 	}
 
-	//TODO GM
+	/**
+	 * Delet a employe from the database using employee id.
+	 *
+	 * @param id Integer (Employee ID)
+	 * @return true if sucsessfully removed, else it will return false.
+	 */
 	public boolean removeEmployee(int id) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM employee_types WHERE employee_id = ?")) {
@@ -1276,14 +1281,20 @@ public class Database {
 				cleanup.dbRollback(con);
 				return false;
 			}
+
 		} catch (SQLException eCon) {
 //				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
-
 	}
 
-	//TODO GM
+
+	/**
+	 * Make a dish visible by chacing dish status in the datbase to 1.
+	 *
+	 * @param name String object (Dish name)
+	 * @return true if sucsessfully hides the dish, else it will return false
+	 */
 	public boolean activateDish(String name) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
@@ -1309,7 +1320,13 @@ public class Database {
 		}
 	}
 
-	//TODO GM
+
+	/**
+	 * Find all dishes in one category, even if the dish are not active. (hided)
+	 *
+	 * @param id Integer( Category ID)
+	 * @return return a DefaultListModel<Dish> with all the dish objects, else it will retun null
+	 */
 	public DefaultListModel<Dish> getAllDishesInACategory(int id) {
 		if (id < 0) {
 			return null;
@@ -1337,6 +1354,89 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Find order by shearching for firstname, lastname, phonenumber or postalcode. If order id are over 10 signs or the name are over 42 signs the string will be ugly.
+	 *
+	 * @param input String object
+	 * @return DefaultListModel<String> with String object, else it will retun null;
+	 */
+	public DefaultListModel<String> findOrder(String input) {
+			/*Adds wildcard on both sides of the search phrase*/
+		input = "%" + input + "%";
+
+            /*tries to setup a connection to the database*/
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				/*tries to create a prepared statement.*/
+			try (
+					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer LEFT JOIN orders " +
+							"ON customer.customer_id = orders.customer_id " +
+							"WHERE clean_fn LIKE ? OR clean_ln LIKE ? OR phonenumber LIKE ?" +
+							"OR postalcode LIKE ? ORDER BY order_id DESC")
+			) {
+					/*Inserts the input search string to the SQL in the prepared statement*/
+				con.setAutoCommit(false);
+				prepStat.setString(1, input);       //clean firstname
+				prepStat.setString(2, input);       //clean lastname
+				if (input.length() < 5) {
+					prepStat.setString(3, "00000000");       //not a phonenumber
+				} else {
+					prepStat.setString(3, input);       //phone number
+				}
+				prepStat.setString(4, input);       //postal code
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+
+                    /* Declares and initializes the return DefaultListModel*/
+				DefaultListModel<String> output = new DefaultListModel<>();
+                    
+                    /*creates the objects that has matching attributes to the search phrase*/
+				String inputObject = "Order ID:  Customer: Lastname, Firstname   Order Time:";
+				output.addElement(inputObject);
+				while (rs.next()) {
+					//Break the loop if order_id = 0
+					if (rs.getInt("order_id") <= 0) {
+						break;
+					}
+					//Select the input and creates a string that is 64 signs long or more.
+					inputObject = rs.getInt("order_id") + "";
+					int space1 = 12;
+					int space2 = 44;
+					if (inputObject.length() + 2 < space1) {
+						space1 = space1 - inputObject.length();
+					} else {
+						space1 = 2;
+					}
+					for (int i = 1; i < space1; i++) {
+						inputObject += " ";
+					}
+					inputObject += rs.getString("lastname") + ", " + rs.getString("firstname");
+
+					if (inputObject.length() + 2 < space2) {
+						space2 = space2 - inputObject.length();
+					} else {
+						space2 = 2;
+					}
+					for (int i = 1; i < space2; i++) {
+						inputObject += " ";
+					}
+					inputObject += rs.getTimestamp("time_of_order");
+                            /*Adds the object to the DefaultListModel*/
+					output.addElement(inputObject);
+				}
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
 
 }
-      
+
