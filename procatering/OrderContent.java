@@ -169,7 +169,6 @@ public class OrderContent {
         
         /**
          * Count equal dishes in the DefaultModelList "dishes".
-         * @param dish Dish object
          * @return a DefaultListModel<String> with string objects example (13x Taco)
          */
         public DefaultListModel<String> countDish(){
@@ -181,13 +180,13 @@ public class OrderContent {
                    temp.addElement(dishes.get(i)); 
                 }
             }
-            for (int i = 0; i < temp.getSize(); i++) {
+			for (int i = 0; i < temp.getSize(); i++) {
                 for (int j = 0; j < dishes.getSize(); j++) {
                    if(temp.get(i).getID()==dishes.get(j).getID()){
                      counter++;  
                    }
                 }
-             output.addElement(counter + "x " + temp.get(i).getName());
+             output.addElement("<tr><td halign='left'>"+counter + " x</td><td>" + temp.get(i).getName()+"</td><td halign='right'>"+temp.get(i).getPrice()+"</td></tr>");
              
             }
             return output;
@@ -201,7 +200,7 @@ public class OrderContent {
 	@Override
 	public String toString() {
 		String output = "";
-		DefaultListModel<String> countList = countDishes(dishes);
+		DefaultListModel<String> countList = countDish();
 
 		if (deliveryDay != null) {
 			String simpleDateFormat = new SimpleDateFormat("HH:mm").format(deliveryTime);
@@ -226,24 +225,27 @@ public class OrderContent {
 
 	public String toHtml() {
 		String output = "";
-		DefaultListModel<String> countList = countDishes(dishes);
-
+		DefaultListModel<String> countList = countDish();
 		if (deliveryDay != null) {
 			String simpleDateFormat = new SimpleDateFormat("HH:mm").format(deliveryTime);
 			output = deliveryDay + ": " + simpleDateFormat + "<br>";
 			if (countList != null){
 				for (int i = 0; i < countList.size(); i++) {
-					output += countList.get(i);
+					output += countList.get(i) + "<br>";
 				}
 			}
 			return output;
 		} else {
+			output = "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
+			output += "<tr><td>";
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy' - 'HH:mm"); //TODO maybe fix locale.
-			output = simpleDateFormat.format(deliveryTime);
+			output += "</td></tr>";
+			output += simpleDateFormat.format(deliveryTime);
 			if (countList != null){
 				for (int i = 0; i < countList.size(); i++) {
-					output += countList.get(i);
+					output += countList.get(i) + "<br>";
 				}
+			output += "</table>";
 			}
 			return output;
 		}

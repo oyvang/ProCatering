@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static procatering.Helper.DATABASE_NUMBER;
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
 
@@ -199,6 +200,11 @@ public class Gui {
 	private JTextPane singleOrderCustomerConfirm;
 	private JTextPane singleOrderOrderConfirm;
 	private JTextPane singleOrderPaymentConfirm;
+	private JSpinner singleOrderDiscountSpinner;
+	private JButton singleOrderDiscountButton;
+	private JLabel singleOrderDiscountLabel;
+	private JPanel singleOrderDiscountPane;
+	private JButton placeOrderButton;
 
 
 	private void initListeners(){
@@ -548,11 +554,9 @@ public class Gui {
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
-
 		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
 		singleOrderProgressBackButton.setEnabled(false);
-
-
+		singleOrderDiscountSpinner = new JSpinner(new SpinnerNumberModel(0,0,100,1));
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -897,11 +901,17 @@ public class Gui {
 			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
 				cl = (CardLayout)singleOrderPanel.getLayout();
 				cl.show(singleOrderPanel, "singleOrderConfirmCard");
-				System.out.println("Kjørt");
-				//CODE FOR THE overview
 				singleOrderCustomerConfirm.setText(singleOrderCustomerInformationTextpane.getText());
-				singleOrderOrderConfirm.setText(loggedInEmployee.getOrder().toHtml());
-				singleOrderPaymentConfirm.setText(loggedInEmployee.getOrder().toHtml());
+				double[] sum = loggedInEmployee.getOrder().getSum(Double.parseDouble(""+singleOrderDiscountSpinner.getValue()));
+				String output = "<html><body style='font-family:Courier New;'>";
+				output += loggedInEmployee.getOrder().confirmToHtml();
+				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
+				output += "<tr><td halign='left'>Sum:		</td><td> </td><td halign='right'>"+sum[0]+"</td></tr>";
+				output += "<tr><td halign='left'>Discount:	</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
+				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
+				output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[2]+"</td></tr>";
+				output += "</table></body></html>";
+				singleOrderPaymentConfirm.setText(output);
 			}
 		}
 	}

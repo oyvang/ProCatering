@@ -167,18 +167,20 @@ public class Order {
 	public String toHtml() {
 		String output = "<html>";
 		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		output += "<table>";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i).toHtml();
 		}
-		return output+"</html>";
+		return output;
 	}
 
-	public String confirmToHtml() {
-		String output = "<html>";
+	public String confirmToHtml(){
+		String output = "Receipt for Order<br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i).toHtml();
 		}
-		return output+"</html>";
+
+		return output;
 	}
 
 
