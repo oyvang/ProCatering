@@ -184,7 +184,7 @@ public class Order {
 	}
 
 
-	public double[] getSum(double discount){
+	public double[] getSum(){
 		Double total = 0.0;
 		for (int i = 0; i < ordercontent.size(); i++) {
 			DefaultListModel<Dish> d = ordercontent.get(i).getDishes();
@@ -193,9 +193,8 @@ public class Order {
 			}
 		}
 		Double sum = total;
-		discount *= total;
 
-		return new double[]{sum, discount, total};
+		return new double[]{sum, total};
 	}
 
 }

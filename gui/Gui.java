@@ -201,9 +201,6 @@ public class Gui {
 	private JTextPane singleOrderOrderConfirm;
 	private JTextPane singleOrderPaymentConfirm;
 	private JSpinner singleOrderDiscountSpinner;
-	private JButton singleOrderDiscountButton;
-	private JLabel singleOrderDiscountLabel;
-	private JPanel singleOrderDiscountPane;
 	private JButton placeOrderButton;
 
 
@@ -902,14 +899,11 @@ public class Gui {
 				cl = (CardLayout)singleOrderPanel.getLayout();
 				cl.show(singleOrderPanel, "singleOrderConfirmCard");
 				singleOrderCustomerConfirm.setText(singleOrderCustomerInformationTextpane.getText());
-				double[] sum = loggedInEmployee.getOrder().getSum(Double.parseDouble(""+singleOrderDiscountSpinner.getValue()));
+				double[] sum = loggedInEmployee.getOrder().getSum();
 				String output = "<html><body style='font-family:Courier New;'>";
 				output += loggedInEmployee.getOrder().confirmToHtml();
 				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
-				output += "<tr><td halign='left'>Sum:		</td><td> </td><td halign='right'>"+sum[0]+"</td></tr>";
-				output += "<tr><td halign='left'>Discount:	</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
-				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
-				output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[2]+"</td></tr>";
+				output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
 				output += "</table></body></html>";
 				singleOrderPaymentConfirm.setText(output);
 			}
