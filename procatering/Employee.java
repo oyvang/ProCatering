@@ -78,9 +78,9 @@ public class Employee extends Person {
 		if (employeeId == null || employeeId < 0) {
 			return null;
 		}
-                if(db.getEmployee(employeeId)!=null){
-                    return new Employee(db.getEmployee(employeeId));
-                }
+        if(db.getEmployee(employeeId)!=null){
+        	return new Employee(db.getEmployee(employeeId));
+        }
 		return null;
 	}
 

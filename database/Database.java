@@ -41,7 +41,7 @@ public class Database {
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
-					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
+					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer "
 							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note)"
 							+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")
 			) {
@@ -418,12 +418,13 @@ public class Database {
 
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (//TODO add a for-loop to add ordercontent/dishes
-				 PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
+				PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, order.getEmployeeId());
 				prepStat.setInt(2, order.getCustomerId());
-				prepStat.setTimestamp(3, order.getOrderDate());
-				prepStat.setString(3, order.getStatus());
+				prepStat.setTimestamp(3, order.getCreationTime());
+				prepStat.setString(4, order.getStatus());
+				prepStat.executeUpdate();
 				con.commit();
 				con.setAutoCommit(true);
 				return true;

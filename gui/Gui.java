@@ -113,7 +113,6 @@ public class Gui {
 	private JPanel loggedOut;
 	private JPanel welcomeMessagePanel;
 	private JPanel singleOrderMakePanel;
-	private JPanel singleOrderConfimPanel;
 	private JPanel singleOrderInformationPanel;
 	private JPanel singleOrderStepPanel;
 	private JPanel singleOrderStatusPanel;
@@ -160,7 +159,6 @@ public class Gui {
     private JButton subscriptionRemoveDayButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
-	private JPanel singleOrderProgressPanel;
 	private JTextPane singleOrderProgressLabel;
 	private JComboBox singleOrderTimesComboBox;
 	private JList<Category> singleOrderDishSelectCategoryJList;
@@ -202,6 +200,7 @@ public class Gui {
 	private JTextPane singleOrderPaymentConfirm;
 	private JSpinner singleOrderDiscountSpinner;
 	private JButton placeOrderButton;
+	private JLabel loggedInEmployeeLabel;
 
 
 	private void initListeners(){
@@ -403,9 +402,9 @@ public class Gui {
 					String message = "Please select order type for "+customerList.getSelectedValue().toString()+":";
 					int option = JOptionPane.showOptionDialog(ProCatering, message, "Choose subscription type",JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 					if(option == 0)
-						menuSingleOrderButtonActionPerformed(new Customer((Customer)customerList.getSelectedValue()));
+						menuSingleOrderButtonActionPerformed();
 					if(option == 1)
-						menuSubscriptionButtonActionPerformed(new Customer((Customer)customerList.getSelectedValue()));
+						menuSubscriptionButtonActionPerformed();
 
 				}
 			}
@@ -468,7 +467,7 @@ public class Gui {
 		singleOrderProgressBackButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Back!!!");
+				backButtonActionPerformed();
 			}
 		});
 
@@ -532,7 +531,15 @@ public class Gui {
 			}
 		});
 
+		placeOrderButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				placeOrderButtonActionPerformed();
+			}
+		});
+
 	}
+
 
 
 	/**
@@ -551,7 +558,7 @@ public class Gui {
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
-		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+		//singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
 		singleOrderProgressBackButton.setEnabled(false);
 		singleOrderDiscountSpinner = new JSpinner(new SpinnerNumberModel(0,0,100,1));
 	}
@@ -580,8 +587,9 @@ public class Gui {
 		String password = SecurityChecker.extractPasswordFromFieldToString(password_input.getPassword());
 
         if(SecurityChecker.logIn(id, password)){
-			loggedInEmployee = new Employee(Employee.getEmployee(id));
+			loggedInEmployee = Employee.getEmployee(id);
             cl.show(ProCatering,"loggedInCard");
+			loggedInEmployeeLabel.setText("Logged in employee "+loggedInEmployee.getFirstName()+" "+loggedInEmployee.getLastName());
 			employee_ID_input.setText("");
 			password_input.setText("");
 		}
@@ -600,6 +608,8 @@ public class Gui {
 		cl.show(ProCatering, "loggedOutCard");
 		loggedInEmployee = null;
 		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
+		loginErrorMessage_label.setVisible(true);
+		currentStepCard = null;
 	}//TODO add logout
 
 	private void menuFindButtonActionPerformed(ActionEvent evt) {
@@ -607,15 +617,16 @@ public class Gui {
 		cl.show(mainPanel, "findPanelCard");
 	}
 
-	private void menuSingleOrderButtonActionPerformed(Customer customer){
+	private void menuSingleOrderButtonActionPerformed(){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "singleOrderCard");
 		currentStepCard = "singleOrderSelectDateCard";
-		generateOrder(customer);
+		generateOrder();
 	}
 
 
-	private void generateOrder(Customer customer) {
+	private void generateOrder() {
+		Customer customer = (Customer)customerList.getSelectedValue();
 		String t =	"<html>"+
 						"<table valign='top'>"+
 							"<tr>" +
@@ -640,15 +651,15 @@ public class Gui {
 		singleOrderOrderInformationTextpane.setText(loggedInEmployee.getOrder().toHtml());
 	}
 
-	private void menuSubscriptionButtonActionPerformed(Customer customer){
+	private void menuSubscriptionButtonActionPerformed(){
 		CardLayout cl = (CardLayout)mainPanel.getLayout(); //TODO HER TED
 		cl.show(mainPanel, "subscriptionOrderCard");
-        generateSubscription(customer);
+        generateSubscription();
         subscriptionProgressTextArea.setText("<html><b>Select Day/Time</b> - Select dishes - Overview </html>");
 	}
 
-    private void generateSubscription(Customer customer) {
-
+    private void generateSubscription(){
+		Customer customer = (Customer)customerList.getSelectedValue();
         String t =	"<html>"+
 						"<table valign='top'>"+
 							"<tr>" +
@@ -795,13 +806,8 @@ public class Gui {
 
 	private void customerSearchButtonActionPerformed(){
 		nameList = Customer.findCustomer(customerSearchField.getText());
-		MouseListener[] lis = customerList.getMouseListeners(); //Extracts the mouselisteners before overwrite.
-
-		customerList = new JList<Customer>(nameList);
-			customerScrollPane.setViewportView(customerList);
-		for (MouseListener li : lis) {
-			customerList.addMouseListener(li);
-		}
+		customerList.setModel(nameList);
+		customerScrollPane.setViewportView(customerList);
 	}
 
 	private void registerNewButtonActionPerformed(ActionEvent evt){
@@ -874,40 +880,51 @@ public class Gui {
 	}
 
 	private void singleOrderProgressButtonActionPerfomed() {
-		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
-			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
-			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
-			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
-		}else{
-			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
-			if(currentStepCard.equals("singleOrderSelectDateCard")){
-				int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
-				if(option == 0){
-					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
-					singleOrderProgressBackButton.setEnabled(true);
-					currentStepCard = "singleOrderSelectDishCard";
-					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
-					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
-					ArrayList<String> jBoxLabels = new ArrayList<>();
-					for (int i = 0; i < ordercontent.size(); i++) {
-						jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
-						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
-					}
-					populateSingleOrderLists();
-				}
-			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
-				cl = (CardLayout)singleOrderPanel.getLayout();
-				cl.show(singleOrderPanel, "singleOrderConfirmCard");
-				singleOrderCustomerConfirm.setText(singleOrderCustomerInformationTextpane.getText());
-				double[] sum = loggedInEmployee.getOrder().getSum();
-				String output = "<html><body style='font-family:Courier New;'>";
+//		if(loggedInEmployee.getOrder().getOrderContent().isEmpty() || loggedInEmployee.getOrder() == null){
+//			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+//			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
+//			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
+//		}else{
+//			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
+//			if(currentStepCard.equals("singleOrderSelectDateCard")){
+//				int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+//				if(option == 0){
+//					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
+//					singleOrderProgressBackButton.setEnabled(true);
+//					currentStepCard = "singleOrderSelectDishCard";
+//					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
+//					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+//					ArrayList<String> jBoxLabels = new ArrayList<>();
+//					for (int i = 0; i < ordercontent.size(); i++) {
+//						jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
+//						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
+//					}
+//					populateSingleOrderLists();
+//				}
+//			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
+//				cl = (CardLayout)singleOrderPanel.getLayout();
+//				cl.show(singleOrderPanel, "singleOrderConfirmCard");
+//				updateSingleOrderPanes();
+//			}
+//		}
+
+
+
+
+
+
+	}
+
+	private void updateSingleOrderPanes() {
+		singleOrderCustomerConfirm.setText(singleOrderCustomerInformationTextpane.getText());
+		double[] sum = loggedInEmployee.getOrder().getSum();
+		String 	output = "<html><body style='font-family:Courier New;'>";
 				output += loggedInEmployee.getOrder().confirmToHtml();
+		System.out.println("Kjører her da kies");
 				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
 				output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
 				output += "</table></body></html>";
-				singleOrderPaymentConfirm.setText(output);
-			}
-		}
+		singleOrderPaymentConfirm.setText(output);
 	}
 
 	private void populateSingleOrderLists() {
@@ -938,6 +955,32 @@ public class Gui {
 			System.out.println("Alt gikk GALT!");//TODO remove
 	}
 
+	private void placeOrderButtonActionPerformed() {
+		String message = "";
+		int option = JOptionPane.showOptionDialog(ProCatering, message, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+		if(option == 0){
+			if(loggedInEmployee.addOrder()) {
+				JOptionPane.showMessageDialog(ProCatering, "Order was successfully added.", "Success", JOptionPane.PLAIN_MESSAGE);
+				clearOrder();
+			}
+			else showErrorMessage(GUI_NUMBER, 6, new Exception("Error while adding order to database"));
+		}else if(option == 1){
+			System.out.println("It was wrong!");
+		}
+
+	}
+
+	private void clearOrder() {
+		currentStepCard = null;
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "findPanelCard");
+	}
+
+	private void backButtonActionPerformed() {
+		CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
+		cl.previous(singleOrderStepPanel);
+	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -949,7 +992,7 @@ public class Gui {
 	 * @param exp
 	 */
 	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp){
-		Boolean debug = false;
+		Boolean debug = true;
 		if(debug)
 			JOptionPane.showMessageDialog(null, "Error "+errorOrigin+"."+errorID+": "+exp, errorMessageTitle, JOptionPane.ERROR_MESSAGE);
 		else
