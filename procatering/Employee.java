@@ -227,6 +227,9 @@ public class Employee extends Person {
 		}
 		return false;
 	}
+    public DefaultListModel<Object> getAllOrders(){
+        return db.getAllOrders(getEmployeeId());
+    }
 
     /**
      * Method addOrder
@@ -360,10 +363,16 @@ public class Employee extends Person {
 				subscription = null;
 				return true;
 			}
-			return false;
+            System.out.println("Something weent wrong in the insert to db method or query...");
+            return false;
 		}
-		return false;
+        System.out.println("Subscription incomplete...");
+        return false;
 	}
+    public double sumOrder(double discount){
+        System.out.println("BETA"); //TODO make it happen
+        return 0.00;
+    }
 
     //TODO GM
     public DefaultListModel<Category> getCategories(){

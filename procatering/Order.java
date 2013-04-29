@@ -16,6 +16,8 @@ public class Order {
 	private String status;      // Active, Completed or Cancelled
 	private Timestamp creationTime;
 	private DefaultListModel<OrderContent> ordercontent;
+    
+
 
 	/**
 	 * Constructor for Order.

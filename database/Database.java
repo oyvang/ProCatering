@@ -463,6 +463,30 @@ public class Database {
 		}
 	}
 
+    public DefaultListModel<procatering.Order> getAllOrders(int e_id) {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+                con.setAutoCommit(false);
+                prepStat.setInt(1, cid);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+                while (rs.next()) {
+                    output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
+                }
+                return output;
+            } catch (SQLException ePrepState) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                cleanup.dbRollback(con);
+                return null;
+            }
+        } catch (SQLException eCon) {
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+            return null;
+        }
+    }
+
 
 	/**
 	 * The methode check the dishName length, it has to be less than 255 signs.
@@ -702,7 +726,7 @@ public class Database {
 	/**
 	 * Gives the top 10 dishes arranged by profit.
 	 *
-	 * @returnes strings in a DefaultListModel.
+	 * @returns strings in a DefaultListModel.
 	 */
 	public DefaultListModel<String> topProfit() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
