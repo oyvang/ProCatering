@@ -196,9 +196,12 @@ public class Gui {
     private JButton subscriptionUnconfirmButton;
     private JTextPane subscriptionConfirmOrderInformationTextPane;
     private JTextPane subscriptionConfirmPaymenttInformationTextPane;
+	private JTextPane singleOrderCustomerConfirm;
+	private JTextPane singleOrderOrderConfirm;
+	private JTextPane singleOrderPaymentConfirm;
 
 
-    private void initListeners(){
+	private void initListeners(){
 		/* Login button action listener */
 		loginButton.addActionListener(new ActionListener() {
 			@Override
@@ -606,6 +609,7 @@ public class Gui {
 	private void menuSingleOrderButtonActionPerformed(Customer customer){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "singleOrderCard");
+		currentStepCard = "singleOrderSelectDateCard";
 		generateOrder(customer);
 	}
 
@@ -759,11 +763,11 @@ public class Gui {
     }
     private void setSubscriptionDishAddButtionActionPerformed() {
         Dish dish = (Dish)subscriptionSelectDishJList.getSelectedValue();
-        System.out.println("dish = " + dish);
+        System.out.println("dish = " + dish); //TODO remove
         int q = Integer.parseInt(subscriptionDishCountSpinner.getValue().toString());
-        System.out.println("q = "+q);
+        System.out.println("q = "+q);	//TODO Remove
         int i =  subscriptionSelectDayComboBox.getSelectedIndex();
-        System.out.println("i = "+i);
+        System.out.println("i = "+i); //TODO remove
 
         //System.out.println(singleOrderTimesComboBox.getSelectedItem());
         if(loggedInEmployee.getSubscription().addDish(dish, q, i)){
@@ -872,7 +876,6 @@ public class Gui {
 		if(loggedInEmployee.getOrder().getOrderContent().isEmpty()){
 			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
 			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
-			currentStepCard = "singleOrderSelectDateCard";
 			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
 		}else{
 			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
@@ -881,6 +884,7 @@ public class Gui {
 				if(option == 0){
 					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
 					singleOrderProgressBackButton.setEnabled(true);
+					currentStepCard = "singleOrderSelectDishCard";
 					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
 					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
 					ArrayList<String> jBoxLabels = new ArrayList<>();
@@ -891,7 +895,13 @@ public class Gui {
 					populateSingleOrderLists();
 				}
 			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
+				cl = (CardLayout)singleOrderPanel.getLayout();
+				cl.show(singleOrderPanel, "singleOrderConfirmCard");
+				System.out.println("Kjørt");
 				//CODE FOR THE overview
+				singleOrderCustomerConfirm.setText(singleOrderCustomerInformationTextpane.getText());
+				singleOrderOrderConfirm.setText(loggedInEmployee.getOrder().toHtml());
+				singleOrderPaymentConfirm.setText(loggedInEmployee.getOrder().toHtml());
 			}
 		}
 	}
@@ -917,11 +927,11 @@ public class Gui {
 
 		//System.out.println(singleOrderTimesComboBox.getSelectedItem());
 		if(loggedInEmployee.getOrder().addDish(dish, q, i)){
-			System.out.println("DET GIKK BRA");
+			System.out.println("DET GIKK BRA");//TODO remove
 			singleOrderUpdateTextpane();
 		}
 		else
-			System.out.println("Alt gikk GALT!");
+			System.out.println("Alt gikk GALT!");//TODO remove
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
