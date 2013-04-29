@@ -103,7 +103,7 @@ public class Database {
 
                     /* Declares and initializes the return DefaultListModel*/
 				DefaultListModel<Customer> output = new DefaultListModel<>();
-                    
+
                     /*creates the objects that has matching attributes to the search phrase*/
 				while (rs.next()) {
 					Customer inputObject = new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getString("note"), rs.getInt("customer_id"));
@@ -127,10 +127,11 @@ public class Database {
 			return null;
 		}
 	}
-        public boolean addSubscription(procatering.Subscription sub){
-            return false;
-            //TODO: MAKE method .. Ted
-        }
+
+	public boolean addSubscription(procatering.Subscription sub) {
+		return false;
+		//TODO: MAKE method .. Ted
+	}
 
 	public Customer getCustomer(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -143,7 +144,7 @@ public class Database {
 				con.commit();
 				con.setAutoCommit(true);
 				rs.first();
-				return new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"),rs.getString("note") ,rs.getInt("customer_id"));
+				return new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getString("note"), rs.getInt("customer_id"));
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
@@ -161,25 +162,25 @@ public class Database {
 	 * @param input
 	 * @param pw
 	 * @return true if successfully added, else it will return false.
-         * employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	 *         employee_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	 */
 	public boolean addEmployee(Employee input, String pw) {
 		if (input == null || employeeExist(input) == true) {
 			return false;
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {                        
-                                con.setAutoCommit(false);
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenumber, postalcode, dob, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+				con.setAutoCommit(false);
 				prepStat.setString(1, Helper.capitalFirst(input.getFirstName()));
 				prepStat.setString(2, Helper.capitalFirst(input.getLastName()));
 				prepStat.setString(3, input.getFirstName().toUpperCase());
 				prepStat.setString(4, input.getLastName().toUpperCase());
-				prepStat.setString(5, SecurityChecker.MD5(pw));    
+				prepStat.setString(5, SecurityChecker.MD5(pw));
 				prepStat.setString(6, input.getPhoneNumber());
 				prepStat.setInt(7, input.getPostalCode());
 				prepStat.setString(8, input.getDob());
 				prepStat.setString(9, input.getEmail().toLowerCase());
-                               
+
 				prepStat.executeUpdate();
 				con.commit();
 				con.setAutoCommit(true);
@@ -222,7 +223,7 @@ public class Database {
 						String mail = rs.getString("email");
 						int pCode = rs.getInt("postalcode");
 
-						if (fn == null || ln == null || dob == null || phone== null || mail == null) {
+						if (fn == null || ln == null || dob == null || phone == null || mail == null) {
 							return null;
 						} else {
 							return new Employee(employeeId, fn, ln, phone, pCode, dob, mail);
@@ -230,7 +231,7 @@ public class Database {
 					}
 
 				} catch (SQLException ePrepState) {
-                                   
+
 					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 					cleanup.dbRollback(con);
 					return null;
@@ -248,7 +249,7 @@ public class Database {
 		return null;
 	}
 
-//TODO FIX DOK: updateEmployee
+	//TODO FIX DOK: updateEmployee
 	public boolean updateEmployee(procatering.Employee input) {
 		if (input == null) {
 			return false;
@@ -266,14 +267,14 @@ public class Database {
 				prepStat.setString(8, input.getEmail());
 				prepStat.setInt(9, input.getEmployeeId());
 				int check = prepStat.executeUpdate();
-                                con.commit();
+				con.commit();
 				con.setAutoCommit(true);
-                                if(check>0){
-                                    return true;
-                                }
-                                return false;
+				if (check > 0) {
+					return true;
+				}
+				return false;
 			} catch (SQLException ePrepState) {
-                            System.out.println(ePrepState);
+				System.out.println(ePrepState);
 //				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
 				cleanup.dbRollback(con);
 				return false;
@@ -291,8 +292,8 @@ public class Database {
 	 * @return false if the employee does not exist and true if employee exist or the statement is null
 	 *         <p/>
 	 */
-	public boolean employeeExist(Employee employee) {     
-		if (employee == null) {              
+	public boolean employeeExist(Employee employee) {
+		if (employee == null) {
 			return true;
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -304,7 +305,7 @@ public class Database {
 				prepStat.setString(3, employee.getPhoneNumber());
 				try (ResultSet rs = prepStat.executeQuery()) {
 					while (rs.next()) {
-                                                return true;
+						return true;
 					}
 
 				} catch (SQLException ePrepState) {
@@ -322,7 +323,7 @@ public class Database {
 			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return true;
 		}
-                
+
 		return false;
 	}
 
@@ -461,8 +462,8 @@ public class Database {
 			return null;
 		}
 	}
-        
-        
+
+
 	/**
 	 * The methode check the dishName length, it has to be less than 255 signs.
 	 *
@@ -480,7 +481,7 @@ public class Database {
 					try (ResultSet rs = prepStat.executeQuery()) {
 
 						while (rs.next()) {
-                                                        int id = rs.getInt("dish_id");
+							int id = rs.getInt("dish_id");
 							String name = rs.getString("dishname");
 							double price = rs.getDouble("price");
 							double cost = rs.getDouble("cost");
@@ -511,31 +512,33 @@ public class Database {
 		}
 		return null;
 	}
-        /**
-         * edit an dish in the database. Require that the dish object obtain dish_id. The mothode only change price and cost of the dish.
-         * @param dish Dish object
-         * @return true if sucsessfully updated even if non of the value are different from what is allready in the database, else it will return false.
-         */
+
+	/**
+	 * edit an dish in the database. Require that the dish object obtain dish_id. The mothode only change price and cost of the dish.
+	 *
+	 * @param dish Dish object
+	 * @return true if sucsessfully updated even if non of the value are different from what is allready in the database, else it will return false.
+	 */
 	public boolean editDish(Dish dish) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET price = ?, cost = ? WHERE dish_id = ?")) {
-					con.setAutoCommit(false);
-					prepStat.setDouble(1, dish.getPrice());
-					prepStat.setDouble(2, dish.getCost());
-                                        prepStat.setInt(3, dish.getID());
-					prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-					return true;
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET price = ?, cost = ? WHERE dish_id = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setDouble(1, dish.getPrice());
+				prepStat.setDouble(2, dish.getCost());
+				prepStat.setInt(3, dish.getID());
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
 				return false;
 			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
 
 	}
 
@@ -569,44 +572,45 @@ public class Database {
 			return null;
 		}
 	}
-       
-        /**
-         * Changes the status attrite value in the database from 1 to 0 for the given dishname. 
-         * @param name String object
-         * @return true if sucsessfully updated; return false if nothing have been updated or if something went wrong.
-         */
+
+	/**
+	 * Changes the status attrite value in the database from 1 to 0 for the given dishname.
+	 *
+	 * @param name String object
+	 * @return true if sucsessfully updated; return false if nothing have been updated or if something went wrong.
+	 */
 	public boolean hideDish(String name) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
-					con.setAutoCommit(false);
-                                        prepStat.setInt(1, 0);
-					prepStat.setString(2, Helper.capitalFirst(name));
-					int check = prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-                                        if(check==0){
-                                            return false;
-                                        }
-					return true;
-                                       
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, 0);
+				prepStat.setString(2, Helper.capitalFirst(name));
+				int check = prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				if (check == 0) {
 					return false;
 				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return true;
+
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
 				return false;
 			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
 	}
-        
-        /**
-         * Check the number of dishes sold of a given dish.
-         *
-         * @param dishId 
-         * @returnes a integer of the number of dishes if it exists, 0 if it don't.
-         */
-        public int numbOfDishes(int dishId) {
+
+	/**
+	 * Check the number of dishes sold of a given dish.
+	 *
+	 * @param dishId
+	 * @returnes a integer of the number of dishes if it exists, 0 if it don't.
+	 */
+	public int numbOfDishes(int dishId) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish_id FROM order_dish WHERE dish_id = ?")) {
 				con.setAutoCommit(false);
@@ -629,25 +633,25 @@ public class Database {
 			return 0;
 		}
 	}
-        
-        
-        /**
-         * Gives the top 10 dishes arranged by most sold in a given time frame.
-         *
-         * @param from is the start date and time.
-         * @param to is the end date and time.
-         * @returnes strings in a DefaultListModel.
-         */
-        public DefaultListModel<String> topDishesFromTo(Timestamp from, Timestamp to) {
+
+
+	/**
+	 * Gives the top 10 dishes arranged by most sold in a given time frame.
+	 *
+	 * @param from is the start date and time.
+	 * @param to   is the end date and time.
+	 * @returnes strings in a DefaultListModel.
+	 */
+	public DefaultListModel<String> topDishesFromTo(Timestamp from, Timestamp to) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders WHERE time_of_order > ? AND time_of_order < ? GROUP BY dish.dish_id ORDER BY amountsum desc LIMIT 10;")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders WHERE time_of_order > ? AND time_of_order < ? GROUP BY dish.dish_id ORDER BY amountsum DESC LIMIT 10;")) {
 				con.setAutoCommit(false);
-                                prepStat.setTimestamp(1, from);
-                                prepStat.setTimestamp(2, to);
+				prepStat.setTimestamp(1, from);
+				prepStat.setTimestamp(2, to);
 				ResultSet rs = prepStat.executeQuery();
 				DefaultListModel output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement("Number of dishes: "+rs.getInt("amountsum")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
+					output.addElement("Number of dishes: " + rs.getInt("amountsum") + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
 				}
 				con.commit();
 				con.setAutoCommit(true);
@@ -662,23 +666,23 @@ public class Database {
 			return null;
 		}
 	}
-        
-        /**
-         * Gives the top five dishes arranged by most sold.
-         *
-         * @returnes strings in a DefaultListModel.
-         */
-        //Kanskje få inn en int som bestemmer antall dishes som skal vises?
-        public DefaultListModel<String> topDishes() {
+
+	/**
+	 * Gives the top five dishes arranged by most sold.
+	 *
+	 * @returnes strings in a DefaultListModel.
+	 */
+	//Kanskje få inn en int som bestemmer antall dishes som skal vises?
+	public DefaultListModel<String> topDishes() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum desc")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum DESC")) {
 				con.setAutoCommit(false);
 				ResultSet rs = prepStat.executeQuery();
 				DefaultListModel output = new DefaultListModel<>();
 				while (rs.next()) {
-                                    if (rs.getRow()<6){
-					output.addElement("Number of dishes: "+rs.getInt("amountsum")+". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
-                                    }
+					if (rs.getRow() < 6) {
+						output.addElement("Number of dishes: " + rs.getInt("amountsum") + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
+					}
 				}
 				con.commit();
 				con.setAutoCommit(true);
@@ -693,36 +697,36 @@ public class Database {
 			return null;
 		}
 	}
-        
-        
-         /**
-         * Gives the top 10 dishes arranged by profit.
-         *
-         * @returnes strings in a DefaultListModel.
-         */
-            public DefaultListModel<String> topProfit() {
-            try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(price - cost) AS profit , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders GROUP BY dish.dish_id ORDER BY profit desc LIMIT 10;")) {
-                            con.setAutoCommit(false);
-                            ResultSet rs = prepStat.executeQuery();
-                            DefaultListModel output = new DefaultListModel<>();
-                            while (rs.next()) {
-                                output.addElement("Profit: "+rs.getDouble("profit")+" NOK" + ". Dish: "+ rs.getString("dishname")+". Dish price: "+ rs.getDouble("price")+" NOK"+". Dish cost: "+ rs.getDouble("cost")+" NOK");
-                            }
-                            con.commit();
-                            con.setAutoCommit(true);
-                            return output;
-                    } catch (SQLException ePrepState) {
-                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                            cleanup.dbRollback(con);
-                            return null;
-                    }
-            } catch (SQLException eCon) {
-                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-                    return null;
-            }
+
+
+	/**
+	 * Gives the top 10 dishes arranged by profit.
+	 *
+	 * @returnes strings in a DefaultListModel.
+	 */
+	public DefaultListModel<String> topProfit() {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(price - cost) AS profit , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders GROUP BY dish.dish_id ORDER BY profit DESC LIMIT 10;")) {
+				con.setAutoCommit(false);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement("Profit: " + rs.getDouble("profit") + " NOK" + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
 	}
-        
+
 	/**
 	 * Adds a new category into the database. This methode only uses the name of the category to create one.
 	 *
@@ -730,26 +734,26 @@ public class Database {
 	 * @return
 	 */
 	public boolean addCategory(String name) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO categories (catname) VALUES (?);")
-				) {
-					con.setAutoCommit(false);
-					prepStat.setString(1, Helper.capitalFirst(name));
-					prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-					return true;
-				} catch (SQLException ePrepState) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO categories (catname) VALUES (?);")
+			) {
+				con.setAutoCommit(false);
+				prepStat.setString(1, Helper.capitalFirst(name));
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			} catch (SQLException ePrepState) {
 //					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				cleanup.dbRollback(con);
 				return false;
 			}
+		} catch (SQLException eCon) {
+//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
 
-		
+
 	}
 
 	//TODO DOK!
@@ -767,38 +771,40 @@ public class Database {
 		}
 	}
 
-        /**
-         * Adds a dish to the database
-         * @param dish Dish object
-         * @return true if sucsessfully added, else it will return false.
-         */
+	/**
+	 * Adds a dish to the database
+	 *
+	 * @param dish Dish object
+	 * @return true if sucsessfully added, else it will return false.
+	 */
 	public boolean addDish(Dish dish) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost, status) VALUES (?, ?, ?, ?)")) {
-					con.setAutoCommit(false);
-					prepStat.setString(1, Helper.capitalFirst(dish.getName()));
-					prepStat.setDouble(2, dish.getPrice());
-					prepStat.setDouble(3, dish.getCost());
-                                        prepStat.setInt(4, 1);
-					prepStat.executeUpdate();
-					con.commit();
-					con.setAutoCommit(true);
-					return true;
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish (dishname, price, cost, status) VALUES (?, ?, ?, ?)")) {
+				con.setAutoCommit(false);
+				prepStat.setString(1, Helper.capitalFirst(dish.getName()));
+				prepStat.setDouble(2, dish.getPrice());
+				prepStat.setDouble(3, dish.getCost());
+				prepStat.setInt(4, 1);
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
 				return false;
 			}
-		
-		
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
+
+
 	}
 
 	/**
 	 * Method getCategories returns a DefaltListModel containing a list of all the categories.
+	 *
 	 * @return a DefaultListModel with string, or null if no string found in the database
 	 */
 	public DefaultListModel getCategories() {
@@ -861,43 +867,43 @@ public class Database {
 	 * @param name string object
 	 * @return true f sucsessfully removed, else it will return false.
 	 */
-        
-        public boolean removeCategory(String name) {
-            if( getCategory(name).getCategoryID() > -1){
-            int id = getCategory(name).getCategoryID();
-            DefaultListModel<Dish> dishId = getAllDishesInACategory(id);
-            try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                for (int i = 0; i < dishId.getSize(); i++) {
-                    try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM cat_dish WHERE cat_id = ? AND dish_id = ?")) {
-                        con.setAutoCommit(false);
-                        prepStat.setInt(1, id);
-                        prepStat.setInt(2, dishId.get(i).getID());
-                        prepStat.executeUpdate();
-                    }
-                }
-                try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM categories WHERE cat_id = ?")) {
-                    con.setAutoCommit(false);
-                    prepStatTo.setInt(1, id);
-                    prepStatTo.executeUpdate();
-                    con.commit();
-                    con.setAutoCommit(true);
-                    return true;
-                    
-                } catch (SQLException ePrepState) {
-                        System.out.println(ePrepState);
+
+	public boolean removeCategory(String name) {
+		if (getCategory(name).getCategoryID() > -1) {
+			int id = getCategory(name).getCategoryID();
+			DefaultListModel<Dish> dishId = getAllDishesInACategory(id);
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				for (int i = 0; i < dishId.getSize(); i++) {
+					try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM cat_dish WHERE cat_id = ? AND dish_id = ?")) {
+						con.setAutoCommit(false);
+						prepStat.setInt(1, id);
+						prepStat.setInt(2, dishId.get(i).getID());
+						prepStat.executeUpdate();
+					}
+				}
+				try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM categories WHERE cat_id = ?")) {
+					con.setAutoCommit(false);
+					prepStatTo.setInt(1, id);
+					prepStatTo.executeUpdate();
+					con.commit();
+					con.setAutoCommit(true);
+					return true;
+
+				} catch (SQLException ePrepState) {
+					System.out.println(ePrepState);
 //                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                    cleanup.dbRollback(con);
-                    return false;
-                }
-            } catch (SQLException eCon) {
+					cleanup.dbRollback(con);
+					return false;
+				}
+			} catch (SQLException eCon) {
 //                gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-                return false;
-            }
-            }
-            return false;
-            
-        }
-  
+				return false;
+			}
+		}
+		return false;
+
+	}
+
 
 	public boolean customerExist(Customer customer) {
 		String sql = "SELECT clean_fn, phonenumber FROM customer WHERE clean_fn = ? AND phonenumber = ?";
@@ -913,264 +919,266 @@ public class Database {
 	}
 
 
-
-        /**
-         * Adds an ingredient into the database, useing only the name of the ingredient
-         *
-         * @param name String object
-         * @return true if sucsessfully added, else it will return false
-         */
-        public boolean addIngredient(String name) throws SQLException{
-                try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO ingredient (ingredientname) VALUES (?)")) {
-                        con.setAutoCommit(false);
-                        prepStat.setString(1, Helper.capitalFirst(name));
-                        prepStat.executeUpdate();
-                        con.commit();
-                        con.setAutoCommit(true);
-                        return true;
-                    }
-                }
-        }
-        
-        /**
-         * Insert dish_id and ingredient_id into dish_ingredient tabel.
-         *
-         * @param dishname       String object
-         * @param ingredientname String object
-         * @return true if sucsessfully inserted, else false
-         */
-        public boolean insertDishIngredient(String dishname, String ingredientname)throws SQLException {
-                try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish_ingredient (dish_id, ingredient_id) VALUES (?,?)")) {
-                        con.setAutoCommit(false);
-                        prepStat.setInt(1, getDish(Helper.capitalFirst(dishname)).getID());
-                        prepStat.setInt(2, getIngredient(Helper.capitalFirst(ingredientname)).getIngredientID());
-                        prepStat.executeUpdate();
-                        con.commit();
-                        con.setAutoCommit(true);
-                        return true;
-                    }
-                }
-
-        }
-        
-        /**
-         * get an ingredient object
-         *
-         * @param ingredientName String object
-         * @return a Ingredient object, or null if that ingredient does not exist.
-         */
-        public Ingredient getIngredient(String ingredientName) {
-                try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient WHERE ingredientname = ?")) {
-                        prepStat.setString(1, Helper.capitalFirst(ingredientName));
-                        try (ResultSet rs = prepStat.executeQuery()) {
-                            
-                            while (rs.next()) {
-                                int id = rs.getInt("ingredient_id");
-                                String name = rs.getString("ingredientname");
-                                
-                                if (name != null) {
-                                    return new Ingredient(id, name);
-                                }
-                            }
-                            
-                        } catch (SQLException ePrepState) {
-//                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                            cleanup.dbRollback(con);
-                            return null;
-                        }
-                        
-                    } catch (SQLException ePrepState) {
-//                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                        cleanup.dbRollback(con);
-                        return null;
-                    }
-                } catch (SQLException eCon) {
-//                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-                    return null;
-                }
-                
-            
-            return null;
-        }
-        
-        /**
-         * Find and return a Category object using it's category name
-         *
-         * @param categoryName String object
-         * @return a Category object, else null
-         */
-        public Category getCategory(String categoryName) {
-            if (Helper.stringChecker(categoryName)) {
-                try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories WHERE catname = ?")){
-                        prepStat.setString(1, Helper.capitalFirst(categoryName));
-                        try (ResultSet rs = prepStat.executeQuery()) {
-                            
-                            while (rs.next()) {
-                                int id = rs.getInt("cat_id");
-                                String name = rs.getString("catname");
-                                
-                                if (name != null) {
-                                    return new Category(id, name);
-                                } 
-                            }
-                            
-                        } catch (SQLException ePrepState) {
-                            
-//                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                            cleanup.dbRollback(con);
-                            return null;
-                        }
-                        
-                    } catch (SQLException ePrepState) {
-//                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                        cleanup.dbRollback(con);
-                        return null;
-                    }
-                } catch (SQLException eCon) {
-//                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-                    return null;
-                }
-            }
-            return null;
-        }
-        
-        /**
-         * Insert cat_id and dish_id into cat_dish tabel
-         *
-         * @param dishname String object
-         * @param catname  String object
-         * @return true if sucsessfully added, else false.
-         */
-        public boolean insertDishCat(String dishname, String catname) throws SQLException{
-                try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                    try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO cat_dish (cat_id, dish_id) VALUES (?,?)")) {
-                        con.setAutoCommit(false);
-                        prepStat.setInt(1, getCategory(Helper.capitalFirst(catname)).getCategoryID());
-                        prepStat.setInt(2, getDish(Helper.capitalFirst(dishname)).getID());
-                        prepStat.executeUpdate();
-                        con.commit();
-                        con.setAutoCommit(true);
-                        return true;
-                    }
-                }
-        }
-        
-        /**
-         * Checks if a category exist in the database (BE AWARE OF THE RETURN VALUE!)
-         *
-         * @param name String object
-         * @return true if category exist or if an exception have occured, else it will return false.
-         */
-        public boolean cateogryExist(String name) throws SQLException {
-            try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories WHERE catname = ?")
-                        ) {
-                    /*Inserts the input search string to the SQL in the prepared statement*/
-                    con.setAutoCommit(false);
-                    prepStat.setString(1, Helper.capitalFirst(name));
-                    ResultSet rs = prepStat.executeQuery();
-                    con.commit();
-                    con.setAutoCommit(true);
-                    
-                    while (rs.next()) {
-                        String catname = rs.getString("catname");
-                        if (catname.equals(name)) {
-                            return true;
-                        }
-                    }
-                    
-                    /*returns the List of cusomer objects with a match to the search phrase*/
-                    
-                }
-            }
-            
-            return false;
-        }
-        
-        /**
-         * Checks if an ingredient exist in the database (BE AWARE OF THE RETURN VALUE!)
-         *
-         * @param name String object
-         * @return true if category exist or if an exception have occured, else it will return false.
-         */
-        public boolean ingredientExist(String name) throws SQLException{
-            try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient WHERE ingredientname = ?")
-                        ) {
-                    /*Inserts the input search string to the SQL in the prepared statement*/
-                    con.setAutoCommit(false);
-                    prepStat.setString(1, name);
-                    ResultSet rs = prepStat.executeQuery();
-                    con.commit();
-                    con.setAutoCommit(true);
-                    
-                    while (rs.next()) {
-                        String ingredientname = rs.getString("ingredientname");
-                        if (ingredientname.equals(name)) {
-                            return true;
-                        }
-                    }
-                    
-                    /*returns the List of cusomer objects with a match to the search phrase*/
-                    
-                }
-                
-            }
-            return false;
-        }
-        
-        /**
-         * Search the database for an existing dish. (BE AWERE OF THE RETURN VALUES)
-         * @param name String object
-         * @return true if the dish exist or an sql exception occur, else it will return false.
-         */
-        public boolean dishExist(String name) throws SQLException{
-            try (Connection con = DriverManager.getConnection(URL, username, password)) {
-                try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish WHERE dishname = ?")
-                        ) {
-                    /*Inserts the input search string to the SQL in the prepared statement*/
-                    con.setAutoCommit(false);
-                    prepStat.setString(1, name);
-                    ResultSet rs = prepStat.executeQuery();
-                    con.commit();
-                    con.setAutoCommit(true);
-                    
-                    while (rs.next()) {
-                        String dishname = rs.getString("dishname");
-                        if (dishname.equals(name)) {
-                            return true;
-                        }
-                    }
-                    
-                    /*returns the List of cusomer objects with a match to the search phrase*/
-                    
-                }
-                return false;
-            }
-        }
-       /**
-        * Find dishes who belongs to one spesefic category id.
-        * @param id Integer Category id
-        * @return //TODO docuemtation
-        */
-        public DefaultListModel<Dish> getDishes(int id) {
-            if(id < 0){
-                return null;
-            }
+	/**
+	 * Adds an ingredient into the database, useing only the name of the ingredient
+	 *
+	 * @param name String object
+	 * @return true if sucsessfully added, else it will return false
+	 */
+	public boolean addIngredient(String name) throws SQLException {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? and status = 1;")) {
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO ingredient (ingredientname) VALUES (?)")) {
 				con.setAutoCommit(false);
-                                prepStat.setInt(1, id);
+				prepStat.setString(1, Helper.capitalFirst(name));
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			}
+		}
+	}
+
+	/**
+	 * Insert dish_id and ingredient_id into dish_ingredient tabel.
+	 *
+	 * @param dishname       String object
+	 * @param ingredientname String object
+	 * @return true if sucsessfully inserted, else false
+	 */
+	public boolean insertDishIngredient(String dishname, String ingredientname) throws SQLException {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO dish_ingredient (dish_id, ingredient_id) VALUES (?,?)")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, getDish(Helper.capitalFirst(dishname)).getID());
+				prepStat.setInt(2, getIngredient(Helper.capitalFirst(ingredientname)).getIngredientID());
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			}
+		}
+
+	}
+
+	/**
+	 * get an ingredient object
+	 *
+	 * @param ingredientName String object
+	 * @return a Ingredient object, or null if that ingredient does not exist.
+	 */
+	public Ingredient getIngredient(String ingredientName) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient WHERE ingredientname = ?")) {
+				prepStat.setString(1, Helper.capitalFirst(ingredientName));
+				try (ResultSet rs = prepStat.executeQuery()) {
+
+					while (rs.next()) {
+						int id = rs.getInt("ingredient_id");
+						String name = rs.getString("ingredientname");
+
+						if (name != null) {
+							return new Ingredient(id, name);
+						}
+					}
+
+				} catch (SQLException ePrepState) {
+//                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return null;
+				}
+
+			} catch (SQLException ePrepState) {
+//                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+//                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+
+
+		return null;
+	}
+
+	/**
+	 * Find and return a Category object using it's category name
+	 *
+	 * @param categoryName String object
+	 * @return a Category object, else null
+	 */
+	public Category getCategory(String categoryName) {
+		if (Helper.stringChecker(categoryName)) {
+			try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories WHERE catname = ?")) {
+					prepStat.setString(1, Helper.capitalFirst(categoryName));
+					try (ResultSet rs = prepStat.executeQuery()) {
+
+						while (rs.next()) {
+							int id = rs.getInt("cat_id");
+							String name = rs.getString("catname");
+
+							if (name != null) {
+								return new Category(id, name);
+							}
+						}
+
+					} catch (SQLException ePrepState) {
+
+//                            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+						cleanup.dbRollback(con);
+						return null;
+					}
+
+				} catch (SQLException ePrepState) {
+//                        gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+					cleanup.dbRollback(con);
+					return null;
+				}
+			} catch (SQLException eCon) {
+//                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+				return null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Insert cat_id and dish_id into cat_dish tabel
+	 *
+	 * @param dishname String object
+	 * @param catname  String object
+	 * @return true if sucsessfully added, else false.
+	 */
+	public boolean insertDishCat(String dishname, String catname) throws SQLException {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("INSERT INTO cat_dish (cat_id, dish_id) VALUES (?,?)")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, getCategory(Helper.capitalFirst(catname)).getCategoryID());
+				prepStat.setInt(2, getDish(Helper.capitalFirst(dishname)).getID());
+				prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				return true;
+			}
+		}
+	}
+
+	/**
+	 * Checks if a category exist in the database (BE AWARE OF THE RETURN VALUE!)
+	 *
+	 * @param name String object
+	 * @return true if category exist or if an exception have occured, else it will return false.
+	 */
+	public boolean cateogryExist(String name) throws SQLException {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM categories WHERE catname = ?")
+			) {
+                    /*Inserts the input search string to the SQL in the prepared statement*/
+				con.setAutoCommit(false);
+				prepStat.setString(1, Helper.capitalFirst(name));
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+
+				while (rs.next()) {
+					String catname = rs.getString("catname");
+					if (catname.equals(name)) {
+						return true;
+					}
+				}
+                    
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if an ingredient exist in the database (BE AWARE OF THE RETURN VALUE!)
+	 *
+	 * @param name String object
+	 * @return true if category exist or if an exception have occured, else it will return false.
+	 */
+	public boolean ingredientExist(String name) throws SQLException {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient WHERE ingredientname = ?")
+			) {
+                    /*Inserts the input search string to the SQL in the prepared statement*/
+				con.setAutoCommit(false);
+				prepStat.setString(1, name);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+
+				while (rs.next()) {
+					String ingredientname = rs.getString("ingredientname");
+					if (ingredientname.equals(name)) {
+						return true;
+					}
+				}
+                    
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+
+			}
+
+		}
+		return false;
+	}
+
+	/**
+	 * Search the database for an existing dish. (BE AWERE OF THE RETURN VALUES)
+	 *
+	 * @param name String object
+	 * @return true if the dish exist or an sql exception occur, else it will return false.
+	 */
+	public boolean dishExist(String name) throws SQLException {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish WHERE dishname = ?")
+			) {
+                    /*Inserts the input search string to the SQL in the prepared statement*/
+				con.setAutoCommit(false);
+				prepStat.setString(1, name);
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+
+				while (rs.next()) {
+					String dishname = rs.getString("dishname");
+					if (dishname.equals(name)) {
+						return true;
+					}
+				}
+                    
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Find dishes who belongs to one spesefic category id.
+	 *
+	 * @param id Integer Category id
+	 * @return //TODO docuemtation
+	 */
+	public DefaultListModel<Dish> getDishes(int id) {
+		if (id < 0) {
+			return null;
+		}
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ? AND status = 1;")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, id);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
 				con.setAutoCommit(true);
 				DefaultListModel<Dish> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("status")));
+					output.addElement(new Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("status")));
 				}
 
 				return output;
@@ -1184,74 +1192,77 @@ public class Database {
 			return null;
 		}
 	}
-        //TODO GM
-        public boolean removeEmployee(int id) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM employee_types WHERE employee_id = ?")){
-                                        con.setAutoCommit(false);
-					prepStat.setInt(1, id);
-                                        prepStat.executeUpdate();
-					
-                                        try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM employee WHERE employee_id = ?")){
-                                            prepStatTo.setInt(1, id);
-                                            prepStatTo.executeUpdate();
-                                            con.commit();
-                                            con.setAutoCommit(true);
-                                           
-                                            return true;
-                                        }
-				} catch (SQLException ePrepState) {
-                                        System.out.println(ePrepState);
-//					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
-				}
-			} catch (SQLException eCon) {
-//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-				return false;
-			}
 
-	}
-        //TODO GM
-        public boolean activateDish(String name) {
-			try (Connection con = DriverManager.getConnection(URL, username, password)) {
-				try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
-					con.setAutoCommit(false);
-                                        prepStat.setInt(1, 1);
-					prepStat.setString(2, Helper.capitalFirst(name));
-					int check = prepStat.executeUpdate();
+	//TODO GM
+	public boolean removeEmployee(int id) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM employee_types WHERE employee_id = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, id);
+				prepStat.executeUpdate();
+
+				try (PreparedStatement prepStatTo = con.prepareStatement("DELETE FROM employee WHERE employee_id = ?")) {
+					prepStatTo.setInt(1, id);
+					prepStatTo.executeUpdate();
 					con.commit();
 					con.setAutoCommit(true);
-                                        if(check==0){
-                                            return false;
-                                        }
+
 					return true;
-                                       
-				} catch (SQLException ePrepState) {
-					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-					cleanup.dbRollback(con);
-					return false;
 				}
-			} catch (SQLException eCon) {
-				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			} catch (SQLException ePrepState) {
+				System.out.println(ePrepState);
+//					gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
 				return false;
 			}
+		} catch (SQLException eCon) {
+//				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
+
 	}
-        //TODO GM
-         public DefaultListModel<Dish> getAllDishesInACategory(int id) {
-            if(id < 0){
-                return null;
-            }
+
+	//TODO GM
+	public boolean activateDish(String name) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
+				con.setAutoCommit(false);
+				prepStat.setInt(1, 1);
+				prepStat.setString(2, Helper.capitalFirst(name));
+				int check = prepStat.executeUpdate();
+				con.commit();
+				con.setAutoCommit(true);
+				if (check == 0) {
+					return false;
+				}
+				return true;
+
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return false;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return false;
+		}
+	}
+
+	//TODO GM
+	public DefaultListModel<Dish> getAllDishesInACategory(int id) {
+		if (id < 0) {
+			return null;
+		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM dish LEFT OUTER JOIN cat_dish ON dish.dish_id = cat_dish.dish_id WHERE cat_id = ?")) {
 				con.setAutoCommit(false);
-                                prepStat.setInt(1, id);
+				prepStat.setInt(1, id);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
 				con.setAutoCommit(true);
 				DefaultListModel<Dish> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new Dish (rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("dish_id")));
+					output.addElement(new Dish(rs.getString("dishname"), rs.getDouble("price"), rs.getDouble("cost"), rs.getInt("dish_id")));
 				}
 				return output;
 			} catch (SQLException ePrepState) {
@@ -1264,7 +1275,7 @@ public class Database {
 			return null;
 		}
 	}
-        
-        
-    }
+
+
+}
       
