@@ -20,7 +20,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static procatering.Helper.DATABASE_NUMBER;
 import static procatering.Helper.GUI_NUMBER;
 import static procatering.Helper.searchPostalCode;
 
@@ -201,6 +200,23 @@ public class Gui {
 	private JSpinner singleOrderDiscountSpinner;
 	private JButton placeOrderButton;
 	private JLabel loggedInEmployeeLabel;
+	private JButton singleOrderRemoveTimeButton;
+	private JButton addSingleOrderButton;
+	private JTabbedPane tabbedPane1;
+	private JPanel addEmployeePanel;
+	private JPanel seeEmployeePanel;
+	private JList employeeList;
+	private JTextPane aboutEmployeeTextPane;
+	private JTextField employeeFirstname;
+	private JTextField employeeLastname;
+	private JTextField employeeAdress;
+	private JTextField employeePostalCode;
+	private JTextField employeePhonenumber;
+	private JTextField employeeEmail;
+	private JLabel employeePostalCodeLabel;
+	private JButton addEmployeeButton;
+	private JPasswordField employeePasswordField;
+	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 
 	private void initListeners(){
@@ -455,13 +471,14 @@ public class Gui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				singleOrderAddTimeButtonActionPerformed();
+				singleOrderProgressButtonActionPerfomed(e);
 			}
 		});
 
         singleOrderProgressButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                singleOrderProgressButtonActionPerfomed();
+                singleOrderProgressButtonActionPerfomed(e);
             }
         });
 		singleOrderProgressBackButton.addActionListener(new ActionListener() {
@@ -528,16 +545,86 @@ public class Gui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				singleOrderDishAddButtonActionPerformed();
+				singleOrderProgressButtonActionPerfomed(e);
 			}
 		});
 
-		placeOrderButton.addActionListener(new ActionListener() {
+		singleOrderRemoveTimeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				placeOrderButtonActionPerformed();
+				singleOrderRemoveTimeActionPerformed();
 			}
 		});
 
+		addSingleOrderButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addSingleOrderButtonActionPerformed(e);
+			}
+		});
+
+		addEmployeeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addEmployeeButtonActionPerformed(e);
+			}
+		});
+		employeePostalCode.getDocument().addDocumentListener(new DocumentListener() {
+			public void insertUpdate(DocumentEvent e) {
+				if(employeePostalCode.getText().length() == 4){
+					employeePostalCodeLabel.setText(searchPostalCode(employeePostalCode.getText()));
+				}
+			}
+
+			@Override
+			/**
+			 * Method resets the postalCodeField
+			 */
+			public void removeUpdate(DocumentEvent e) {
+				if(employeePostalCode.getText().length() == 3){
+					employeePostalCodeLabel.setText("N/A");
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
+
+		backendEmployeeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				backendEmployeeButtonActionPerformed(e);
+			}
+		});
+
+		employeeList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				populateEmployeeInformation(e);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				//To change body of implemented methods use File | Settings | File Templates.
+			}
+		});
 	}
 
 
@@ -555,6 +642,7 @@ public class Gui {
         subscriptionCustomerInformation.setEditable(false);
         SubscriptionOrderInformationTextPane.setContentType("text/html");
         SubscriptionOrderInformationTextPane.setEditable(false);
+		aboutEmployeeTextPane.setContentType("text/html");
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
@@ -607,7 +695,6 @@ public class Gui {
 		CardLayout cl = (CardLayout)ProCatering.getLayout();
 		cl.show(ProCatering, "loggedOutCard");
 		loggedInEmployee = null;
-		singleOrderProgressLabel.setText("<html><b>Select time & date</b> - Select dishes - Overview </html>");
 		loginErrorMessage_label.setVisible(true);
 		currentStepCard = null;
 	}//TODO add logout
@@ -642,7 +729,6 @@ public class Gui {
 					"</html>";
 		singleOrderCustomerInformationTextpane.setText(t);
 		singleOrderCustomerIdLabel.setText(String.valueOf(customer.getCustomerID()));
-		System.out.println(customer.getCustomerID());
 		loggedInEmployee.createOrder(customer.getCustomerID());
 		singleOrderUpdateTextpane();
 	}
@@ -879,40 +965,34 @@ public class Gui {
 			showErrorMessage(GUI_NUMBER, 4, new Exception("Make sure you have selected a date in the future."));
 	}
 
-	private void singleOrderProgressButtonActionPerfomed() {
-//		if(loggedInEmployee.getOrder().getOrderContent().isEmpty() || loggedInEmployee.getOrder() == null){
-//			CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
-//			cl.show(singleOrderStepPanel, "singleOrderSelectDateCard");
-//			showErrorMessage(GUI_NUMBER, 5, new Exception("Please select times before you can continue"));
-//		}else{
-//			CardLayout cl =(CardLayout)singleOrderStepPanel.getLayout();
-//			if(currentStepCard.equals("singleOrderSelectDateCard")){
-//				int option = JOptionPane.showOptionDialog(ProCatering, "Have you selected all the times into the order?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
-//				if(option == 0){
-//					singleOrderProgressLabel.setText("<html>Select time & date - <b>Select dishes</b> - Overview </html>");
-//					singleOrderProgressBackButton.setEnabled(true);
-//					currentStepCard = "singleOrderSelectDishCard";
-//					cl.show(singleOrderStepPanel, "singleOrderSelectDishCard");
-//					DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
-//					ArrayList<String> jBoxLabels = new ArrayList<>();
-//					for (int i = 0; i < ordercontent.size(); i++) {
-//						jBoxLabels.add(ordercontent.get(i).getDeliveryDate().toString().substring(0,16));
-//						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
-//					}
-//					populateSingleOrderLists();
-//				}
-//			} else if(currentStepCard.equals("singleOrderSelectDishCard")){
-//				cl = (CardLayout)singleOrderPanel.getLayout();
-//				cl.show(singleOrderPanel, "singleOrderConfirmCard");
-//				updateSingleOrderPanes();
-//			}
-//		}
+	private void singleOrderProgressButtonActionPerfomed(ActionEvent event) {
+		if (loggedInEmployee.getOrder() != null) {
+			if (loggedInEmployee.getOrder().getOrderContent() != null) {
+				DefaultListModel<OrderContent> ordercontent = loggedInEmployee.getOrder().getOrderContent();
+				for (int i = 0; i < ordercontent.size(); i++) {
+					if(!jBoxLabels.contains(ordercontent.get(i).getDeliveryDate().toString().substring(0, 16))){
+						jBoxLabels.add(i ,ordercontent.get(i).getDeliveryDate().toString().substring(0, 16));
+						singleOrderTimesComboBox.addItem(jBoxLabels.get(i));
+					}
+				}
+				populateSingleOrderLists();
 
+				for (int i = 0; i < ordercontent.size(); i++) {
+					DefaultListModel<Dish> d = ordercontent.get(i).getDishes();
+					for (int j = 0; j < d.size(); j++) {
+						if(!d.isEmpty())
+							addSingleOrderButton.setEnabled(true);
+						else
+							addSingleOrderButton.setEnabled(false);
+					}
+				}
+			}
+		} else {
 
-
-
-
-
+		}
+		if(event.getSource().equals(singleOrderProgressButton))
+			backButtonActionPerformed();
+		singleOrderProgressBackButton.setEnabled(true);
 	}
 
 	private void updateSingleOrderPanes() {
@@ -920,7 +1000,6 @@ public class Gui {
 		double[] sum = loggedInEmployee.getOrder().getSum();
 		String 	output = "<html><body style='font-family:Courier New;'>";
 				output += loggedInEmployee.getOrder().confirmToHtml();
-		System.out.println("Kjører her da kies");
 				output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
 				output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
 				output += "</table></body></html>";
@@ -955,9 +1034,14 @@ public class Gui {
 			System.out.println("Alt gikk GALT!");//TODO remove
 	}
 
-	private void placeOrderButtonActionPerformed() {
-		String message = "";
-		int option = JOptionPane.showOptionDialog(ProCatering, message, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
+	private void addSingleOrderButtonActionPerformed(ActionEvent e) {
+		double[] sum = loggedInEmployee.getOrder().getSum();
+		String 	output = "<html><body style='font-family:Courier New;'>";
+		output += loggedInEmployee.getOrder().confirmToHtml();
+		output += "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
+		output += "<tr><td halign='left'>Total:		</td><td> </td><td halign='right'>"+sum[1]+"</td></tr>";
+		output += "</table></body></html>";
+		int option = JOptionPane.showOptionDialog(ProCatering, output, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 0);
 		if(option == 0){
 			if(loggedInEmployee.addOrder()) {
 				JOptionPane.showMessageDialog(ProCatering, "Order was successfully added.", "Success", JOptionPane.PLAIN_MESSAGE);
@@ -980,6 +1064,86 @@ public class Gui {
 		CardLayout cl = (CardLayout)singleOrderStepPanel.getLayout();
 		cl.previous(singleOrderStepPanel);
 	}
+	private void singleOrderRemoveTimeActionPerformed() {
+		int i = singleOrderTimesComboBox.getSelectedIndex();
+		loggedInEmployee.getOrder().getOrderContent().removeElementAt(i);
+		singleOrderTimesComboBox.removeItemAt(i);
+		singleOrderUpdateTextpane();
+	}
+
+	private void addEmployeeButtonActionPerformed(ActionEvent e) {
+		Boolean gtg = true;
+		String firstname 	= employeeFirstname.getText().trim();
+		String lastname 	= employeeLastname.getText().trim();
+		String address 		= employeeAdress.getText().trim();
+		int postalCode = 0;
+		try{
+			postalCode	 	= Integer.parseInt(employeePostalCode.getText().trim());
+		}catch(NumberFormatException ere){
+			showErrorMessage(GUI_NUMBER, 1, new Exception("Postal code needs a numeric value"));
+			gtg = false;
+		}
+		String phoneNumber 	= employeePhonenumber.getText().trim();
+		String email 		= employeeEmail.getText().trim();
+
+		if(firstname.isEmpty() || lastname.isEmpty() || address.isEmpty() || phoneNumber.isEmpty() || email.isEmpty()){
+			showErrorMessage(GUI_NUMBER, 2, new Exception("All fields except note and email needs to be filled."));
+			gtg = false;
+		}
+		Employee employee = new Employee(firstname, lastname, phoneNumber, postalCode, "12.05.92", email);
+			String confirmMessage = "<html>" +
+					"<h3>It seems like the person you are trying to add to the customer database already exists</h3>" +
+					"<p>Please select the person from the list to the right.</p>" +
+					"</html>";
+			int confirm = JOptionPane.showConfirmDialog(ProCatering, confirmMessage, "Are you sure?", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE);
+			System.out.println(confirm);
+		if(confirm != 0)
+			gtg = false;
+
+		if(gtg){
+			String confirmMessage1 = "<html>" +
+					"<h3>This is the information you put in:</h3>" +
+					"<table>" +
+					"<tr><td>Firstname:</td><td>"+employee.getFirstName()+"</td></tr>" +
+					"<tr><td>Lastname:</td><td>"+employee.getLastName()+"</td></tr>" +
+					"<tr><td>Phone number:</td><td>"+employee.getPhoneNumber()+"</td></tr>" +
+					"<tr><td>Postal Code:</td><td>"+employee.getPostalCode()+" "+employeePostalCode.getText()+"</td></tr>"+
+					"<tr><td>Email:</td><td>"+employee.getEmail()+"</td></tr>" +
+					"</html>";
+			int confirm1 = JOptionPane.showConfirmDialog(ProCatering, confirmMessage, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(confirm1 == 0){
+				if (employee.addEmployee(employee.getFirstName(), employee.getLastName(), employee.getPhoneNumber(), employee.getPostalCode(), employee.getDob(), employee.getEmail(), employeePasswordField.getText()))
+					JOptionPane.showMessageDialog(ProCatering, "The employee was added successfully!");
+				else
+					JOptionPane.showMessageDialog(ProCatering, "Failure");
+			}
+		}
+	}
+
+	private void backendEmployeeButtonActionPerformed(ActionEvent e) {
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "employeesBackendCard");
+		populateEmployeesList();
+	}
+
+	private void populateEmployeesList() {
+		employeeList.setModel(loggedInEmployee.getEmployees());
+	}
+
+	private void populateEmployeeInformation(MouseEvent e) {
+		Employee print = (Employee)employeeList.getSelectedValue();
+		String html = "<html><h3>About employee</h3>" +
+				"<table>" +
+				"<tr><td>Firstname:</td><td>"+print.getFirstName()+"</td></tr>" +
+				"<tr><td>Lastname:</td><td>"+print.getLastName()+"</td></tr>" +
+				"<tr><td>Phone number:</td><td>"+print.getPhoneNumber()+"</td></tr>" +
+				"<tr><td>Postal Code:</td><td>"+print.getPostalCode()+"</td></tr>"+
+				"<tr><td>Email:</td><td>"+print.getEmail()+"</td></tr>" +
+				"</table>"+
+				"</html>";
+		aboutEmployeeTextPane.setText(html);
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//							staticMethods															//

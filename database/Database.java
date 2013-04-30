@@ -411,37 +411,45 @@ public class Database {
 
 	//TODO lag dokumentasjon EIRIK! / add ordercontent også.
 
-	public boolean addOrder(procatering.Order order) {
+	public boolean addOrder(Order order) {
 		if (order == null) {
 			return false;
 		}
+		DefaultListModel<OrderContent> orderContent = order.getOrderContent();
 
-		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (//TODO add a for-loop to add ordercontent/dishes
-				PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
+		String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, quantity, amount) VALUES (?,?,?,?,?)";
+		String sql1= "INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)";
+
+		try (Connection con = DriverManager.getConnection(URL, username, password);
+			 PreparedStatement prepStat = con.prepareStatement(sql1);
+			 PreparedStatement prepStat1 = con.prepareStatement(sql)){
 				con.setAutoCommit(false);
-				prepStat.setInt(1, order.getEmployeeId());
-				prepStat.setInt(2, order.getCustomerId());
-				prepStat.setTimestamp(3, order.getCreationTime());
-				prepStat.setString(4, order.getStatus());
-				prepStat.executeUpdate();
+					prepStat.setInt(1, order.getEmployeeId());
+					prepStat.setInt(2, order.getCustomerId());
+					prepStat.setTimestamp(3, order.getCreationTime());
+					prepStat.setString(4, order.getStatus());
+					prepStat.executeUpdate();
+					ResultSet rs = prepStat.getGeneratedKeys();
+					rs.next();
+				for (int i = 0; i < orderContent.size(); i++) {
+					prepStat1.setInt(1, rs.getInt(1));
+					prepStat1.setInt(2, order.getOrderContent().get(i).getDishes().get(i).getID());
+
+				}
+
+
 				con.commit();
 				con.setAutoCommit(true);
 				return true;
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				cleanup.dbRollback(con);
+				//con.rollback();
 				return false;
 			}
-		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-			return false;
 		}
-	}
-
 
 	//TODO DOK!
-	public DefaultListModel<procatering.Order> getOrder(int cid) {
+	public DefaultListModel<Order> getOrder(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM orders LEFT JOIN customer ON customer.customer_id = orders.customer_id WHERE orders.customer_id = ?")) {
 				con.setAutoCommit(false);
@@ -449,9 +457,9 @@ public class Database {
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
 				con.setAutoCommit(true);
-				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+				DefaultListModel<Order> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
+					output.addElement(new Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
 				}
 				return output;
 			} catch (SQLException ePrepState) {
@@ -1438,6 +1446,27 @@ public class Database {
 		}
 	}
 
+	/**
+	 *
+	 * @return a DefaultListModel of all the Employees in the database. Returns null if it fails somehow.
+	 * @author Jørgen Lien Sellæg
+	 */
+	public DefaultListModel<Employee> getEmployees() {
+		String sql = "SELECT * FROM employee";
+		DefaultListModel<Employee> emp = new DefaultListModel<>();
+		try(Connection con = DriverManager.getConnection(URL, username, password);
+			PreparedStatement p = con.prepareStatement(sql);
+			ResultSet rs = p.executeQuery()){
 
+			while (rs.next()) {
+				emp.addElement(new Employee(rs.getInt("employee_id"),rs.getString("firstname"), rs.getString("lastname"),rs.getString("phonenumber"),rs.getInt("postalcode"),rs.getString("dob"),rs.getString("email")));
+			}
+			return emp;
+
+		}catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
 }
 

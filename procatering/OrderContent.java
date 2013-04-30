@@ -237,13 +237,11 @@ public class OrderContent {
 			return output;
 		} else {
 			output = "<tr><td halign='left'>-----------</td><td>---------</td><td halign='right'>----------</td></tr>";
-			output += "<tr><td>";
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy' - 'HH:mm"); //TODO maybe fix locale.
-			output += "</td></tr>";
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM.yy'</td><td>-</td><td>'HH:mm"); //TODO maybe fix locale.
 			output += simpleDateFormat.format(deliveryTime);
 			if (countList != null){
 				for (int i = 0; i < countList.size(); i++) {
-					output += countList.get(i) + "<br>";
+					output += countList.get(i);
 				}
 			output += "</table>";
 			}

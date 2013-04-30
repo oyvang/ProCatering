@@ -166,8 +166,8 @@ public class Order {
 	 * */
 	public String toHtml() {
 		String output = "<html>";
-		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
-		output += "<table>";
+		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i>";
+		output += "<table border='1'>";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i).toHtml();
 		}

@@ -181,7 +181,7 @@ public class Employee extends Person {
 	 */
 	@Override
 	public String toString() {
-		return "Employee{" + super.toString() +  '}';
+		return getLastName()+", "+getFirstName();
 	}
 
     /**
@@ -409,4 +409,9 @@ public class Employee extends Person {
         }
         return db.getCustomer(customerID);
     }
+
+	public DefaultListModel<Employee> getEmployees(){
+		Database db = new Database();
+		return db.getEmployees();
+	}
 }
