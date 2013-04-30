@@ -167,8 +167,13 @@ public class Employee extends Person {
                 }
 		return false;
 	}
-    //TODO DOKUMENTASJON
-    public DefaultListModel getDishes(int id){
+
+    /**
+     * Returns a DefaultListModel with the category specified.
+     * @param id a category id.
+     * @return a DefaultListModel containing all the dishes in the specified category.
+     */
+    public DefaultListModel<Dish> getDishes(int id){
     	return db.getDishes(id);
     }
 
@@ -423,4 +428,13 @@ public class Employee extends Person {
 		Database db = new Database();
 		return db.getEmployees();
 	}
+
+    /**
+     * Returns a DefaultListModel containing all the orders in the database.
+     * @return a DefaultListModel containing all the orders in the database, returns null if nothing is found.
+     */
+    public DefaultListModel<Order> getOrders() {
+        Database db = new Database();
+        return db.getAllOrders2();
+    }
 }

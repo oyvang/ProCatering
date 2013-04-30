@@ -231,6 +231,7 @@ public class Gui {
     private JList subscriptionSelectList;
     private JList singleOrderSelectList;
     private JPanel subscriptionTab;
+    private JTable table1;
     private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 
@@ -649,6 +650,34 @@ public class Gui {
 				//To change body of implemented methods use File | Settings | File Templates.
 			}
 		});
+
+        singleOrderSelectList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Order order = (Order)singleOrderSelectList.getSelectedValue();
+                singleOrderOverviewTextPane.setText(order.confirmToHtml());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
 	}
 
 
@@ -667,6 +696,8 @@ public class Gui {
         SubscriptionOrderInformationTextPane.setContentType("text/html");
         SubscriptionOrderInformationTextPane.setEditable(false);
 		aboutEmployeeTextPane.setContentType("text/html");
+        singleOrderOverviewTextPane.setContentType("text/html");
+        singleOrderOverviewTextPane.setEnabled(false);
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
@@ -923,7 +954,7 @@ public class Gui {
 	}
 
     private void existOrderPopulate(){
-        singleOrderSelectList.setModel(loggedInEmployee.);
+        singleOrderSelectList.setModel(loggedInEmployee.getOrders());
     }
 
 	private void customerSearchButtonActionPerformed(){

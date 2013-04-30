@@ -169,19 +169,24 @@ INSERT INTO employee (firstname, lastname, clean_fn, clean_ln, password, phonenu
 INSERT INTO categories (catname) VALUES ('Take Away');
 INSERT INTO categories (catname) VALUES ('Fish');
 INSERT INTO categories (catname) VALUES ('Meat');
-INSERT INTO categories (catname) VALUES ('Ghost');
-INSERT INTO categories (catname) VALUES ('Raw');
+INSERT INTO categories (catname) VALUES ('Vegetarian');
+INSERT INTO categories (catname) VALUES ('Appetisers');
 
-INSERT INTO dish (dishname, price, cost, status) VALUES ('Busters', 1337, 1, 1);
-INSERT INTO dish (dishname, price, cost, status) VALUES ('Pizza Italia', 156, 50, 0);
-INSERT INTO dish (dishname, price, cost, status) VALUES ('Mammoth', 666, 600, 1);
-INSERT INTO dish (dishname, price, cost, status) VALUES ('Salmon', 1337, 1, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Pizza', 250, 50, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Entrecote', 400, 150, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Steak', 200, 78, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Ceasar Salat', 99, 40, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Soup', 150, 15, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Salamon', 175, 90, 1);
+INSERT INTO dish (dishname, price, cost, status) VALUES ('Trout', 150, 15, 1);
 
-INSERT INTO cat_dish (cat_id, dish_id) VALUES (1,2);
-INSERT INTO cat_dish (cat_id, dish_id) VALUES (2,4);
-INSERT INTO cat_dish (cat_id, dish_id) VALUES (5,4);
-INSERT INTO cat_dish (cat_id, dish_id) VALUES (3,3);
-INSERT INTO cat_dish (cat_id, dish_id) VALUES (4,1);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (7,5);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (9,6);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (9,7);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (10,8);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (11,9);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (8,10);
+INSERT INTO cat_dish (cat_id, dish_id) VALUES (8,11);
 
 INSERT INTO employee_types(employee_id, type_id) VALUES (1,1);
 INSERT INTO employee_types(employee_id, type_id) VALUES (2,2);

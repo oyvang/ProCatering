@@ -235,6 +235,36 @@ public class OrderContent {
             return output;
         }
 
+    /**
+     * Count equal dishes in the DefaultModelList "dishes".
+     * @return a DefaultListModel<String> with string objects example (13x Taco)
+     */
+    public String[][] countDishFish(DefaultListModel<Dish> dishes){
+        int counter = 0;
+        int[] count = new int[100];
+        DefaultListModel<Dish> temp = new DefaultListModel<>();
+        DefaultListModel<Integer> output = new DefaultListModel<>();
+        for (int i = 0; i < dishes.getSize(); i++) {
+            if(!temp.contains(dishes.get(i))){
+                temp.addElement(dishes.get(i));
+            }
+        }
+        for (int i = 0; i < temp.size(); i++) {
+            for (int j = 0; j < dishes.size(); j++) {
+                if(dishes.get(j).getName().equals(temp.get(i).getName())) {
+                    count[i] += 1;
+                }
+            }
+        }
+        String[][] doubleTable= new String[temp.size()][2];
+        output.clear();
+        for (int i = 0; i < temp.size(); i++) {
+            doubleTable[i][0] = temp.get(i).getPrice()+"";
+            doubleTable[i][1] = ""+count[i];
+        }
+        return doubleTable;
+    }
+
 
 	/**
 	 * Method toString

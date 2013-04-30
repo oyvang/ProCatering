@@ -6,6 +6,8 @@ package procatering;
  * @author TEAM 17
  */
 
+import database.Database;
+
 import java.sql.Timestamp;
 import javax.swing.*;
 
@@ -15,7 +17,7 @@ public class Order {
 	private int employeeId;
 	private String status;      // Active, Completed or Cancelled
 	private Timestamp creationTime;
-	private DefaultListModel<OrderContent> ordercontent;
+	private DefaultListModel<OrderContent> ordercontent; // one delivery per object
     private int orderId;
 
 	/**
@@ -170,12 +172,7 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		String output = "";
-		output += "Order created: " + creationTime.toString().substring(0, 16);
-		for (int i = 0; i < ordercontent.size(); i++) {
-			output += ordercontent.get(i)+"<br>";
-		}
-		return output;
+        return getOrderContent().get(1).getDeliveryDate().toString().substring(0,16);
 	}
 	/** Method returns a html representation of the object.
 	 * @return a html document representation of the object.
