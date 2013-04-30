@@ -1574,6 +1574,27 @@ public class Database {
         }
     }
 
+
+
+    public String getTodayOrder(Timestamp today){
+        String sql = "";
+        if(today == null)
+            return null;
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement(sql)) {
+                System.out.println("Hello, world!"); //TODO Hei
+                return null;
+            }catch(SQLException e){
+                System.out.println(e);
+                con.rollback();
+                return null;
+            }
+        }catch (SQLException er){
+            System.out.println(er);
+            return null;
+        }
+    }
+
     /**
      * Find order by shearching for firstname, lastname, phonenumber or postalcode. If order id are over 10 signs or the name are over 42 signs the string will be ugly.
      *
