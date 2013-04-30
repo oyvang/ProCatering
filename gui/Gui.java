@@ -158,8 +158,7 @@ public class Gui {
     private JButton subscriptionRemoveDayButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
-	private JTextPane singleOrderProgressLabel;
-	private JComboBox singleOrderTimesComboBox;
+    private JComboBox singleOrderTimesComboBox;
 	private JList<Category> singleOrderDishSelectCategoryJList;
 	private JList singleOrderDishSelectDishJList;
 	private JLabel singleOrderSelectTimeLabel;
@@ -194,6 +193,19 @@ public class Gui {
     private JButton subscriptionUnconfirmButton;
     private JTextPane subscriptionConfirmOrderInformationTextPane;
     private JTextPane subscriptionConfirmPaymenttInformationTextPane;
+    private JPanel subscriptionConfirmContentPanel;
+    private JTextPane subscriptionConfirmShipmentInformationTextPane;
+    private JButton subscriptionConfirmOrderButton;
+    private JTabbedPane existOrderTabbedPane;
+    private JTextPane existOrderOrdersTextPane;
+    private JTextPane existOrderSubscriptionsTextPane;
+    private JPanel existOrderOrders;
+    private JPanel existOrderArchive;
+    private JPanel existOrdersChef;
+    private JList existOrderChefOrdersTextPane;
+    private JList existOrderChefSubscriptionsTextPane;
+    private JScrollPane existOrderChefOrdersScrollPane;
+    private JScrollPane existOrderChefSubscriptionsScrollPane;
 	private JTextPane singleOrderCustomerConfirm;
 	private JTextPane singleOrderOrderConfirm;
 	private JTextPane singleOrderPaymentConfirm;
@@ -294,15 +306,18 @@ public class Gui {
                 int dd = c.get(Calendar.DATE);
                 int mm = c.get(Calendar.MONTH);
                 int yy = c.get(Calendar.YEAR);
+                int hh = c.get(Calendar.HOUR);                         // TODO: Fix bug, "today" isn't choosable as activation date.
                 if(loggedInEmployee.getSubscription().getStartDate() == null){
-                    Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0);
-                    if(ts.before(loggedInEmployee.getSubscription().getOrderDate())){
-                        subscriptionActivationDateValueLabel.setText(ts.toString()+"to early");
-                        subscriptionActivationDateValueLabel.setForeground(Color.red);
-                    }else{
+                    Timestamp ts = new Timestamp(yy-1900,mm,dd,hh,0,0,0);
+                    System.out.println("orderdate: "+loggedInEmployee.getSubscription().getOrderDate());
+                    System.out.println("active date: " +ts);
+                    if(ts.after(loggedInEmployee.getSubscription().getOrderDate())){
                         subscriptionActivationDateValueLabel.setText(ts.toString() );
                         subscriptionActivationDateValueLabel.setForeground(Color.black);
                         subscriptionActivationDateSubmitButton.setEnabled(true);
+                    }else{
+                        subscriptionActivationDateValueLabel.setText(ts.toString()+"to early");
+                        subscriptionActivationDateValueLabel.setForeground(Color.red);
                     }
                 }else{
                     Timestamp ts2 = new Timestamp(yy-1900,mm,dd,0,0,0,0);
@@ -352,6 +367,12 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setSubscriptionDishAddButtionActionPerformed();
+            }
+        });
+        subscriptionConfirmOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                subscriptionConfirmOrderButtonActionPerformed();
             }
         });
 
@@ -850,14 +871,13 @@ public class Gui {
         }
     }
     public void subscriptionPopulateConfirmPane(){
-
+        subscriptionConfirmContactInformationTextPane.setText(subscriptionCustomerInformation.getText());
         CardLayout cl = (CardLayout)subscriptionOrderPanel.getLayout();
         cl.show(subscriptionOrderPanel, "subscriptionConfirmCard");
         subscriptionProgressConfirmTextPane.setText("<html>Select Day/Time - Select dishes -<b> Overview </b></html>");
-        subscriptionConfirmContactInformationTextPane.setText(  "Contact Information:<br>" +
-                Customer.findCustomer(""+loggedInEmployee.getSubscription().getCustomerId()).getElementAt(0));//TODO FIX
-        subscriptionConfirmOrderInformationTextPane.setText("Order INFO");//TODO FIX
-        subscriptionConfirmPaymenttInformationTextPane.setText("Payment INFO");//TODO FIX
+        subscriptionConfirmOrderInformationTextPane.setText("Order information:<br>" + loggedInEmployee.getSubscription() );//TODO Make presentation methods for order content.
+        subscriptionConfirmPaymenttInformationTextPane.setText("Under construction");//TODO Make presentation methods for payment
+        subscriptionConfirmShipmentInformationTextPane.setText("Under construction");
     }
     private void setSubscriptionDishAddButtionActionPerformed() {
         Dish dish = (Dish)subscriptionSelectDishJList.getSelectedValue();
@@ -875,6 +895,13 @@ public class Gui {
         else
             System.out.println("Alt gikk GALT!");
     }
+    private void subscriptionConfirmOrderButtonActionPerformed(){
+        if(loggedInEmployee.addSubscription()){
+            JOptionPane.showConfirmDialog(null, "The subscription was successfully savesd!");
+        }else{
+            JOptionPane.showConfirmDialog(null, "Something went wrong while saving the subscription!");
+        }
+    }
     private void populateSubscriptionCategoryLists() {
         DefaultListModel<Category> categoriesList = loggedInEmployee.getCategories();
         subscriptionSelectCategoryJList.setModel(categoriesList);
@@ -883,12 +910,18 @@ public class Gui {
     private void subscriptionSelectCategoryJListActionPerformed() {
         Category cat = (Category)subscriptionSelectCategoryJList.getSelectedValue();
         subscriptionSelectDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
+
     }
 
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
+        //existOrderPopulate();
 	}
+    //private void existOrderPopulate(){
+        //existOrderChefOrdersTextPane.setText(" under construction line 821 ish");//TODO FIx
+        //existOrderChefSubscriptionsTextPane.setText(" under construction line 822 ish");//TODO FIx
+    //}
 
 	private void customerSearchButtonActionPerformed(){
 		nameList = Customer.findCustomer(customerSearchField.getText());

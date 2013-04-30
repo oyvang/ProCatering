@@ -8,6 +8,7 @@ package procatering;
 import javax.swing.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  * content of an order or subscription, with deliveryDate( for order and subscription ) or deliveryDay( for subscription )
@@ -28,18 +29,44 @@ public class OrderContent {
 		deliveryTime = delivery;
 		this.dishes = new DefaultListModel<>();
 	}
+    /**
+     * constructor for content to Orders
+     * From DB
+     *
+     * @param delivery Timestamp with date and time for delivery of order.
+     */
+    public OrderContent( Timestamp delivery, DefaultListModel<Dish> dishlist) {
+
+        deliveryTime = delivery;
+        this.dishes = dishlist;
+    }
 
 	/**
-	 * constructor for content to subscriptions
-	 *
-	 * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
-	 * @param time Timestamp that contains the time of delivery for the given day
-	 */
-	public OrderContent(String day, Timestamp time) {
-		deliveryTime = time;
-		deliveryDay = day;
-		this.dishes = new DefaultListModel<>();
-	}
+     * constructor for content to subscriptions
+     *
+     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+     * @param time Timestamp that contains the time of delivery for the given day
+     */
+    public OrderContent(String day, Timestamp time) {
+        deliveryTime = time;
+        deliveryDay = day;
+        this.dishes = new DefaultListModel<>();
+    }
+    /**
+     * constructor for content to subscriptions
+     * From DB
+     *
+     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+     * @param time Timestamp that contains the time of delivery for the given day
+     */
+    public OrderContent(String day, Timestamp time, DefaultListModel<Dish> dishlist) {
+
+        deliveryTime = time;
+        deliveryDay = day;
+        this.dishes = dishlist;
+    }
+
+
 
 	/**
 	 * Method getDishes
@@ -177,6 +204,7 @@ public class OrderContent {
 	public void removeDish(int index) {
 		dishes.removeElementAt(index);
 	}
+
         
         /**
          * Count equal dishes in the DefaultModelList "dishes".
@@ -184,24 +212,29 @@ public class OrderContent {
          */
         public DefaultListModel<String> countDish(){
             int counter = 0;
-            DefaultListModel<String> output = new DefaultListModel();
-            DefaultListModel<Dish> temp = new DefaultListModel();
+            int[] count = new int[100];
+            DefaultListModel<Dish> temp = new DefaultListModel<>();
+            DefaultListModel<String> output = new DefaultListModel<>();
             for (int i = 0; i < dishes.getSize(); i++) {
                 if(!temp.contains(dishes.get(i))){
                    temp.addElement(dishes.get(i)); 
                 }
             }
-			for (int i = 0; i < temp.getSize(); i++) {
-                for (int j = 0; j < dishes.getSize(); j++) {
-                   if(temp.get(i).getID()==dishes.get(j).getID()){
-                     counter++;  
+            for (int i = 0; i < temp.size(); i++) {
+                for (int j = 0; j < dishes.size(); j++) {
+                   if(dishes.get(j).getName().equals(temp.get(i).getName())) {
+                       //System.out.println("count.get(i): "+count.get(i));
+                       count[i] += 1;
+                        }
                    }
                 }
-             output.addElement("<tr><td halign='left'>"+counter + " x</td><td>" + temp.get(i).getName()+"</td><td halign='right'>"+temp.get(i).getPrice()+"</td></tr>");
-             
+            output.clear();
+            for (int i = 0; i < temp.size(); i++) {
+                output.addElement("<tr><td halign='left'>"+count[i] + " x</td><td>" + temp.get(i).getName()+"</td><td halign='right'>"+temp.get(i).getPrice()+"</td></tr>");
             }
             return output;
         }
+
 
 	/**
 	 * Method toString

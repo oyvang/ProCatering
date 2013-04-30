@@ -30,7 +30,24 @@ public class Dish {
     public Dish(Dish d){
         this(d.getName(),d.getPrice(),d.getCost());
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Dish dish = (Dish) o;
+
+        if (!name.equals(dish.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     public String getName(){
         return name;
     }
