@@ -197,11 +197,11 @@ public class Gui {
     private JTextPane subscriptionConfirmShipmentInformationTextPane;
     private JButton subscriptionConfirmOrderButton;
     private JTabbedPane existOrderTabbedPane;
-    private JTextPane existOrderOrdersTextPane;
-    private JTextPane existOrderSubscriptionsTextPane;
-    private JPanel existOrderOrders;
-    private JPanel existOrderArchive;
-    private JPanel existOrdersChef;
+    private JTextPane singleOrderOverviewTextPane;
+    private JTextPane subscriptionOverviewTextPane;
+    private JPanel singleOrderTab;
+    private JPanel archiveTab;
+    private JPanel chefTab;
     private JList existOrderChefOrdersTextPane;
     private JList existOrderChefSubscriptionsTextPane;
     private JScrollPane existOrderChefOrdersScrollPane;
@@ -228,7 +228,10 @@ public class Gui {
 	private JLabel employeePostalCodeLabel;
 	private JButton addEmployeeButton;
 	private JPasswordField employeePasswordField;
-	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
+    private JList subscriptionSelectList;
+    private JList singleOrderSelectList;
+    private JPanel subscriptionTab;
+    private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 
 	private void initListeners(){
@@ -916,12 +919,12 @@ public class Gui {
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
-        //existOrderPopulate();
+        existOrderPopulate();
 	}
-    //private void existOrderPopulate(){
-        //existOrderChefOrdersTextPane.setText(" under construction line 821 ish");//TODO FIx
-        //existOrderChefSubscriptionsTextPane.setText(" under construction line 822 ish");//TODO FIx
-    //}
+
+    private void existOrderPopulate(){
+        singleOrderSelectList.setModel(loggedInEmployee.);
+    }
 
 	private void customerSearchButtonActionPerformed(){
 		nameList = Customer.findCustomer(customerSearchField.getText());
