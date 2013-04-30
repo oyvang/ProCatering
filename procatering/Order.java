@@ -156,7 +156,7 @@ public class Order {
 	@Override
 	public String toString() {
 		String output = "";
-		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		output += "Order created: " + creationTime.toString().substring(0, 16);
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i);
 		}
@@ -168,11 +168,36 @@ public class Order {
 	 * */
 	public String toHtml() {
 		String output = "<html>";
-		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i><br>";
+		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i>";
+		output += "<table border='1'>";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i).toHtml();
 		}
-		return output+"</html>";
+		return output;
 	}
+
+	public String confirmToHtml(){
+		String output = "Receipt for Order<br>";
+		for (int i = 0; i < ordercontent.size(); i++) {
+			output += ordercontent.get(i).toHtml();
+		}
+
+		return output;
+	}
+
+
+	public double[] getSum(){
+		Double total = 0.0;
+		for (int i = 0; i < ordercontent.size(); i++) {
+			DefaultListModel<Dish> d = ordercontent.get(i).getDishes();
+			for (int j = 0; j < d.size(); j++) {
+				total += d.get(i).getPrice();
+			}
+		}
+		Double sum = total;
+
+		return new double[]{sum, total};
+	}
+
 }
 

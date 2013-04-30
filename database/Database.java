@@ -41,7 +41,7 @@ public class Database {
 		}
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (
-					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer"
+					PreparedStatement prepStat = con.prepareStatement("INSERT INTO customer "
 							+ "(firstname, lastname, clean_fn, clean_ln, phonenumber, email, address, postalcode, note)"
 							+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")
 			) {
@@ -107,12 +107,12 @@ public class Database {
                     /*creates the objects that has matching attributes to the search phrase*/
 				while (rs.next()) {
 					Customer inputObject = new Customer(rs.getString("address"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"), rs.getString("email"), rs.getInt("postalcode"), rs.getString("note"), rs.getInt("customer_id"));
-                            /*if the customer object has a corporate connection, add to attributes*/
+							/*if the customer object has a corporate connection, add to attributes*/
 					if (rs.getString("corporate_register.corporatename") != null) {
 						inputObject.setCorporateNum(rs.getInt("corporate_register.corporatenumber"));
 						inputObject.setCorporateName(rs.getString("corporate_register.corporatename"));
 					}
-                            /*Adds the object to the DefaultListModel*/
+							/*Adds the object to the DefaultListModel*/
 					output.addElement(inputObject);
 				}
                     /*returns the List of cusomer objects with a match to the search phrase*/
@@ -411,45 +411,55 @@ public class Database {
 
 	//TODO lag dokumentasjon EIRIK! / add ordercontent også.
 
-	public boolean addOrder(procatering.Order order) {
+	public boolean addOrder(Order order) {
 		if (order == null) {
 			return false;
 		}
+		DefaultListModel<OrderContent> orderContent = order.getOrderContent();
 
-		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (//TODO add a for-loop to add ordercontent/dishes
-				 PreparedStatement prepStat = con.prepareStatement("INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)")) {
+		String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, quantity, amount) VALUES (?,?,?,?,?)";
+		String sql1= "INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)";
+
+		try (Connection con = DriverManager.getConnection(URL, username, password);
+			 PreparedStatement prepStat = con.prepareStatement(sql1);
+			 PreparedStatement prepStat1 = con.prepareStatement(sql)){
 				con.setAutoCommit(false);
-				prepStat.setInt(1, order.getEmployeeId());
-				prepStat.setInt(2, order.getCustomerId());
-				prepStat.setTimestamp(3, order.getOrderDate());
-				prepStat.setString(3, order.getStatus());
+					prepStat.setInt(1, order.getEmployeeId());
+					prepStat.setInt(2, order.getCustomerId());
+					prepStat.setTimestamp(3, order.getCreationTime());
+					prepStat.setString(4, order.getStatus());
+					prepStat.executeUpdate();
+					ResultSet rs = prepStat.getGeneratedKeys();
+					rs.next();
+				for (int i = 0; i < orderContent.size(); i++) {
+					prepStat1.setInt(1, rs.getInt(1));
+					prepStat1.setInt(2, order.getOrderContent().get(i).getDishes().get(i).getID());
+
+				}
+
+
 				con.commit();
 				con.setAutoCommit(true);
 				return true;
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				cleanup.dbRollback(con);
+				//con.rollback();
 				return false;
 			}
-		} catch (SQLException eCon) {
-			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
-			return false;
 		}
-	}
 
 	//TODO DOK!
-	public DefaultListModel<procatering.Order> getOrder(int cid) {
+	public DefaultListModel<Order> getOrder(int cid) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM orders LEFT JOIN customer ON customer.customer_id = orders.customer_id WHERE orders.customer_id = ?")) {
 				con.setAutoCommit(false);
 				prepStat.setInt(1, cid);
 				ResultSet rs = prepStat.executeQuery();
 				con.commit();
 				con.setAutoCommit(true);
-				DefaultListModel<procatering.Order> output = new DefaultListModel<>();
+				DefaultListModel<Order> output = new DefaultListModel<>();
 				while (rs.next()) {
-					output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
+					output.addElement(new Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
 				}
 				return output;
 			} catch (SQLException ePrepState) {
@@ -463,11 +473,12 @@ public class Database {
 		}
 	}
 
+
     public DefaultListModel<procatering.Order> getAllOrders(int e_id) {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
                 con.setAutoCommit(false);
-                prepStat.setInt(1, cid);
+                prepStat.setInt(1, e_id);
                 ResultSet rs = prepStat.executeQuery();
                 con.commit();
                 con.setAutoCommit(true);
@@ -486,8 +497,6 @@ public class Database {
             return null;
         }
     }
-
-
 	/**
 	 * The methode check the dishName length, it has to be less than 255 signs.
 	 *
@@ -696,7 +705,6 @@ public class Database {
 	 *
 	 * @returnes strings in a DefaultListModel.
 	 */
-	//Kanskje få inn en int som bestemmer antall dishes som skal vises?
 	public DefaultListModel<String> topDishes() {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum DESC")) {
@@ -736,6 +744,68 @@ public class Database {
 				DefaultListModel output = new DefaultListModel<>();
 				while (rs.next()) {
 					output.addElement("Profit: " + rs.getDouble("profit") + " NOK" + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
+
+	/**
+	 * Lists out all the orders in a given time frame and arranges them in order of date.
+	 *
+	 * @param from is the start date and time.
+	 * @param to   is the end date and time.
+	 * @returnes strings in a DefaultListModel.
+	 */
+	public DefaultListModel<String> getOrdersFromTo(Timestamp from, Timestamp to) {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, customer.lastname, customer.firstname, employee.employee_id, time_of_order, COUNT(orders.order_id) \"nu\", SUM(amount*quantity) \"sum\" FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN employee ON employee.employee_id = orders.employee_id JOIN customer ON customer.customer_id = orders.customer_id JOIN dish ON order_dish.dish_id = dish.dish_id WHERE time_of_order > ? AND time_of_order < ? GROUP BY order_dish.order_id ORDER BY orders.time_of_order DESC")) {
+				con.setAutoCommit(false);
+				prepStat.setTimestamp(1, from);
+				prepStat.setTimestamp(2, to);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement("Order ID: " + rs.getInt("order_id") + ". Order sum: " + rs.getDouble("sum") + " NOK" + ". Kunde: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Employee ID: " + rs.getInt("employee_id") + ". Order time: " + rs.getTimestamp("time_of_order"));
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
+
+	/**
+	 * Gives the top 10 customers arranged by money used.
+	 *
+	 * @returnes strings in a DefaultListModel.
+	 */
+	public DefaultListModel<String> bigSpender() {
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) 'nu', SUM(amount*quantity) 'sum' FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN customer ON customer.customer_id = orders.customer_id GROUP BY customer.customer_id ORDER BY sum DESC LIMIT 10")) {
+				con.setAutoCommit(false);
+				ResultSet rs = prepStat.executeQuery();
+				DefaultListModel output = new DefaultListModel<>();
+				while (rs.next()) {
+					output.addElement("Customer ID: " + rs.getInt("Customer ID: " + rs.getInt("customer_id") + ". Name: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Sum of all orders: " + rs.getDouble("sum") + " NOK. In " + rs.getString("nu") + " order(s)"));
 				}
 				con.commit();
 				con.setAutoCommit(true);
@@ -1184,10 +1254,10 @@ public class Database {
 	}
 
 	/**
-	 * Find dishes who belongs to one spesefic category id.
+	 * Find dishes who belongs to one spesefic category id and are activated (not hided).
 	 *
 	 * @param id Integer Category id
-	 * @return //TODO docuemtation
+	 * @return a DefaultListModel<Dish> with Dish objects that are active, else it will retun null
 	 */
 	public DefaultListModel<Dish> getDishes(int id) {
 		if (id < 0) {
@@ -1217,7 +1287,12 @@ public class Database {
 		}
 	}
 
-	//TODO GM
+	/**
+	 * Delet a employe from the database using employee id.
+	 *
+	 * @param id Integer (Employee ID)
+	 * @return true if sucsessfully removed, else it will return false.
+	 */
 	public boolean removeEmployee(int id) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("DELETE FROM employee_types WHERE employee_id = ?")) {
@@ -1239,14 +1314,20 @@ public class Database {
 				cleanup.dbRollback(con);
 				return false;
 			}
+
 		} catch (SQLException eCon) {
 //				gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
 			return false;
 		}
-
 	}
 
-	//TODO GM
+
+	/**
+	 * Make a dish visible by chacing dish status in the datbase to 1.
+	 *
+	 * @param name String object (Dish name)
+	 * @return true if sucsessfully hides the dish, else it will return false
+	 */
 	public boolean activateDish(String name) {
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
 			try (PreparedStatement prepStat = con.prepareStatement("UPDATE dish SET status = ? WHERE dishname = ?")) {
@@ -1272,7 +1353,13 @@ public class Database {
 		}
 	}
 
-	//TODO GM
+
+	/**
+	 * Find all dishes in one category, even if the dish are not active. (hided)
+	 *
+	 * @param id Integer( Category ID)
+	 * @return return a DefaultListModel<Dish> with all the dish objects, else it will retun null
+	 */
 	public DefaultListModel<Dish> getAllDishesInACategory(int id) {
 		if (id < 0) {
 			return null;
@@ -1300,6 +1387,110 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Find order by shearching for firstname, lastname, phonenumber or postalcode. If order id are over 10 signs or the name are over 42 signs the string will be ugly.
+	 *
+	 * @param input String object
+	 * @return DefaultListModel<String> with String object, else it will retun null;
+	 */
+	public DefaultListModel<String> findOrder(String input) {
+			/*Adds wildcard on both sides of the search phrase*/
+		input = "%" + input + "%";
 
+            /*tries to setup a connection to the database*/
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+				/*tries to create a prepared statement.*/
+			try (
+					PreparedStatement prepStat = con.prepareStatement("SELECT * FROM customer LEFT JOIN orders " +
+							"ON customer.customer_id = orders.customer_id " +
+							"WHERE clean_fn LIKE ? OR clean_ln LIKE ? OR phonenumber LIKE ?" +
+							"OR postalcode LIKE ? ORDER BY order_id DESC")
+			) {
+					/*Inserts the input search string to the SQL in the prepared statement*/
+				con.setAutoCommit(false);
+				prepStat.setString(1, input);       //clean firstname
+				prepStat.setString(2, input);       //clean lastname
+				if (input.length() < 5) {
+					prepStat.setString(3, "00000000");       //not a phonenumber
+				} else {
+					prepStat.setString(3, input);       //phone number
+				}
+				prepStat.setString(4, input);       //postal code
+				ResultSet rs = prepStat.executeQuery();
+				con.commit();
+				con.setAutoCommit(true);
+
+                    /* Declares and initializes the return DefaultListModel*/
+				DefaultListModel<String> output = new DefaultListModel<>();
+                    
+                    /*creates the objects that has matching attributes to the search phrase*/
+				String inputObject = "Order ID:  Customer: Lastname, Firstname   Order Time:";
+				output.addElement(inputObject);
+				while (rs.next()) {
+					//Break the loop if order_id = 0
+					if (rs.getInt("order_id") <= 0) {
+						break;
+					}
+					//Select the input and creates a string that is 64 signs long or more.
+					inputObject = rs.getInt("order_id") + "";
+					int space1 = 12;
+					int space2 = 44;
+					if (inputObject.length() + 2 < space1) {
+						space1 = space1 - inputObject.length();
+					} else {
+						space1 = 2;
+					}
+					for (int i = 1; i < space1; i++) {
+						inputObject += " ";
+					}
+					inputObject += rs.getString("lastname") + ", " + rs.getString("firstname");
+
+					if (inputObject.length() + 2 < space2) {
+						space2 = space2 - inputObject.length();
+					} else {
+						space2 = 2;
+					}
+					for (int i = 1; i < space2; i++) {
+						inputObject += " ";
+					}
+					inputObject += rs.getTimestamp("time_of_order");
+                            /*Adds the object to the DefaultListModel*/
+					output.addElement(inputObject);
+				}
+                    /*returns the List of cusomer objects with a match to the search phrase*/
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				cleanup.dbRollback(con);
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
+
+	/**
+	 *
+	 * @return a DefaultListModel of all the Employees in the database. Returns null if it fails somehow.
+	 * @author Jørgen Lien Sellæg
+	 */
+	public DefaultListModel<Employee> getEmployees() {
+		String sql = "SELECT * FROM employee";
+		DefaultListModel<Employee> emp = new DefaultListModel<>();
+		try(Connection con = DriverManager.getConnection(URL, username, password);
+			PreparedStatement p = con.prepareStatement(sql);
+			ResultSet rs = p.executeQuery()){
+
+			while (rs.next()) {
+				emp.addElement(new Employee(rs.getInt("employee_id"),rs.getString("firstname"), rs.getString("lastname"),rs.getString("phonenumber"),rs.getInt("postalcode"),rs.getString("dob"),rs.getString("email")));
+			}
+			return emp;
+
+		}catch(SQLException e){
+			System.out.println(e);
+			return null;
+		}
+	}
 }
-      
+

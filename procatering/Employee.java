@@ -78,9 +78,9 @@ public class Employee extends Person {
 		if (employeeId == null || employeeId < 0) {
 			return null;
 		}
-                if(db.getEmployee(employeeId)!=null){
-                    return new Employee(db.getEmployee(employeeId));
-                }
+        if(db.getEmployee(employeeId)!=null){
+        	return new Employee(db.getEmployee(employeeId));
+        }
 		return null;
 	}
 
@@ -181,7 +181,7 @@ public class Employee extends Person {
 	 */
 	@Override
 	public String toString() {
-		return "Employee{" + super.toString() +  '}';
+		return getLastName()+", "+getFirstName();
 	}
 
     /**
@@ -380,10 +380,16 @@ public class Employee extends Person {
     }
     //TODO GM
     public boolean hideDish(String name){
+        if(name == null){
+            return false;
+        }
 		return db.hideDish(Helper.capitalFirst(name));
 	}
     //TODO GM
     public boolean activateDish(String name){
+        if(name == null){
+            return false;
+        }
             return db.activateDish(Helper.capitalFirst(name));
     }
     //TODO GM
@@ -392,6 +398,29 @@ public class Employee extends Person {
     }
     //TODO GM
     public boolean removeCategory (String name){
+        if(name ==null){
+            return false;
+        }
         return db.removeCategory(Helper.capitalFirst(name));
     }
+    public boolean addCatergory (String name){
+        if(name == null){
+            return false;
+        }
+        return db.addCategory(Helper.capitalFirst(name));
+    }
+    public DefaultListModel findOrders(String input) {
+        return db.findOrder(input);
+    }
+    public Customer getOrder(int customerID){
+        if(customerID < 0){
+            return null;
+        }
+        return db.getCustomer(customerID);
+    }
+
+	public DefaultListModel<Employee> getEmployees(){
+		Database db = new Database();
+		return db.getEmployees();
+	}
 }
