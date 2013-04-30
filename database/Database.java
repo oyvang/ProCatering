@@ -661,12 +661,12 @@ public class Database {
         Database db = new Database();
         DefaultListModel<Order> hei = db.getAllOrders2();
        // System.out.println("lengde på utskriftsliste: "+hei.size());
-        String ut ="";
+        String ut ="<html>";
         for (int i = 0; i < hei.size(); i++) {
-            ut +="delivery date:"+hei.get(i).toString();
+            ut +=hei.get(i).confirmToHtml();
         }
+        ut+="</html>";
         showMessageDialog(null,ut);
-
     }
 
 	/**

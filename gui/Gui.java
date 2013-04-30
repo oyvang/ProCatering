@@ -158,8 +158,7 @@ public class Gui {
     private JButton subscriptionRemoveDayButton;
     private JPanel subscriptionTimeSelectionPanel;
     private JPanel subscriptionWeekdaySelectionPanel;
-	private JTextPane singleOrderProgressLabel;
-	private JComboBox singleOrderTimesComboBox;
+    private JComboBox singleOrderTimesComboBox;
 	private JList<Category> singleOrderDishSelectCategoryJList;
 	private JList singleOrderDishSelectDishJList;
 	private JLabel singleOrderSelectTimeLabel;
@@ -917,12 +916,12 @@ public class Gui {
 	private void menuSeeOrdersButtonActionPerformed(ActionEvent evt){
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
-        existOrderPopulate();
+        //existOrderPopulate();
 	}
-    private void existOrderPopulate(){
+    //private void existOrderPopulate(){
         //existOrderChefOrdersTextPane.setText(" under construction line 821 ish");//TODO FIx
         //existOrderChefSubscriptionsTextPane.setText(" under construction line 822 ish");//TODO FIx
-    }
+    //}
 
 	private void customerSearchButtonActionPerformed(){
 		nameList = Customer.findCustomer(customerSearchField.getText());

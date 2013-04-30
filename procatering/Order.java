@@ -34,13 +34,17 @@ public class Order {
 	}
 
     public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
+        ordercontent = new DefaultListModel<OrderContent>();
         customerId = customer_id;
         employeeId = employee_id;
         this.status = status;
         this.creationTime = creationTime;
-        for (int i = 0; i < contentList.size(); i++) {
-            this.ordercontent.addElement(contentList.get(i));
+        if(contentList != null){
+            for (int i = 0; i < contentList.size(); i++) {
+                this.ordercontent.addElement(contentList.get(i));
+            }
         }
+        System.out.println("Order constructor: contentlist == null");
        // ordercontent = contentList;
         orderId = order_id;
     }
