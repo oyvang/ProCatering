@@ -24,6 +24,7 @@ public class Subscription {
     private int employeeId;
     private int customerId;     //use whole object if we need many queries.
     private String status;      // Active, Completed, Pending or Cancelled // TODO: getSubscriptions checks startDate, if started; activate.
+    private int OrderId;
 
     /**
      * Constructor, creates an object of Subscription
@@ -37,6 +38,25 @@ public class Subscription {
         java.util.Date time= new java.util.Date();
         orderDate = new Timestamp(time.getTime());
         this.content = new DefaultListModel<>();
+        employeeId = e_id;
+        customerId = c_id;
+        status = "Pending"; //TODO fix check for what status it should be.
+    }
+
+    /**
+     * Constructor, creates an object of Subscription
+     * From DB
+     * Sets the orderDate to current Timestamp.
+     * Sets status to "Pending" ( updates in the getSubscription in Database.java )
+     * Creates a DefaultListModel with OrderContent
+     * @param order_id input for order id
+     * @param e_id input for employee id
+     * @param c_id input for customer id
+     */
+    public Subscription(int order_id,int e_id, int c_id, Timestamp start, Timestamp created, DefaultListModel<OrderContent> contentList, String status){
+        OrderId = order_id;
+        orderDate = created;
+        this.content = contentList;
         employeeId = e_id;
         customerId = c_id;
         status = "Pending";

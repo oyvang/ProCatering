@@ -227,9 +227,9 @@ public class Employee extends Person {
 		}
 		return false;
 	}
-    public DefaultListModel<Object> getAllOrders(){
-        return db.getAllOrders(getEmployeeId());
-    }
+   // public void DefaultListModel<Object> getAllOrders(){
+       // return db.getAllOrders(getEmployeeId());
+  //  }
 
     /**
      * Method addOrder

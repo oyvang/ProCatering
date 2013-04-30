@@ -16,8 +16,7 @@ public class Order {
 	private String status;      // Active, Completed or Cancelled
 	private Timestamp creationTime;
 	private DefaultListModel<OrderContent> ordercontent;
-    
-
+    private int orderId;
 
 	/**
 	 * Constructor for Order.
@@ -31,8 +30,20 @@ public class Order {
 		employeeId = employee_id;
 		this.status = status;
 		this.creationTime = creationTime;
-		ordercontent = new DefaultListModel();
+		ordercontent = new DefaultListModel<OrderContent>();
 	}
+
+    public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
+        customerId = customer_id;
+        employeeId = employee_id;
+        this.status = status;
+        this.creationTime = creationTime;
+        for (int i = 0; i < contentList.size(); i++) {
+            this.ordercontent.addElement(contentList.get(i));
+        }
+       // ordercontent = contentList;
+        orderId = order_id;
+    }
 
 	/**
 	 * @param customer_id The id of the Customer
@@ -158,7 +169,7 @@ public class Order {
 		String output = "";
 		output += "Order created: " + creationTime.toString().substring(0, 16);
 		for (int i = 0; i < ordercontent.size(); i++) {
-			output += ordercontent.get(i);
+			output += ordercontent.get(i)+"<br>";
 		}
 		return output;
 	}

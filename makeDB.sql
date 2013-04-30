@@ -77,9 +77,14 @@ CREATE TABLE order_dish (
     order_id INT NOT NULL,
     dish_id INT NOT NULL,
     delivery TIMESTAMP,
+<<<<<<< HEAD
     days VARCHAR,
     quantity INT NOT NULL,
     amount DOUBLE NOT NULL) ENGINE=InnoDB;
+=======
+    days VARCHAR(20),
+    amount INT NOT NULL) ENGINE=InnoDB;
+>>>>>>> monday_classfixes
 
 -- CREATE TABLE postalcode (
 --     postalcode int PRIMARY KEY,
