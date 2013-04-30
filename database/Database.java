@@ -417,7 +417,7 @@ public class Database {
 		}
 		DefaultListModel<OrderContent> orderContent = order.getOrderContent();
 
-		String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, quantity, amount) VALUES (?,?,?,?,?)";
+		String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, days, quantity, amount) VALUES (?,?,?,?,?,?)";
 		String sql1= "INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)";
 
 		try (Connection con = DriverManager.getConnection(URL, username, password);
@@ -430,13 +430,18 @@ public class Database {
 					prepStat.setString(4, order.getStatus());
 					prepStat.executeUpdate();
 					ResultSet rs = prepStat.getGeneratedKeys();
-					rs.next();
+					rs.first();
+                                        
 				for (int i = 0; i < orderContent.size(); i++) {
 					prepStat1.setInt(1, rs.getInt(1));
 					prepStat1.setInt(2, order.getOrderContent().get(i).getDishes().get(i).getID());
-
+                                        prepStat1.setTimestamp(3, order.getOrderContent().get(i).getDeliveryDate());
+                                        prepStat1.setString(4, order.getOrderContent().get(i).getDeliveryDay());
+                                        prepStat1.setInt(5, order.getOrderContent().get(i).countDish(order.getOrderContent().get(i).getDishIndex(i)));
+                                        prepStat1.setDouble(6, getDish(order.getOrderContent().get(i).getDishIndex(i).getName()).getPrice());
+                                        prepStat1.addBatch();
 				}
-
+                                prepStat1.executeBatch();
 
 				con.commit();
 				con.setAutoCommit(true);

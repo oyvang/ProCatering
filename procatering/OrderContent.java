@@ -49,6 +49,17 @@ public class OrderContent {
 	public DefaultListModel<Dish> getDishes() {
 		return dishes;
 	}
+        /**
+         * Find a Dish object at the given index
+         * @param index Integer (dishes index)
+         * @return a dish object
+         */
+        public Dish getDishIndex(int index){
+            if(index <= dishes.getSize() && index > -1){
+                return dishes.get(index);
+            }
+            return null;
+        }
 
 	/**
 	 * Method getDeliveryDate
@@ -248,4 +259,15 @@ public class OrderContent {
 			return output;
 		}
 	}
+       
+        public int countDish(Dish dish){
+            int counter=0;
+            for (int i = 0; i < dishes.getSize(); i++) {
+                if(dishes.get(i).getName().equals(dish.getName())){
+                    counter++;
+                }
+            }
+            return counter;
+        }
+     
 }
