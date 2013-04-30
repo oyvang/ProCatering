@@ -417,21 +417,19 @@ public class Database {
 			return false;
 		}
 		DefaultListModel<OrderContent> orderContent = order.getOrderContent();
-
 		String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, days, quantity, amount) VALUES (?,?,?,?,?,?)";
 		String sql1= "INSERT INTO orders (employee_id, customer_id, time_of_order, status) VALUES (?,?,?,?)";
-
-		try (Connection con = DriverManager.getConnection(URL, username, password);
-			 PreparedStatement prepStat = con.prepareStatement(sql1);
+        try (Connection con = DriverManager.getConnection(URL, username, password)){
+		try (PreparedStatement prepStat = con.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
 			 PreparedStatement prepStat1 = con.prepareStatement(sql)){
-				con.setAutoCommit(false);
-					prepStat.setInt(1, order.getEmployeeId());
-					prepStat.setInt(2, order.getCustomerId());
-					prepStat.setTimestamp(3, order.getCreationTime());
-					prepStat.setString(4, order.getStatus());
-					prepStat.executeUpdate();
-					ResultSet rs = prepStat.getGeneratedKeys();
-					rs.first();
+			con.setAutoCommit(false);
+			    prepStat.setInt(1, order.getEmployeeId());
+				prepStat.setInt(2, order.getCustomerId());
+				prepStat.setTimestamp(3, order.getCreationTime());
+				prepStat.setString(4, order.getStatus());
+				prepStat.executeUpdate();
+				ResultSet rs = prepStat.getGeneratedKeys();
+				rs.first();
                                         
 				for (int i = 0; i < orderContent.size(); i++) {
 					prepStat1.setInt(1, rs.getInt(1));
@@ -444,14 +442,18 @@ public class Database {
 				}
                                 prepStat1.executeBatch();
 
-				con.commit();
-				con.setAutoCommit(true);
-				return true;
+			con.commit();
+			con.setAutoCommit(true);
+			return true;
 			} catch (SQLException ePrepState) {
 				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-				//con.rollback();
+				con.rollback();
 				return false;
 			}
+        }catch (SQLException er){
+            System.out.println("connection failed: "+er);
+        }
+        return false;
 		}
 
 	//TODO DOK!
