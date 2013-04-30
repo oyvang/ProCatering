@@ -1236,8 +1236,4 @@ public class Gui {
 	private static void clearCustomerFields(){
 		//TODO Create method
 	}
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }
