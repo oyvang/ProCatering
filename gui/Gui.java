@@ -818,8 +818,8 @@ public class Gui {
         existOrderPopulate();
 	}
     private void existOrderPopulate(){
-        existOrderChefOrdersTextPane.setText(" under construction line 821 ish");//TODO FIx
-        existOrderChefSubscriptionsTextPane.setText(" under construction line 822 ish");//TODO FIx
+        //existOrderChefOrdersTextPane.setText(" under construction line 821 ish");//TODO FIx
+        //existOrderChefSubscriptionsTextPane.setText(" under construction line 822 ish");//TODO FIx
     }
 
 	private void customerSearchButtonActionPerformed(){

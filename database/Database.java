@@ -7,6 +7,7 @@ import procatering.*;
 import javax.swing.*;
 import java.sql.*;
 
+import static javax.swing.JOptionPane.showMessageDialog;
 import static procatering.Helper.DATABASE_NUMBER;
 
 
@@ -462,30 +463,201 @@ public class Database {
 			return null;
 		}
 	}
-
-    public DefaultListModel<procatering.Order> getAllOrders(int e_id) {
+    private DefaultListModel<procatering.Dish> createDishList(int orderId, Timestamp delivery){
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
-            try (PreparedStatement prepStat = con.prepareStatement("SELECT orders.order_id FROM orders LEFT JOIN customer ON orders.customer_id = ?")) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order_dish JOIN dish  ON (order_dish.dish_id = dish.dish_id AND order_dish.delivery = ? AND order_dish.order_id = ?)")) {
                 con.setAutoCommit(false);
-                prepStat.setInt(1, cid);
+
+                prepStat.setTimestamp(1, delivery);
+                prepStat.setInt(2, orderId);
                 ResultSet rs = prepStat.executeQuery();
                 con.commit();
                 con.setAutoCommit(true);
-                DefaultListModel<procatering.Order> output = new DefaultListModel<>();
-                while (rs.next()) {
-                    output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
+                DefaultListModel<procatering.Dish> dishList = new DefaultListModel<procatering.Dish>();
+                while(rs.next()){
+                    for (int i = 0; i < rs.getInt("order_dish.quantity"); i++) {
+                        dishList.addElement(
+                                new Dish(rs.getString("dish.dishname"), rs.getDouble("dish.price"),rs.getDouble("dish.cost"), rs.getInt("dish.dish_id"))
+                        );
+                    }
                 }
-                return output;
+                return dishList;
             } catch (SQLException ePrepState) {
+            System.out.println("catch 1");
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+            con.rollback();
+            return null;
+            }
+        }catch (SQLException eCon) {
+        System.out.println("catch 2 HERRE SJER DU ITJ");
+        gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+        return null;
+        }
+    }
+
+
+
+
+    private DefaultListModel<procatering.OrderContent> createContentList(int orderId){
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order_dish LEFT OUTER JOIN orders ON (order_dish.order_id = ? AND orders.order_id = ?)JOIN customer on(customer.customer_id = orders.customer_id) WHERE days IS NULL")) {
+                con.setAutoCommit(false);
+                prepStat.setInt(1, orderId);
+                prepStat.setInt(2, orderId);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<OrderContent> contentList = new DefaultListModel<>();
+
+
+                while(rs.next()){
+                    contentList.addElement(
+                            new OrderContent(rs.getTimestamp("order_dish.delivery"), createDishList(orderId, rs.getTimestamp("order_dish.delivery")))
+                    );
+                }
+                return contentList;
+            } catch (SQLException ePrepState) {
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+            con.rollback();
+            return null;
+        }
+        }catch (SQLException eCon) {
+        System.out.println("catch 2 HERRE SJER DU ITJ");
+        gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+        return null;
+        }
+    }
+
+
+    public DefaultListModel<procatering.Order> getAllOrders2() {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order_dish LEFT OUTER JOIN orders ON (order_dish.order_id = orders.order_id) WHERE days IS NULL")) {
+                con.setAutoCommit(false);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<procatering.Order> orderList = new DefaultListModel<>();
+                //DefaultListModel<procatering.OrderContent> contentList = new DefaultListModel<>();
+                //DefaultListModel<procatering.Dish> dishList = new DefaultListModel<>();
+                while(rs.next()){
+                    orderList.addElement(
+                        new Order(rs.getInt("orders.order_id"),rs.getInt("orders.customer_id"),rs.getInt("orders.employee_id"), rs.getString("orders.status"), rs.getTimestamp("orders.time_of_order"), createContentList(rs.getInt("orders.order_id")))
+                    );
+                }
+                return orderList;
+            } catch (SQLException ePrepState) {
+                System.out.println("catch 1");
                 gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                cleanup.dbRollback(con);
+                con.rollback();
                 return null;
             }
         } catch (SQLException eCon) {
+            System.out.println("catch 2 HERRE SJER DU ITJ");
             gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
             return null;
         }
     }
+
+    public DefaultListModel<procatering.Order> getAllOrders(int e_id) {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM order_dish LEFT OUTER JOIN orders ON (order_dish.order_id = orders.order_id)JOIN customer on(customer.customer_id = orders.customer_id AND order_dish.days IS NULL) JOIN dish ON(dish.dish_id = order_dish.dish_id) ORDER BY order_dish.order_id ASC")) {
+                con.setAutoCommit(false);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<procatering.Order> orderList = new DefaultListModel<>();
+                DefaultListModel<procatering.OrderContent> contentList = new DefaultListModel<>();
+                DefaultListModel<procatering.Dish> dishList = new DefaultListModel<>();
+                int activeRow = 1;
+                int lastOrderId = 0;
+                String checkbreak = "break ble ikke kjørt";
+                rs.last();
+                int length = rs.getRow();
+                rs.first();
+                System.out.println("radlengde: "+ length);
+                while (activeRow <= length) { // ADD ORDERS TO DLM
+                    System.out.println("1");
+                    Timestamp lastTimestamp= rs.getTimestamp("order_dish.delivery");
+                    contentList = new DefaultListModel<>();
+                    dishList = new DefaultListModel<>();
+                    rs.absolute(activeRow);
+
+                    if(rs.getInt("orders.order_id")==lastOrderId){
+                        System.out.println("2");//ADD CONTENT TO DLM
+                        System.out.println("order_id: "+rs.getInt("orders.order_id"));
+                        int test = 1;
+                        while(rs.getTimestamp("order_dish.delivery").equals(lastTimestamp) && rs.getInt("order_dish.order_id") == lastOrderId){
+                           //ADD DISHES TO DLM
+                            System.out.println("3");
+                            dishList.addElement(new Dish(rs.getString("dish.dishname"), rs.getDouble("dish.price"), rs.getDouble("dish.cost")));
+                            if(rs.getRow()<length){
+                                rs.next();
+                            }else {
+                                checkbreak = "break ble kjørt";
+                                break;
+                            }
+
+                            System.out.println("whileloop 3: round #"+test);
+                            test++;
+                        }
+                        System.out.println(checkbreak);
+                        rs.absolute(activeRow);
+                        System.out.println("4");
+                        System.out.println(dishList.get(0).getName());
+                        contentList.addElement((new OrderContent(rs.getTimestamp("order_dish.delivery"),copyDishList(dishList))));
+                    }else{System.out.println("5");
+                        contentList.addElement((new OrderContent(rs.getTimestamp("order_dish.delivery"), copyDishList(dishList))));
+                        lastOrderId = rs.getInt("orders.order_id");
+                        activeRow--;
+                    }System.out.println("6");
+                    System.out.println("contentlistcheck: "+contentList.get(0).getDeliveryDay());
+                    orderList.addElement(new Order(rs.getInt("orders.order_id"),rs.getInt("orders.customer_id"), e_id, rs.getString("status"), rs.getTimestamp("time_of_order"),copyContentList(contentList)));
+                    activeRow++;
+                    System.out.println("activerow: "+activeRow);
+                    //output.addElement(new procatering.Order(rs.getInt("customer_id"), rs.getInt("employee_id"), rs.getString("status"), rs.getTimestamp("time_of_order")));
+                }
+                System.out.println("1337");
+                return orderList;
+            } catch (SQLException ePrepState) {
+                System.out.println("catch 1");
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                con.rollback();
+                return null;
+            }
+        } catch (SQLException eCon) {
+            System.out.println("catch 2 HERRE SJER DU ITJ");
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+            return null;
+        }
+    }
+    private DefaultListModel<OrderContent> copyContentList(DefaultListModel<OrderContent> input){
+        DefaultListModel<OrderContent> output = new DefaultListModel<>();
+        for(int i = 0; i< input.size();i++ ){
+            output.addElement(input.get(i));
+        }
+        return output;
+    }
+    private DefaultListModel<Dish> copyDishList(DefaultListModel<Dish> input){
+        DefaultListModel<Dish> output = new DefaultListModel<>();
+        for(int i = 0; i< input.size();i++ ){
+            output.addElement(input.get(i));
+        }
+        return output;
+    }
+
+    public static void main(String[] args) {
+        Database db = new Database();
+        DefaultListModel<Order> hei = db.getAllOrders2();
+       // System.out.println("lengde på utskriftsliste: "+hei.size());
+        String ut ="";
+        for (int i = 0; i < hei.size(); i++) {
+            ut +="delivery date:"+hei.get(i).toString();
+        }
+        showMessageDialog(null,ut);
+
+    }
+
+
 
 
 	/**

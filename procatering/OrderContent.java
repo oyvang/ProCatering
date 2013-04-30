@@ -28,18 +28,44 @@ public class OrderContent {
 		deliveryTime = delivery;
 		this.dishes = new DefaultListModel<>();
 	}
+    /**
+     * constructor for content to Orders
+     * From DB
+     *
+     * @param delivery Timestamp with date and time for delivery of order.
+     */
+    public OrderContent( Timestamp delivery, DefaultListModel<Dish> dishlist) {
+
+        deliveryTime = delivery;
+        this.dishes = dishlist;
+    }
 
 	/**
-	 * constructor for content to subscriptions
-	 *
-	 * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
-	 * @param time Timestamp that contains the time of delivery for the given day
-	 */
-	public OrderContent(String day, Timestamp time) {
-		deliveryTime = time;
-		deliveryDay = day;
-		this.dishes = new DefaultListModel<>();
-	}
+     * constructor for content to subscriptions
+     *
+     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+     * @param time Timestamp that contains the time of delivery for the given day
+     */
+    public OrderContent(String day, Timestamp time) {
+        deliveryTime = time;
+        deliveryDay = day;
+        this.dishes = new DefaultListModel<>();
+    }
+    /**
+     * constructor for content to subscriptions
+     * From DB
+     *
+     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+     * @param time Timestamp that contains the time of delivery for the given day
+     */
+    public OrderContent(String day, Timestamp time, DefaultListModel<Dish> dishlist) {
+
+        deliveryTime = time;
+        deliveryDay = day;
+        this.dishes = dishlist;
+    }
+
+
 
 	/**
 	 * Method getDishes

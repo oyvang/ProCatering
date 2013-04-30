@@ -79,7 +79,7 @@ CREATE TABLE order_dish (
     order_id INT NOT NULL,
     dish_id INT NOT NULL,
     delivery TIMESTAMP,
-    days INT,
+    days VARCHAR(20),
     amount INT NOT NULL) ENGINE=InnoDB;
 
 -- CREATE TABLE postalcode (
