@@ -449,7 +449,7 @@ public class Database {
                 ResultSet rs = prepStat.executeQuery();
                 con.commit();
                 con.setAutoCommit(true);
-                DefaultListModel<procatering.Dish> dishList = new DefaultListModel<procatering.Dish>();
+                DefaultListModel<procatering.Dish> dishList = new DefaultListModel<>();
                 while (rs.next()) {
                     for (int i = 0; i < rs.getInt("order_dish.quantity"); i++) {
                         dishList.addElement(

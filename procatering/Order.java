@@ -32,11 +32,11 @@ public class Order {
 		employeeId = employee_id;
 		this.status = status;
 		this.creationTime = creationTime;
-		ordercontent = new DefaultListModel<OrderContent>();
+		ordercontent = new DefaultListModel<>();
 	}
 
     public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
-        ordercontent = new DefaultListModel<OrderContent>();
+        ordercontent = new DefaultListModel<>();
         customerId = customer_id;
         employeeId = employee_id;
         this.status = status;

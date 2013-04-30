@@ -27,10 +27,10 @@ public class SecurityChecker {
 			return true;
 		}
 	} catch (NoSuchAlgorithmException e) {
-		// TODO Auto-generated catch block
+
 		e.printStackTrace();
 	} catch (UnsupportedEncodingException e) {
-		// TODO Auto-generated catch block
+
 		e.printStackTrace();
 	}
 	
