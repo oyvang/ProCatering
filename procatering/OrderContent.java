@@ -201,4 +201,20 @@ public class OrderContent {
 			return output;
 		}
 	}
+            
+        
+        /**
+         * Count how many dishes there are of one dish (parameter) in an OrderContent object
+         * @param dish Dish object
+         * @return 0 if no dish object found, else it will return a positiv number of all the dishes found.
+         */
+        public int countDish(Dish dish){
+            int counter=0;
+            for (int i = 0; i < dishes.getSize(); i++) {
+                if(dishes.get(i).getName().equals(dish.getName())){
+                    counter++;
+                }
+            }
+            return counter;
+        }
 }
