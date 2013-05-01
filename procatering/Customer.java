@@ -17,7 +17,7 @@ public class Customer extends Person {
     private String note;
 
     /**
-     * This constructor should me used when inserting a customer in the database.
+     * This constructor should be used when inserting a customer in the database.
      *
      * @param adr   The customers address
      * @param fn    The customers first name
@@ -26,7 +26,6 @@ public class Customer extends Person {
      * @param mail  The customers email
      * @param pCode The customers postal code
      * @param note  The customers special note
-     * @author Jørgen Lien Sellæg
      */
     public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, String note) {
         super(fn, ln, phone, mail, pCode);
@@ -35,7 +34,7 @@ public class Customer extends Person {
     }
 
     /**
-     * This constructor should me used when extracting a customer from the database.
+     * This constructor should be used when extracting a customer from the database.
      *
      * @param adr   The customers address
      * @param fn    The customers first name
@@ -45,7 +44,6 @@ public class Customer extends Person {
      * @param pCode The customers postal code
      * @param note  The customers special note
      * @param cid   The customers id in the database.
-     * @author Jørgen Lien Sellæg
      */
     public Customer(String adr, String fn, String ln, String phone, String mail, int pCode, String note, int cid) {
         super(fn, ln, phone, mail, pCode);
@@ -69,7 +67,7 @@ public class Customer extends Person {
     /**
      * Method findCustomer returns a DefaltListModel containing all the customers in the database matching search criteria.
      *
-     * @param search
+     * @param search string
      * @return a DefaultListModel<Customer> object.
      */
     public static DefaultListModel<Customer> findCustomer(String search) {
@@ -90,15 +88,16 @@ public class Customer extends Person {
 
     /**
      * Regular get method for address.
-     * Returns a string value of the address.
+     *
+     * @return a string value of the address.
      */
     public String getAddress() {
         return address;
     }
 
     /**
-     * Regular set method for the address
      * Assigns a new string value to the address.
+     * @param address The new address
      */
     public void setAddress(String address) {
         this.address = address;
@@ -114,7 +113,7 @@ public class Customer extends Person {
     }
 
     /**
-     * Sets the corporate of the customer.
+     * Sets the corporate number of the customer.
      *
      * @param corporateNum the new corporate number.
      */
@@ -150,7 +149,7 @@ public class Customer extends Person {
     }
 
     /**
-     * Simple getter for the customer note.
+     * Simple get method for the customer note.
      *
      * @return the note stored in the object.
      */
@@ -162,7 +161,7 @@ public class Customer extends Person {
      * Method adds an customer to the database.
      *
      * @param customer the customer to be added to the database.
-     * @return true if the customer is successfully added to the database.
+     * @return true if the customer is successfully added to the database and false if by an error the customer didn't get added.
      */
     public boolean addCustomer(Customer customer) {
         Database db = new Database();

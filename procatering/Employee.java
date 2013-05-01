@@ -56,7 +56,10 @@ public class Employee extends Person {
                 employeeId = -1;
 	}
 
-    /** simple copy-constructor*/
+    /**
+     * Simple copy constructor. It also checks if the employee is already in the database.
+     * @param e is the Employee object to be copied
+     */
 	public Employee(Employee e) {
 		super(e.getFirstName(), e.getLastName(), e.getPhoneNumber(), e.getEmail(), e.getPostalCode());
 		dob = e.getDob();
@@ -92,11 +95,15 @@ public class Employee extends Person {
     public Subscription getSubscription(){
         return subscription;
     }
+
+    /**
+     * Method getOrder
+     * @return the order object attribute
+     */
 	public Order getOrder() {
 		return order;
 	}
 	/**
-     * Method addEmployee
 	 * Adds an employee to the database
 	 *
 	 * @param fn    String object first name
@@ -106,7 +113,7 @@ public class Employee extends Person {
 	 * @param dob   String object Date of Birth
 	 * @param mail  String object eMail
 	 * @param pw    String object password
-	 * @return true if sucsessfully added, else it will return false
+	 * @return true if successfully added, else it will return false
 	 */
 	public boolean addEmployee(String fn, String ln, String phone, int pCode, String dob, String mail, String pw) {
 		fn = Helper.capitalFirst(fn);
@@ -114,48 +121,58 @@ public class Employee extends Person {
 	}
 
 	/**
-	 *   Method editDish
 	 * Edits a dish to send in a new dish object and the name of the old dish
 	 * @param dish Dish object
 	 * @param newPrice the new price
 	 * @param newCost the new cost
-	 * @return true if the database update is successfull, else if false.
+	 * @return true if the database update is successful, else false.
 	 */
 	public boolean editDish(Dish dish, double newPrice, double newCost) {
                 dish.setPrice(newPrice);
                 dish.setCost(newCost);
 		return db.editDish(dish);
 	}
-        
-        public Dish getDish(String name){
-            return db.getDish(name);
-        }
+
+    /**
+     * Finds the dish with the given name in the database
+     * @param name The search name
+     * @return an object of the dish
+     */
+    public Dish getDish(String name){
+        return db.getDish(name);
+    }
 
 	/**
-	 * type are of object type String
-	 *
-	 * @return type
+	 * Standard get method for date of birth
+	 * @return a string with the date
 	 */
-
 	public String getDob() {
 		return dob;
 	}
 
+    /**
+     * Standard get method for employee ID
+     * @return a int with the employee ID
+     */
 	public int getEmployeeId() {
 		return employeeId;
 	}
 
 	/**
-     * Method updateEmployee
 	 * Edit a Employee by sending inn a new Employee object. The employee object requires an employee ID
-	 *
-	 * @param input
-	 * @return //TODO fix docuemtation
+	 * @param input An employee object
+	 * @return true if the update is successful, false if not
 	 */
 	public boolean updateEmployee(Employee input) {
 		return db.updateEmployee(input);
 	}
 
+    /**
+     * Changes an employees password
+     * @param input Is a string with the new password
+     * @param id Is the ID of the given employee
+     * @return true if the password update is successful, false if not
+     */
 	public boolean changeEmployeePassword(String input, int id) {
 		if(input == null || id > -1){
                     if(db.getEmployee(id)==null){
@@ -170,7 +187,7 @@ public class Employee extends Person {
 	}
 
     /**
-     * Returns a DefaultListModel with the category specified.
+     * Returns a DefaultListModel with the dish category specified.
      * @param id a category id.
      * @return a DefaultListModel containing all the dishes in the specified category.
      */
@@ -179,11 +196,8 @@ public class Employee extends Person {
     }
 
 	/**
-     * Method toString
-	 * toString are of the object String
-	 *
-	 * @return class information and Person class toString: <br>
-	 *         returns: Person toString
+	 * toString returns a string representation of the employee object
+	 * @return the last name and first name of the employee
 	 */
 	@Override
 	public String toString() {
@@ -191,10 +205,9 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method createOrder
      * Creates an order without any orderContent objects
      * Adds the employee id to the order, and sets the status to "Active"
-     * @param c_id  customer id
+     * @param c_id Is the customer id
      * @return boolean, returns true if executed successfully
      */
 	public boolean createOrder(int c_id) {
@@ -206,7 +219,6 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method addOrderContent
      * Adds an orderContent object to the Order object's orderContent List.
      * @param deliverDate Timestamp containing the date and time the order is to be delivered.
      * @return boolean, returns true if executed successfully
@@ -219,7 +231,6 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method addOrderDishes
      * Adds a dish within: The Order object's orderContentLists' specified object.
      * @param dish Dish object that represents the dish that is to be added
      * @param qty The number of the given dish that is to be added
@@ -233,12 +244,8 @@ public class Employee extends Person {
 		}
 		return false;
 	}
-   // public void DefaultListModel<Object> getAllOrders(){
-       // return db.getAllOrders(getEmployeeId());
-  //  }
 
     /**
-     * Method addOrder
      * Checks if the order contains the needed attributes
      * Adds the order to the database.
      * if successfully added, sets the order object to null.
@@ -257,8 +264,7 @@ public class Employee extends Person {
     }
 
     /**
-     * Method createSubscription
-     * initiates the Subscription object
+     * Initiates the Subscription object
      * @param c_id customer id the Subscription is ordered to.
      * @return boolean, returns true if executed successfully
      */
@@ -271,7 +277,6 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method addSubscriptionStartDate
      * Adds the date of activation of the subscription.
      * @param startDate Timestamp of the date of activation.
      * @return boolean, returns true if executed successfully
@@ -285,7 +290,6 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method addSubscriptionEndDate
      * Adds a date for termination of the subscription
      * @param endDate Timestamp of the date of termination
      * @return boolean, returns true if executed successfully
@@ -301,9 +305,9 @@ public class Employee extends Person {
         /**
          * Adds a new dish to the database, it will also add dish and category names that are not in the database.
          * @param dish Dish object
-         * @param catNames DefaultListModel<String>
+         * @param catNames DefaultListModel<String> (DefaultListModel is because the dish can be in more then one category)
          * @param ingredient DefaultListModel<String>
-         * @return true if sucsessfully added, else it will return false.
+         * @return true if successfully added, else it will return false.
          */
         public boolean addNewDish(Dish dish, DefaultListModel<String> catNames, DefaultListModel<String> ingredient) {
             if(dish == null || catNames.isEmpty() || ingredient.isEmpty()){
@@ -338,15 +342,18 @@ public class Employee extends Person {
 					}
                 }
             }catch (SQLException ePrepState) {
-//                gui.Gui.showErrorMessage(Helper.DATABASE_NUMBER, 1, ePrepState);
                 return false;
-                
-                
                 
             }
             return false;
         }
 
+    /**
+     * Adds order content to a subscription with given delivery day and time. It also checks if the order is an subscription.
+     * @param weekday The name of the day (if null the order is not a subscription)
+     * @param deliveryTime The time of the day the subscription shall be delivered
+     * @return true if successfully added, false if either the order is not a subscription or the order content was not successfully added
+     */
 	public boolean addSubscriptionContent(String weekday, Timestamp deliveryTime) {
 		if (weekday != null && deliveryTime.after(subscription.getOrderDate())) {
 			subscription.addOrderContent(weekday, deliveryTime);
@@ -356,7 +363,6 @@ public class Employee extends Person {
 	}
 
     /**
-     * Method addSubscription
      * Checks if the subscription contains the needed attributes
      * Adds the subscription to the database.
      * @return boolean, returns true if executed successfully
@@ -380,44 +386,85 @@ public class Employee extends Person {
         return 0.00;
     }
 
-    //TODO GM
+    /**
+     * Gets all the categories from the database and order them by name
+     * @return a DefaultListModel with all the categories
+     */
     public DefaultListModel<Category> getCategories(){
             return db.getCategories();
     }
-    //TODO GM
+
+    /**
+     * Sets the status of the dish with the given name to 0(sets it to inactive)
+     * @param name of the desired dish
+     * @return true if the update is successful, false if not
+     */
     public boolean hideDish(String name){
         if(name == null){
             return false;
         }
 		return db.hideDish(Helper.capitalFirst(name));
 	}
-    //TODO GM
+
+    /**
+     * Sets the status of the dish with the given name to 1(sets it to active)
+     * @param name of the desired dish
+     * @return true if the update is successful, false if not
+     */
     public boolean activateDish(String name){
         if(name == null){
             return false;
         }
             return db.activateDish(Helper.capitalFirst(name));
     }
-    //TODO GM
+
+    /**
+     * Checks if the employee with the given ID exists and delete it
+     * @param id The employees ID number
+     * @return true if successful, false if not
+     */
     public boolean removeEmployee(int id){
         return db.employeeExist(db.getEmployee(id)) && db.removeEmployee(id);
     }
-    //TODO GM
+
+    /**
+     * Removes a category from the database, based on the string value
+     * @param name of the category that shall be removed
+     * @return true if successfully, false if not
+     */
     public boolean removeCategory (String name){
         if(name ==null){
             return false;
         }
         return db.removeCategory(Helper.capitalFirst(name));
     }
+
+    /**
+     * Adds a category to the database, based on the string value
+     * @param name of the category
+     * @return true if successful, false if not
+     */
     public boolean addCatergory (String name){
         if(name == null){
             return false;
         }
         return db.addCategory(Helper.capitalFirst(name));
     }
+
+    /**
+     * Finds an order based on the customer. Searches the customer database on first name, last name, phone number and postal code
+     * @param input search criteria
+     * @return the orders the given customer have ordered in a DefaultListModel
+     */
     public DefaultListModel findOrders(String input) {
         return db.findOrder(input);
     }
+
+    /**
+     * Gives the orders that the customer, with the given order id ,have ordered
+     * @param customerID is the ID of the desired customer
+     * @return the orders that match the customers ID in a DefaultListModel
+     */
     public Customer getOrder(int customerID){
         if(customerID < 0){
             return null;
@@ -425,16 +472,19 @@ public class Employee extends Person {
         return db.getCustomer(customerID);
     }
 
+    /**
+     * Shows all the employees
+     * @return a DefaultListModel with all the employees
+     */
 	public DefaultListModel<Employee> getEmployees(){
 		Database db = new Database();
 		return db.getEmployees();
 	}
 
 	/**
-	 *
-	 *
+	 * Gives the orders witch is going to be delivered today
 	 * @param today The timestamp to get the order.
-	 * @return an ArrayList vontaining string tables with the content of the result.
+	 * @return an ArrayList with string tables with the content of the result.
 	 */
 	public ArrayList<String[]> getTodayOrder(String today){
 		Database db = new Database();
@@ -442,7 +492,7 @@ public class Employee extends Person {
 	}
 
     /**
-     * Returns a DefaultListModel containing all the orders in the database.
+     * Returners all the orders that is not a subscription
      * @return a DefaultListModel containing all the orders in the database, returns null if nothing is found.
      */
     public DefaultListModel<Order> getOrders() {
@@ -450,16 +500,29 @@ public class Employee extends Person {
         return db.getAllOrders2();
     }
 
+    /**
+     * Returners all subscriptions
+     * @return a DefaultListModel containing all the subscriptions in the database, returns null if nothing is found.
+     */
     public DefaultListModel<Subscription> getSubscriptions(){
         Database db = new Database();
         return db.getAllSubscriptions();
     }
 
+    /**
+     * Gives all the subscriptions that is going to be delivered today
+     * @param today timestamp on the given time
+     * @return an ArrayList of all the subscriptions
+     */
 	public ArrayList<String[]> getTodaySubscription(String today) {
 		Database db = new Database();
 		return db.getTodaySubscription(today);
 	}
 
+    /**
+     * Finds the top 5 dishes, sorted by most sold
+     * @return a DefaultListModel of the dishes
+     */
 	public DefaultListModel<String[]> getTopDishes(){
 		Database db = new Database();
 		return db.topDishes();

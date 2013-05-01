@@ -41,7 +41,7 @@ public class Category {
 	/**
 	 * Gets the category id from the database
 	 *
-	 * @return the category id. Returns -1 if the category isn't fetched for the database, but created localy.
+	 * @return the category id. Returns -1 if the category isn't fetched from the database, but created locally.
 	 */
 	public int getCategoryID() {
 		return categoryID;
