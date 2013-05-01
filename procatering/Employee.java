@@ -117,13 +117,10 @@ public class Employee extends Person {
 	 *   Method editDish
 	 * Edits a dish to send in a new dish object and the name of the old dish
 	 * @param dish Dish object
-	 * @param newPrice the new price
-	 * @param newCost the new cost
 	 * @return true if the database update is successfull, else if false.
 	 */
-	public boolean editDish(Dish dish, double newPrice, double newCost) {
-                dish.setPrice(newPrice);
-                dish.setCost(newCost);
+	//TODO: EIRIK: fiks documentation :)
+	public boolean editDish(Dish dish) {
 		return db.editDish(dish);
 	}
         
@@ -464,5 +461,10 @@ public class Employee extends Person {
 		Database db = new Database();
 		return db.topDishes();
 	}
+    //TODO ADD DOCUMENTATION
+    public DefaultListModel<Ingredient> getIngredients(){
+        Database db = new Database();
+        return db.getIngredients();
+    }
 
 }

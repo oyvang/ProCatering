@@ -1,14 +1,12 @@
 package gui;
 
 import com.toedter.calendar.JCalendar;
-import database.Database;
 import database.SecurityChecker;
 import procatering.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -238,9 +236,27 @@ public class Gui {
     private JPanel backendDishIngredientPanel;
     private JScrollPane backendAddDishCategoryScrollPane;
     private JScrollPane backendAddDishIngredientScrollPane;
+    private JButton saveDishButton;
+    private JList backendEditDishJList;
+    private JButton x;
+    private JTextField backendEditDishDishObjectPrice;
+    private JTextField backendEditDishDishObjectCost;
+	private JButton saveChangesToDishButton;
+    private JPanel backendEditDishInfoPanel;
+    private JScrollPane backendEditDishScrollPane;
+    private JList backendEditDishCategoryList;
+    private JScrollPane backendEditDishCategoryScrollPane;
+	private JLabel backendEditDishDishObjectId;
+	private JLabel backendEditDishDishObjectName;
+	private JButton backendDishEditButton;
+	private DefaultListModel<String> catgoryList;
+    private DefaultListModel<String> ingredientList;
+    private DefaultListModel<Dish> dishesList;
+    private DefaultListModel<Category> categoryObjectList;
 
 
-	public Gui() {
+
+    public Gui() {
 		initListeners();
 		editStartValues();
 	}
@@ -327,6 +343,36 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 backendDishButtonActionPerformed(evt);
+            }
+        });
+		backendDishEditButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				backendDishSearchButtonActionPerformed(evt);
+			}
+		});
+		saveChangesToDishButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				saveChangesToDishButtonActionPerformed(evt);
+			}
+		});
+        addCategoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                addCategoryButtonActionPerformed(evt);
+            }
+        });
+        addIngredientButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                addIngredientButtonActionPerformed(evt);
+            }
+        });
+        saveDishButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                saveDishButtonActionPerformed(evt);
             }
         });
 		/* Customer search button */
@@ -773,6 +819,33 @@ public class Gui {
 			backendEconomicButtonActionPerfomed();
 		}
 	});
+
+	backendEditDishCategoryList.addMouseListener(new MouseListener() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			populateBackendEditDish();
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			
+		}
+	});
 }
 
 	/**
@@ -856,19 +929,85 @@ public class Gui {
     private void backendDishButtonActionPerformed(ActionEvent evt){
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         cl.show(mainPanel, "dishBackendCard");
-
+        backendEditDishPopulateValues();
         backendAddishPopulateValues();
     }
+	private void backendDishSearchButtonActionPerformed(ActionEvent evt){
+		Dish editDishObject = (Dish)backendEditDishJList.getSelectedValue();
+		backendEditDishDishObjectId.setText(String.valueOf(editDishObject.getID()));
+		backendEditDishDishObjectName.setText(editDishObject.getName());
+		backendEditDishDishObjectCost.setText(String.valueOf(editDishObject.getCost()));
+		backendEditDishDishObjectPrice.setText(String.valueOf(editDishObject.getPrice()));
+	}
+	//TODO: FIX output if it turns out ok.
+	private void saveChangesToDishButtonActionPerformed(ActionEvent evt){
+		Dish dish = new Dish(backendEditDishDishObjectName.getText(),Double.parseDouble(backendEditDishDishObjectPrice.getText()), Double.parseDouble(backendEditDishDishObjectCost.getText()),Integer.parseInt(backendEditDishDishObjectId.getText()));
+		if(loggedInEmployee.editDish(dish)){
+			System.out.println("IT WENT NICE");
+		}
+	}
+    private void backendEditDishPopulateValues(){
+        categoryObjectList = loggedInEmployee.getCategories();
+        backendEditDishCategoryList.setModel(categoryObjectList);
+        backendEditDishCategoryScrollPane.setViewportView(backendEditDishCategoryList);
+
+    }
+    private void addCategoryButtonActionPerformed(ActionEvent evt){
+        if(addDishCategoryTextField.getText()==null || addDishCategoryTextField.getText().trim().equals("")){
+            String localCategory = new String(addDishCategoryComboBox.getSelectedItem().toString());
+            catgoryList.addElement(localCategory);
+        }else{
+            String localCategory = new String(addDishCategoryTextField.getText());
+            catgoryList.addElement(localCategory);
+            addDishCategoryTextField.setText(null);
+        }
+    }
+
+    public void addIngredientButtonActionPerformed(ActionEvent evt){
+        if(addDishIngredientTextField.getText()==null || addDishIngredientTextField.getText().trim().equals("")){
+            String localIngredient = new String(addDishIngredientComboBox.getSelectedItem().toString());
+            ingredientList.addElement(localIngredient);
+        }else{
+            String localIngredient = new String(addDishIngredientTextField.getText());
+            ingredientList.addElement(localIngredient);
+            addDishIngredientTextField.setText(null);
+        }
+    }
+    private void saveDishButtonActionPerformed(ActionEvent evt){
+        Dish localDish = new Dish(addDishNameTextField.getText(),
+                Double.parseDouble(addDishPriceTextField.getText().trim()),
+                Double.parseDouble(addDishCostTextField.getText().trim())
+        );
+        if(loggedInEmployee.addNewDish(localDish,catgoryList,ingredientList)){
+            clearNewDishInputFields();
+        }
+    }
+    private void clearNewDishInputFields(){
+        addDishNameTextField.setText(null);
+        addDishCostTextField.setText(null);
+        addDishPriceTextField.setText(null);
+        catgoryList.clear();
+        ingredientList.clear();
+    }
+
     private void backendAddishPopulateValues(){
-        Database db = new Database();
-        DefaultListModel<Category> categories = db.getCategories();
-        DefaultListModel<Ingredient> ingredients = db.getIngredients();
+
+        DefaultListModel<Category> categories = loggedInEmployee.getCategories();
+        DefaultListModel<Ingredient> ingredients = loggedInEmployee.getIngredients();
+        addDishCategoryComboBox.removeAllItems();
+        addDishIngredientComboBox.removeAllItems();
         for (int i = 0; i < categories.size(); i++) {
             addDishCategoryComboBox.addItem(categories.get(i));
         }
         for (int i = 0; i < ingredients.size(); i++) {
             addDishIngredientComboBox.addItem(ingredients.get(i));
         }
+        catgoryList = new DefaultListModel<>();
+        backendAddDishCategoryJList.setModel(catgoryList);
+        backendAddDishCategoryScrollPane.setViewportView(backendAddDishCategoryJList);
+        ingredientList = new DefaultListModel<>();
+        backendAddDishIngredientJList.setModel(ingredientList);
+        backendAddDishIngredientScrollPane.setViewportView(backendAddDishIngredientJList);
 
     }
 	private void menuSingleOrderButtonActionPerformed() {
@@ -992,7 +1131,7 @@ public class Gui {
 		subscriptionUpdateTextpane();
 	}
 
-	private void subscriptionNextButtonActionPerformed() {
+	private void subscriptionNextButtonActionPerformed() {  //TODO: Fix check om end date.
 		if (loggedInEmployee.getSubscription().getContent().isEmpty()) {
 			CardLayout cl = (CardLayout) subscriptionStepPanel.getLayout();
 			cl.show(subscriptionStepPanel, "subscriptionSelectTimeCard");
@@ -1406,5 +1545,9 @@ public class Gui {
 				"</table>" +
 				"</html>";
 		aboutEmployeeTextPane.setText(html);
+	}
+	private void populateBackendEditDish() {
+		Category cat = (Category)backendEditDishCategoryList.getSelectedValue();
+		backendEditDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
 	}
 }
