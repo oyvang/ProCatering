@@ -1227,6 +1227,29 @@ public class Database {
             return null;
         }
     }
+    public DefaultListModel<Ingredient> getIngredients() {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient ORDER BY ingredientname")) {
+                con.setAutoCommit(false);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<Ingredient> output = new DefaultListModel<>();
+                while (rs.next()) {
+                    Ingredient ing = new Ingredient(rs.getInt("ingredient_id"), rs.getString("ingredientname"));
+                    output.addElement(ing);
+                }
+                return output;
+            } catch (SQLException ePrepState) {
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                cleanup.dbRollback(con);
+                return null;
+            }
+        } catch (SQLException eCon) {
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+            return null;
+        }
+    }
 
     /**
      * Uses the first String to find the row in the database, and change the name to the second string

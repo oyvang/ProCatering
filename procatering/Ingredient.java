@@ -24,4 +24,7 @@ public class Ingredient {
     public int getIngredientID(){
         return ingredientID;
     }
+    public String toString() {
+        return this.name;
+    }
 }
