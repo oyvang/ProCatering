@@ -41,8 +41,6 @@ public class Gui {
 	private JButton menuSeeOrdersButton;
 	private JPanel backendMenu;
 	private JButton backendEmployeeButton;
-	private JButton backendCustomerButton;
-	private JButton backendOrderButton;
 	private JButton backendDishButton;
 	private JButton backendEconomicButton;
 	private JPanel topPanel;
