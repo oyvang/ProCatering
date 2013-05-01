@@ -544,7 +544,32 @@ public class Database {
             return null;
         }
     }
-
+    public DefaultListModel<Subscription> getAllSubscriptions() {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT DISTINCT orders.order_id, orders.customer_id, orders.employee_id, orders.status, orders.time_of_order, orders.order_id  FROM orders LEFT OUTER JOIN order_dish ON (order_dish.order_id = orders.order_id) WHERE days IS NULL")) {
+                con.setAutoCommit(false);
+                ResultSet rs = prepStat.executeQuery();
+                con.commit();
+                con.setAutoCommit(true);
+                DefaultListModel<Subscription> orderList = new DefaultListModel<>();
+                while (rs.next()) {
+                    orderList.addElement(
+                            new Order(rs.getInt("orders.order_id"), rs.getInt("orders.customer_id"), rs.getInt("orders.employee_id"), rs.getString("orders.status"), rs.getTimestamp("orders.time_of_order"), createContentList(rs.getInt("orders.order_id")))
+                    );
+                }
+                return orderList;
+            } catch (SQLException ePrepState) {
+                System.out.println("catch 1");
+                gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                con.rollback();
+                return null;
+            }
+        } catch (SQLException eCon) {
+            System.out.println("catch 2 HERRE SJER DU ITJ");
+            gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+            return null;
+        }
+    }
 
     public DefaultListModel<Order> getAllOrders2() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {

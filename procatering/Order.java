@@ -122,7 +122,11 @@ public class Order {
 		return creationTime;
 	}
 
-	public String getStatus() {
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public String getStatus() {
 		return status;
 	}
 
@@ -172,9 +176,16 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-        return getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
+        return "Order #"+getOrderId()+" for "+getCustomer(getCustomerId()).toString();
+                //getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
 	}
-	/** Method returns a html representation of the object.
+
+    private Customer getCustomer(int customerId) {
+        Database db = new Database();
+        return db.getCustomer(customerId);
+    }
+
+    /** Method returns a html representation of the object.
 	 * @return a html document representation of the object.
 	 *
 	 * */
