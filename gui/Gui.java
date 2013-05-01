@@ -701,13 +701,43 @@ public class Gui {
 				
 			}
 		});
-	}
+
+    subscriptionSelectList.addMouseListener(new MouseListener() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Subscription order = (Subscription) subscriptionSelectList.getSelectedValue();
+            subscriptionOverviewTextPane.setText(order.confirmToHtml());
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    });
+}
 
 	/**
 	 * Method editStartValues sets the visibility of elements in the gui.
 	 */
 	private void editStartValues() {
 		loginErrorMessage_label.setVisible(false);
+        subscriptionOverviewTextPane.setContentType("text/html");
+        subscriptionOverviewTextPane.setEditable(false);
 		singleOrderCustomerInformationTextpane.setContentType("text/html");
 		singleOrderCustomerInformationTextpane.setEditable(false);
 		singleOrderOrderInformationTextpane.setContentType("text/html");
@@ -764,7 +794,7 @@ public class Gui {
 	}
 
 	private void subscriptionUpdateTextpane() {
-		SubscriptionOrderInformationTextPane.setText(loggedInEmployee.getSubscription().toString());
+		SubscriptionOrderInformationTextPane.setText(loggedInEmployee.getSubscription().toHtml());
 	}
 
 	private void logOutButtonActionPerformed() {
@@ -979,6 +1009,7 @@ public class Gui {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
 		existOrderPopulate();
+        existSubscriptionPopulate();
 		chefSeeOrderPopulate();
 	}
 
@@ -1007,8 +1038,11 @@ public class Gui {
 	}
 
 	private void existOrderPopulate() {
-		singleOrderSelectList.setModel(loggedInEmployee.getOrders());
+        subscriptionSelectList.setModel(loggedInEmployee.getSubscriptions());
 	}
+    private void existSubscriptionPopulate() {
+        singleOrderSelectList.setModel(loggedInEmployee.getOrders());
+    }
 
 	private void customerSearchButtonActionPerformed() {
 		nameList = Customer.findCustomer(customerSearchField.getText());

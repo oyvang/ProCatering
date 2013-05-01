@@ -4,6 +4,8 @@
  */
 package procatering;
 
+import database.Database;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -90,6 +92,10 @@ public class Subscription {
         status = "Pending";
         startDate = s.getStartDate();
         endDate = s.getEndDate();
+    }
+
+    public int getOrderId() {
+        return OrderId;
     }
 
     /**
@@ -215,6 +221,41 @@ public class Subscription {
      * @return String of the subscription object
      */
     public String toString(){
+            return "Order id #"+ getOrderId()+" for "+getCustomer(getCustomerId()).toString();
+            //getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
+        }
+
+    private Customer getCustomer(int customerId) {
+        Database db = new Database();
+        return db.getCustomer(customerId);
+    }
+    public String confirmToHtml(){
+        String output = "Receipt for Order<br>";
+        for (int i = 0; i < content.size(); i++) {
+            output += content.get(i).toHtml();
+        }
+
+        return output;
+    }
+    public String toHtml() {
+        String output = "<html>";
+        output += "<b>Order created: </b><i>" + orderDate.toString().substring(0, 16) + "</i><br>";
+        output += "";
+        if(getStartDate() != null){
+            output+="<b>Activation date: </b>"+getStartDate().toString().substring(0, 16)+"<br>";
+        }
+        if(getEndDate() != null){
+            output+="<b>Termination date: </b>"+getEndDate().toString().substring(0, 16)+"<br>";
+        }
+        for (int i = 0; i < content.size(); i++) {
+            output +=content.get(i).toHtml();
+        }
+        return output;
+    }
+
+
+
+  /*  public String toHtml(){
         String output = "<b>Order created:</b> "+ getOrderDate().toString().substring(0,16)+"<br>";
         if(getStartDate() != null){
             output += "<b>Activation date:</b> "+ this.getStartDate().toString().substring(0,11)+"<br>";
@@ -229,5 +270,5 @@ public class Subscription {
             }
 		}
         return output;
-    }
+    }*/
 }

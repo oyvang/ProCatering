@@ -449,4 +449,9 @@ public class Employee extends Person {
         Database db = new Database();
         return db.getAllOrders2();
     }
+
+    public DefaultListModel<Subscription> getSubscriptions(){
+        Database db = new Database();
+        return db.getAllSubscriptions();
+    }
 }

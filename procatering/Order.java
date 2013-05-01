@@ -176,7 +176,7 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-        return "Order #"+getOrderId()+" for "+getCustomer(getCustomerId()).toString();
+        return "Order id #"+getOrderId()+" for "+getCustomer(getCustomerId()).toString();
                 //getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
 	}
 
