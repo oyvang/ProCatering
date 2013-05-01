@@ -1,6 +1,7 @@
 package gui;
 
 import com.toedter.calendar.JCalendar;
+import database.Database;
 import database.SecurityChecker;
 import procatering.*;
 
@@ -209,7 +210,30 @@ public class Gui {
 	private JList singleOrderSelectList;
 	private JPanel subscriptionTab;
 	private JTable table1;
-	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
+    private JTabbedPane dishTabbedPane;
+    private JTextField addDishNameTextField;
+    private JTextField addDishPriceTextField;
+    private JTextField addDishCostTextField;
+    private JList backendAddDishCategoryJList;
+    private JTextField addDishCategoryTextField;
+    private JComboBox addDishCategoryComboBox;
+    private JButton addCategoryButton;
+    private JList backendAddDishIngredientJList;
+    private JTextField addDishIngredientTextField;
+    private JComboBox addDishIngredientComboBox;
+    private JButton addIngredientButton;
+    private JPanel newDishTab;
+    private JPanel editDishTab;
+    private JLabel dishNameLabel;
+    private JLabel dishCostLabel;
+    private JLabel dishPriceLabel;
+    private JLabel dishCategoryLabel;
+    private JLabel dishIngredientLabel;
+    private JPanel backendDishCategoryPanel;
+    private JPanel backendDishIngredientPanel;
+    private JScrollPane backendAddDishCategoryScrollPane;
+    private JScrollPane backendAddDishIngredientScrollPane;
+    private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 	public Gui() {
 		initListeners();
@@ -294,6 +318,12 @@ public class Gui {
 				menuSeeOrdersButtonActionPerformed(evt);
 			}
 		});
+        backendDishButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                backendDishButtonActionPerformed(evt);
+            }
+        });
 		/* Customer search button */
 		customerSearchButton.addActionListener(new ActionListener() {
 			@Override
@@ -811,7 +841,24 @@ public class Gui {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "findPanelCard");
 	}
+    private void backendDishButtonActionPerformed(ActionEvent evt){
+        CardLayout cl = (CardLayout) mainPanel.getLayout();
+        cl.show(mainPanel, "dishBackendCard");
 
+        backendAddishPopulateValues();
+    }
+    private void backendAddishPopulateValues(){
+        Database db = new Database();
+        DefaultListModel<Category> categories = db.getCategories();
+        DefaultListModel<Ingredient> ingredients = db.getIngredients();
+        for (int i = 0; i < categories.size(); i++) {
+            addDishCategoryComboBox.addItem(categories.get(i));
+        }
+        for (int i = 0; i < ingredients.size(); i++) {
+            addDishIngredientComboBox.addItem(ingredients.get(i));
+        }
+
+    }
 	private void menuSingleOrderButtonActionPerformed() {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "singleOrderCard");
