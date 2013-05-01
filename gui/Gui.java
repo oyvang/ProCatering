@@ -209,6 +209,7 @@ public class Gui {
 	private JList singleOrderSelectList;
 	private JPanel subscriptionTab;
 	private JTable table1;
+	private JTabbedPane tabbedPane2;
 	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 	public Gui() {
@@ -731,6 +732,13 @@ public class Gui {
 
         }
     });
+
+	backendEconomicButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			backendEconomicButtonActionPerfomed();
+		}
+	});
 }
 
 	/**
@@ -1299,6 +1307,15 @@ public class Gui {
 			}
 		}
 	}
+
+	/**
+	 * Action performed when pressing economics button.
+	 */
+	private void backendEconomicButtonActionPerfomed() {
+		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		cl.show(mainPanel, "economicBackendCard");
+	}
+
 
 	private void backendEmployeeButtonActionPerformed(ActionEvent e) {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
