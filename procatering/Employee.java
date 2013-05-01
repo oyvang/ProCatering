@@ -465,4 +465,13 @@ public class Employee extends Person {
 		return db.topDishes();
 	}
 
+	public DefaultListModel<String[]> getBigSpenders(){
+		Database db = new Database();
+		return db.bigSpender();
+	}
+
+	public ArrayList<String[]> getInComeReport(String start, String end){
+		Database db = new Database();
+		return db.getInComeReport(start, end);
+	}
 }

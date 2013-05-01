@@ -1,7 +1,7 @@
 package gui;
 
 import com.toedter.calendar.JCalendar;
-import database.Database;
+import database.Database; //TODO FIX!!!!!!!!
 import database.SecurityChecker;
 import procatering.*;
 
@@ -238,6 +238,16 @@ public class Gui {
     private JPanel backendDishIngredientPanel;
     private JScrollPane backendAddDishCategoryScrollPane;
     private JScrollPane backendAddDishIngredientScrollPane;
+	private JTextPane bigSpenderTextPane;
+	private JPanel incomeTab;
+	private JTabbedPane reports;
+	private JPanel todayReportTab;
+	private JPanel monthReportTab;
+	private JPanel yearReportTab;
+	private JPanel selectReportTab;
+	private JTextPane todayReportTextPane;
+	private JTextPane monthReportTextPane;
+	private JTextPane yearReportTextPane;
 
 
 	public Gui() {
@@ -482,12 +492,12 @@ public class Gui {
 
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				
+
 			}
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				
+
 			}
 		});
 		/* King kong*/ //TODO something
@@ -673,7 +683,7 @@ public class Gui {
 
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				
+
 			}
 		});
 
@@ -692,22 +702,22 @@ public class Gui {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				
+
 			}
 		});
 
@@ -720,22 +730,22 @@ public class Gui {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				
+
 			}
 		});
 
@@ -798,6 +808,10 @@ public class Gui {
 		existOrderChefSubscriptionsTextPane.setContentType("text/html");
 		existOrderChefSubscriptionsTextPane.setEditable(false);
 		topDishTextPane.setContentType("text/html");
+		bigSpenderTextPane.setContentType("text/html");
+		todayReportTextPane.setContentType("text/html");
+		monthReportTextPane.setContentType("text/html");
+		yearReportTextPane.setContentType("text/html");
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
@@ -1079,7 +1093,6 @@ public class Gui {
 	private void chefSeeSubscriptionPopulate() {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
-		GregorianCalendar cal = new GregorianCalendar();
 		SimpleDateFormat  fore = new SimpleDateFormat("EEEE");
 		ArrayList<String[]> list = loggedInEmployee.getTodaySubscription(date.toString().substring(0, 10)+" 00:00:00");
 		String html = "<html><h1>Current active subscriptions</h1>";
@@ -1366,6 +1379,102 @@ public class Gui {
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "economicBackendCard");
 		populateTopDishTab();
+		populateTopCustomerTab();
+		populateTodayIncomeTab();
+		populateMonthIncomeTab();
+		populateYearIncomeTab();
+	}
+
+	private void populateMonthIncomeTab() {
+		java.util.Date time = new java.util.Date();
+		Timestamp date = new Timestamp(time.getTime());
+		GregorianCalendar cal = new GregorianCalendar();
+		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR)-1900,cal.get(Calendar.MONTH), cal.getMinimum(Calendar.MONTH),0,0,0,0);
+		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR)-1900,cal.get(Calendar.MONTH), cal.getMaximum(Calendar.MONTH),23,59,59,59);
+		ArrayList<String[]> top = loggedInEmployee.getInComeReport(firstDay.toString(), lastDay.toString());
+		String html = "<html>";
+		html += "<h1>Month report</h1>";
+		html += "<table>";
+		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		double profit = 0.0;
+		double sum = 0.0;
+		for (int i = 0; i < top.size(); i++) {
+			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td  align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			profit += Double.parseDouble(top.get(i)[3]);
+			sum  += Double.parseDouble(top.get(i)[2]);
+		}
+		html += "<hr>";
+		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "</table>";
+
+		html += "<html>";
+		monthReportTextPane.setText(html);
+	}
+
+	private void populateYearIncomeTab() {
+		java.util.Date time = new java.util.Date();
+		Timestamp date = new Timestamp(time.getTime());
+		GregorianCalendar cal = new GregorianCalendar();
+		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR)-1900,0,1,0,0,0,0);
+		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR)-1900,11,31,23,59,59,59);
+		ArrayList<String[]> top = loggedInEmployee.getInComeReport(firstDay.toString(), lastDay.toString());
+		String html = "<html>";
+		html += "<h1>Year report</h1>";
+		html += "<table>";
+		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		double profit = 0.0;
+		double sum = 0.0;
+		for (int i = 0; i < top.size(); i++) {
+			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			profit += Double.parseDouble(top.get(i)[3]);
+			sum  += Double.parseDouble(top.get(i)[2]);
+		}
+		html += "<hr>";
+		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "</table>";
+
+		html += "<html>";
+		yearReportTextPane.setText(html);
+	}
+
+
+	private void populateTodayIncomeTab() {
+		java.util.Date time = new java.util.Date();
+		Timestamp date = new Timestamp(time.getTime());
+		GregorianCalendar cal = new GregorianCalendar();
+		ArrayList<String[]> top = loggedInEmployee.getInComeReport(date.toString().substring(0,10)+" 00:00:00", date.toString().substring(0,10)+" 23:59:59");
+		String html = "<html>";
+		html += "<h1>To day report</h1>";
+		html += "<table>";
+		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		double profit = 0.0;
+		double sum = 0.0;
+		for (int i = 0; i < top.size(); i++) {
+			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			profit += Double.parseDouble(top.get(i)[3]);
+			sum  += Double.parseDouble(top.get(i)[2]);
+		}
+		html += "<hr>";
+		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "</table>";
+
+		html += "<html>";
+		todayReportTextPane.setText(html);
+	}
+
+	private void populateTopCustomerTab() {
+		DefaultListModel<String[]> top = loggedInEmployee.getBigSpenders();
+		String html = "<html>";
+		html += "<h1>Top 10 - Big spenders</h1>";
+		html += "<table>";
+		html +=		"<tr><td><b>First name</b></td><td><b>Last name</b></td><td><b>Number of orders</b></td><td><b>Sum all orders</b></td></b></tr>";
+		for (int i = 0; i < top.size(); i++) {
+			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td>"+top.get(i)[2]+"</td><td halign='right'>kr "+top.get(i)[3]+",-</td></tr>";
+		}
+		html += "</table>";
+
+		html += "<html>";
+		bigSpenderTextPane.setText(html);
 	}
 
 	private void populateTopDishTab() {

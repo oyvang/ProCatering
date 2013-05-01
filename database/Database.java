@@ -1101,14 +1101,14 @@ public class Database {
      *
      * @return strings in a DefaultListModel.
      */
-    public DefaultListModel<String> bigSpender() {
+    public DefaultListModel<String[]> bigSpender() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) 'nu', SUM(amount*quantity) 'sum' FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN customer ON customer.customer_id = orders.customer_id GROUP BY customer.customer_id ORDER BY sum DESC LIMIT 10")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel<String> output = new DefaultListModel<>();
+                DefaultListModel<String[]> output = new DefaultListModel<>();
                 while (rs.next()) {
-                    output.addElement("Customer ID: " + rs.getInt("Customer ID: " + rs.getInt("customer_id") + ". Name: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Sum of all orders: " + rs.getDouble("sum") + " NOK. In " + rs.getString("nu") + " order(s)"));
+                    output.addElement(new String[]{rs.getString("firstname"), rs.getString("lastname"), rs.getDouble("nu")+"", rs.getString("sum")});
                 }
                 con.commit();
                 con.setAutoCommit(true);
@@ -1876,4 +1876,29 @@ public class Database {
             return null;
         }
     }
+
+	public ArrayList<String[]> getInComeReport(String from, String to){
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish.dish_id, dish.price, dish.cost, dish.dishname, SUM(quantity) AS 'sum', (dish.price * SUM(quantity)) AS 'sum price', (dish.cost * SUM(quantity)) AS 'sum cost', ((dish.price * SUM(quantity)) - (dish.cost * SUM(quantity))) AS 'profit' FROM dish LEFT JOIN order_dish ON(order_dish.dish_id = dish.dish_id) WHERE order_dish.delivery BETWEEN ? AND ? GROUP BY dish.dishname;")){
+				con.setAutoCommit(false);
+				prepStat.setString(1, from);
+				prepStat.setString(2, to);
+				ResultSet rs = prepStat.executeQuery();
+				ArrayList<String[]> output = new ArrayList<>();
+				while (rs.next()) {
+					output.add(new String[]{rs.getString("dishname")+"", rs.getInt("sum")+"",rs.getDouble("sum price")+"", rs.getDouble("sum cost")+"", rs.getDouble("profit")+""});
+				}
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			} catch (SQLException ePrepState) {
+				gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+				con.rollback();
+				return null;
+			}
+		} catch (SQLException eCon) {
+			gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon);
+			return null;
+		}
+	}
 }
