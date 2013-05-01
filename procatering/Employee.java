@@ -5,6 +5,7 @@ import database.Database;
 import javax.swing.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  * Class Employee
@@ -427,6 +428,17 @@ public class Employee extends Person {
 	public DefaultListModel<Employee> getEmployees(){
 		Database db = new Database();
 		return db.getEmployees();
+	}
+
+	/**
+	 *
+	 *
+	 * @param today The timestamp to get the order.
+	 * @return an ArrayList vontaining string tables with the content of the result.
+	 */
+	public ArrayList<String[]> getTodayOrder(String today){
+		Database db = new Database();
+		return db.getTodayOrder(today);
 	}
 
     /**

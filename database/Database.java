@@ -6,6 +6,7 @@ import procatering.*;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 import static procatering.Helper.DATABASE_NUMBER;
@@ -1576,14 +1577,24 @@ public class Database {
 
 
 
-    public String getTodayOrder(Timestamp today){
-        String sql = "";
+    public ArrayList<String[]> getTodayOrder(String today){
+        ArrayList<String[]> output = new ArrayList<>();
+		String sql = "SELECT order_dish.quantity, order_dish.delivery, dish.dishname, customer.firstname, customer.lastname FROM order_dish JOIN orders ON (orders.order_id = order_dish.order_id) JOIN dish ON (order_dish.dish_id = dish.dish_id) JOIN customer ON (orders.customer_id = customer.customer_id) WHERE order_dish.delivery LIKE ?";
+       	today = today+"%";
         if(today == null)
             return null;
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement(sql)) {
-                System.out.println("Hello, world!"); //TODO Hei
-                return null;
+        		con.setAutoCommit(false);
+				prepStat.setString(1, today);
+				ResultSet rs = prepStat.executeQuery();
+				while(rs.next()){
+					output.add(new String[]{rs.getInt(1)+"",rs.getTimestamp(2)+"",rs.getString(3),rs.getString(4), rs.getString(5)});
+				}
+
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
             }catch(SQLException e){
                 System.out.println(e);
                 con.rollback();

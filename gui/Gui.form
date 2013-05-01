@@ -747,7 +747,7 @@
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <component id="9e9bf" class="javax.swing.JList" binding="existOrderChefOrdersTextPane">
+                              <component id="28e97" class="javax.swing.JTextPane" binding="existOrderChefOrdersTextPane">
                                 <constraints/>
                                 <properties/>
                               </component>
@@ -760,7 +760,7 @@
                             <properties/>
                             <border type="none"/>
                             <children>
-                              <component id="620bd" class="javax.swing.JList" binding="existOrderChefSubscriptionsTextPane">
+                              <component id="c30f7" class="javax.swing.JTextPane" binding="existOrderChefSubscriptionsTextPane">
                                 <constraints/>
                                 <properties/>
                               </component>
@@ -1287,7 +1287,7 @@
                                   <background color="-986896"/>
                                   <contentType value="text/html"/>
                                   <editable value="false"/>
-                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;&#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#13;&#10;      &#13;&#10;    &lt;/p&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
+                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
                                 </properties>
                               </component>
                             </children>
@@ -1393,7 +1393,7 @@
                                 <properties>
                                   <contentType value="text/html"/>
                                   <editable value="false"/>
-                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;&#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#13;&#10;      &#13;&#10;    &lt;/p&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
+                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
                                 </properties>
                               </component>
                             </children>
@@ -1443,7 +1443,7 @@
                                   <background color="-986896"/>
                                   <contentType value="text/html"/>
                                   <editable value="false"/>
-                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;&#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;    &lt;p style=&quot;margin-top: 0&quot;&gt;&#13;&#10;      &#13;&#10;    &lt;/p&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
+                                  <text value="&lt;html&gt;&#13;&#10;  &lt;head&gt;&#13;&#10;    &#13;&#10;  &lt;/head&gt;&#13;&#10;  &lt;body&gt;&#13;&#10;  &lt;/body&gt;&#13;&#10;&lt;/html&gt;&#13;&#10;"/>
                                 </properties>
                               </component>
                             </children>

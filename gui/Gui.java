@@ -177,8 +177,8 @@ public class Gui {
 	private JPanel singleOrderTab;
 	private JPanel archiveTab;
 	private JPanel chefTab;
-	private JList existOrderChefOrdersTextPane;
-	private JList existOrderChefSubscriptionsTextPane;
+	private JTextPane existOrderChefOrdersTextPane;
+	private JTextPane existOrderChefSubscriptionsTextPane;
 	private JScrollPane existOrderChefOrdersScrollPane;
 	private JScrollPane existOrderChefSubscriptionsScrollPane;
 	private JTextPane singleOrderCustomerConfirm;
@@ -719,6 +719,11 @@ public class Gui {
 		aboutEmployeeTextPane.setContentType("text/html");
 		singleOrderOverviewTextPane.setContentType("text/html");
 		singleOrderOverviewTextPane.setEnabled(false);
+		existOrderChefOrdersTextPane.setContentType("text/html");
+		existOrderChefOrdersTextPane.setEditable(false);
+		existOrderChefSubscriptionsTextPane.setContentType("text/html");
+		existOrderChefSubscriptionsTextPane.setEditable(false);
+
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
@@ -973,6 +978,26 @@ public class Gui {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
 		existOrderPopulate();
+		chefSeeOrderPopulate();
+	}
+
+	private void chefSeeOrderPopulate() {
+		java.util.Date time = new java.util.Date();
+		Timestamp date = new Timestamp(time.getTime());
+
+		ArrayList<String[]> list = loggedInEmployee.getTodayOrder(date.toString().substring(0, 10));
+
+		String html = "<html><h2>Orders today</h2><table>";
+		html += "<tr><td>Amount</td><td>Time of delivery</td><td>Dish</td><td>First name</td><td>Last name</td></tr>";
+		for (int i = 0; i < list.size(); i++) {
+			html += "<tr>";
+			for (int j = 0; j < list.get(i).length; j++) {
+				html += "<td>"+list.get(i)[j]+"</td>";
+			}
+			html += "</tr>";
+		}
+		html += "<p></p>";
+		existOrderChefOrdersTextPane.setText(html);
 	}
 
 	private void existOrderPopulate() {
