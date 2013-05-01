@@ -454,4 +454,10 @@ public class Employee extends Person {
         Database db = new Database();
         return db.getAllSubscriptions();
     }
+
+	public ArrayList<String[]> getTodaySubscription(String today) {
+		Database db = new Database();
+		return db.getTodaySubscription(today);
+	}
+
 }
