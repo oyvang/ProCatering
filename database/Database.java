@@ -1227,18 +1227,19 @@ public class Database {
             return null;
         }
     }
+			//todo: make nice text here
     public DefaultListModel<Ingredient> getIngredients() {
-        try (Connection con = DriverManager.getConnection(URL, username, password)) {
-            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient ORDER BY ingredientname")) {
-                con.setAutoCommit(false);
-                ResultSet rs = prepStat.executeQuery();
-                con.commit();
-                con.setAutoCommit(true);
-                DefaultListModel<Ingredient> output = new DefaultListModel<>();
-                while (rs.next()) {
-                    Ingredient ing = new Ingredient(rs.getInt("ingredient_id"), rs.getString("ingredientname"));
-                    output.addElement(ing);
-                }
+		            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			            try (PreparedStatement prepStat = con.prepareStatement("SELECT * FROM ingredient ORDER BY ingredientname")) {
+				            con.setAutoCommit(false);
+				            ResultSet rs = prepStat.executeQuery();
+				            con.commit();
+				            con.setAutoCommit(true);
+				            DefaultListModel<Ingredient> output = new DefaultListModel<>();
+				            while (rs.next()) {
+					            Ingredient ing = new Ingredient(rs.getInt("ingredient_id"), rs.getString("ingredientname"));
+					            output.addElement(ing);
+				            }
                 return output;
             } catch (SQLException ePrepState) {
                 gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
@@ -1879,7 +1880,7 @@ public class Database {
 
 	public ArrayList<String[]> getInComeReport(String from, String to){
 		try (Connection con = DriverManager.getConnection(URL, username, password)) {
-			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish.dish_id, dish.price, dish.cost, dish.dishname, SUM(quantity) AS 'sum', (dish.price * SUM(quantity)) AS 'sum price', (dish.cost * SUM(quantity)) AS 'sum cost', ((dish.price * SUM(quantity)) - (dish.cost * SUM(quantity))) AS 'profit' FROM dish LEFT JOIN order_dish ON(order_dish.dish_id = dish.dish_id) WHERE order_dish.delivery BETWEEN ? AND ? GROUP BY dish.dishname;")){
+			try (PreparedStatement prepStat = con.prepareStatement("SELECT dish.dish_id, order_dish.amount, dish.cost, dish.dishname, SUM(quantity) AS 'sum', (order_dish.amount * SUM(quantity)) AS 'sum price', (dish.cost * SUM(quantity)) AS 'sum cost', ((order_dish.amount * SUM(quantity)) - (dish.cost * SUM(quantity))) AS 'profit' FROM dish LEFT JOIN order_dish ON(order_dish.dish_id = dish.dish_id) WHERE order_dish.delivery BETWEEN ? AND ? GROUP BY dish.dishname;")){
 				con.setAutoCommit(false);
 				prepStat.setString(1, from);
 				prepStat.setString(2, to);

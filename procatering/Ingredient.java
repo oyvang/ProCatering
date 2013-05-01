@@ -12,9 +12,12 @@ public class Ingredient {
     private String name;
     private int ingredientID = -1;
     
-    public Ingredient (int ingredientID,String name){
+    public Ingredient (int ingredientID, String name){
         this.name=name;
         this.ingredientID=ingredientID;
+    }
+    public Ingredient (String name){
+        this.name=name;
     }
     
     public String getName(){
