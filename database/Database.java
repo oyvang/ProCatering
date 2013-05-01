@@ -1008,15 +1008,15 @@ public class Database {
      *
      * @return Strings in a DefaultListModel.
      */
-    public DefaultListModel<String> topDishes() {
+    public DefaultListModel<String[]> topDishes() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
-            try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum DESC")) {
+            try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, dishname, price, cost, SUM(quantity) AS amountsum , COUNT(order_dish.dish_id) AS 'in orders', SUM(quantity)*(price-cost) AS income FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum DESC")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel<String> output = new DefaultListModel<>();
+                DefaultListModel<String[]> output = new DefaultListModel<>();
                 while (rs.next()) {
                     if (rs.getRow() < 6) {
-                        output.addElement("Number of dishes: " + rs.getInt("amountsum") + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
+                        output.addElement(new String[]{rs.getString("dishname"), rs.getDouble("price")+"", rs.getDouble("cost")+"", rs.getInt("amountsum")+"", rs.getInt("in orders")+"", rs.getDouble("income")+""});
                     }
                 }
                 con.commit();
@@ -1024,7 +1024,7 @@ public class Database {
                 return output;
             } catch (SQLException ePrepState) {
                 gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
-                cleanup.dbRollback(con);
+                con.rollback();
                 return null;
             }
         } catch (SQLException eCon) {
@@ -1854,4 +1854,3 @@ public class Database {
         }
     }
 }
-

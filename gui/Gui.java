@@ -209,7 +209,10 @@ public class Gui {
 	private JList singleOrderSelectList;
 	private JPanel subscriptionTab;
 	private JTable table1;
-	private JTabbedPane tabbedPane2;
+	private JTabbedPane economicTabs;
+	private JPanel topDishTab;
+	private JTextPane topDishTextPane;
+	private JPanel bigSpenderTab;
 	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
 
 	public Gui() {
@@ -763,7 +766,7 @@ public class Gui {
 		existOrderChefOrdersTextPane.setEditable(false);
 		existOrderChefSubscriptionsTextPane.setContentType("text/html");
 		existOrderChefSubscriptionsTextPane.setEditable(false);
-
+		topDishTextPane.setContentType("text/html");
 		Helper.addTimes(singleOrderAddTimeComboBox);
 		employee_ID_input.setText("1");//TODO remove
 		password_input.setText("abc");//TODO remove
@@ -1314,6 +1317,22 @@ public class Gui {
 	private void backendEconomicButtonActionPerfomed() {
 		CardLayout cl = (CardLayout)mainPanel.getLayout();
 		cl.show(mainPanel, "economicBackendCard");
+		populateTopDishTab();
+	}
+
+	private void populateTopDishTab() {
+		DefaultListModel<String[]> top = loggedInEmployee.getTopDishes();
+		String html = "<html>";
+		html += "<h1>Top sold dishes</h1>";
+		html += "<table>";
+		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Price</b></td><td><b>Cost</b></td><td><b>Income</b></td></b></tr>";
+		for (int i = 0; i < top.size(); i++) {
+			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[3]+"</td><td>"+top.get(i)[1]+"</td><td>"+top.get(i)[2]+"</td><td>"+top.get(i)[5]+"</td></tr>";
+		}
+		html += "</table>";
+
+		html += "<html>";
+		topDishTextPane.setText(html);
 	}
 
 

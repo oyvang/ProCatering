@@ -460,4 +460,9 @@ public class Employee extends Person {
 		return db.getTodaySubscription(today);
 	}
 
+	public DefaultListModel<String[]> getTopDishes(){
+		Database db = new Database();
+		return db.topDishes();
+	}
+
 }
