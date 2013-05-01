@@ -312,6 +312,7 @@ public class Employee extends Person {
             int en = 0;
             int to = 0;
             try{
+                 if(db.addDish(dish)){
                 if(!db.dishExist(Helper.capitalFirst(dish.getName()))) {
                     for (int i = 0; i < catNames.getSize(); i++) {
                         if(!db.cateogryExist(Helper.capitalFirst(catNames.get(i)))){
@@ -324,7 +325,7 @@ public class Employee extends Person {
                         }
                     }
                     
-                    if(db.addDish(dish)){
+                   
                         for (int i = 0; i < catNames.getSize(); i++) {
                             db.insertDishCat(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(catNames.get(i)));
                             en++;
