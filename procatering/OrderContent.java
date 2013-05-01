@@ -45,12 +45,18 @@ public class OrderContent {
      * constructor for content to subscriptions
      *
      * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
-     * @param time Timestamp that contains the time of delivery for the given day
+     * @param delivery Timestamp that contains the time of delivery for the given day
      */
-    public OrderContent(String day, Timestamp time) {
-        deliveryTime = time;
+    public OrderContent(String day, Timestamp delivery) {
+        int year = delivery.getYear();
+        int month = delivery.getMonth();
+        int tsday = delivery.getDay();
+        int hour = delivery.getHours();
+        int minute = delivery.getMinutes();
+        Timestamp newTimestamp = new Timestamp(year,month,tsday,hour,minute,0,0);
+        deliveryTime = newTimestamp;
         deliveryDay = day;
-        this.dishes = new DefaultListModel<>();
+        this.dishes = new DefaultListModel<Dish>();
     }
     /**
      * constructor for content to subscriptions

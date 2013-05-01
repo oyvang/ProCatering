@@ -264,7 +264,7 @@ public class Employee extends Person {
      */
 	public boolean createSubscription(int c_id) {
 		if (c_id > 0) {
-			subscription = new Subscription(c_id, this.getEmployeeId());
+			subscription = new Subscription(this.getEmployeeId(),c_id );
 			return true;
 		}
 		return false;

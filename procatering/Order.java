@@ -172,7 +172,7 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-        return getOrderContent().get(1).getDeliveryDate().toString().substring(0,16);
+        return getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
 	}
 	/** Method returns a html representation of the object.
 	 * @return a html document representation of the object.

@@ -53,13 +53,17 @@ public class Subscription {
      * @param e_id input for employee id
      * @param c_id input for customer id
      */
-    public Subscription(int order_id,int e_id, int c_id, Timestamp start, Timestamp created, DefaultListModel<OrderContent> contentList, String status){
+    public Subscription(int order_id,int e_id, int c_id, Timestamp created, DefaultListModel<OrderContent> contentList, String status){
         OrderId = order_id;
         orderDate = created;
         this.content = contentList;
         employeeId = e_id;
         customerId = c_id;
         status = "Pending";
+    }
+
+    public String getStatus() {
+        return status;
     }
     /*
         private void subscriptionActivationDateSubmitButtonActionPerformed() {
@@ -84,6 +88,8 @@ public class Subscription {
         employeeId = s.getEmployeeId();
         customerId = s.getCustomerId();
         status = "Pending";
+        startDate = s.getStartDate();
+        endDate = s.getEndDate();
     }
 
     /**
@@ -125,6 +131,7 @@ public class Subscription {
     public Timestamp getEndDate() {
         return endDate;
     }
+
 
     /**
      * Method getContent

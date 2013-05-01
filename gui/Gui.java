@@ -847,7 +847,8 @@ public class Gui {
 		int t = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(0, 2));
 		int m = Integer.parseInt(subscriptionTimeSelector.getSelectedItem().toString().substring(3));
 		String day = subscriptionDaySelector.getSelectedItem().toString();
-		Timestamp time = new Timestamp(0, 0, 0, t, m, 0, 0);
+
+		Timestamp time = new Timestamp(loggedInEmployee.getSubscription().getStartDate().getYear(), loggedInEmployee.getSubscription().getStartDate().getMonth(), loggedInEmployee.getSubscription().getStartDate().getDate(), t, m, 0, 0);
 		if (loggedInEmployee.getSubscription().addOrderContent(day, time)) {
 			subscriptionUpdateTextpane();
 		}

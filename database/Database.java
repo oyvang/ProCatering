@@ -131,7 +131,51 @@ public class Database {
     }
 
     public boolean addSubscription(procatering.Subscription sub) {
-        return false;
+            if (sub == null) {
+                return false;
+            }
+            DefaultListModel<OrderContent> orderContent = sub.getContent();
+        System.out.println("emp id: --->"+sub.getEmployeeId()+"<--");
+            String sql = "INSERT INTO order_dish (order_id, dish_id, delivery, days, quantity, amount) VALUES (?,?,?,?,?,?)";
+            String sql1 = "INSERT INTO orders (employee_id, customer_id, time_of_order, status, starts, ends) VALUES (?,?,?,?,?,?)";
+            try (Connection con = DriverManager.getConnection(URL, username, password)) {
+                try (PreparedStatement prepStat = con.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+                     PreparedStatement prepStat1 = con.prepareStatement(sql)) {
+                    con.setAutoCommit(false);
+                    prepStat.setInt(1, sub.getEmployeeId());
+                    prepStat.setInt(2, sub.getCustomerId());
+                    prepStat.setTimestamp(3, sub.getOrderDate());
+                    prepStat.setString(4, sub.getStatus());
+                    prepStat.setTimestamp(5, sub.getStartDate());
+                    prepStat.setTimestamp(6, sub.getEndDate());
+                    prepStat.executeUpdate();
+                    ResultSet rs = prepStat.getGeneratedKeys();
+                    rs.first();
+                    for (int i = 0; i < orderContent.size(); i++) {
+                        for (int j = 0; j < orderContent.get(i).countDishFish(orderContent.get(i).getDishes()).length; j++){
+                            prepStat1.setInt(1, rs.getInt(1));
+                            prepStat1.setInt(2, sub.getContent().get(i).getDishes().get(j).getID());
+                            prepStat1.setTimestamp(3, sub.getContent().get(i).getDeliveryDate());
+                            prepStat1.setString(4, sub.getContent().get(i).getDeliveryDay());
+                            prepStat1.setInt(5, Integer.parseInt(       orderContent.get(i).countDishFish(orderContent.get(i).getDishes())[j][1]));
+                            prepStat1.setDouble(6, Double.parseDouble(  orderContent.get(i).countDishFish(orderContent.get(i).getDishes())[j][0]));
+                            prepStat1.addBatch();
+                        }
+                    }
+                    prepStat1.executeBatch();
+                    con.commit();
+                    con.setAutoCommit(true);
+                    return true;
+                } catch (SQLException ePrepState) {
+                    gui.Gui.showErrorMessage(DATABASE_NUMBER, 1, ePrepState);
+                    con.rollback();
+                    return false;
+                }
+            } catch (SQLException er) {
+                System.out.println("connection failed: " + er);
+            }
+            return false;
+
         //TODO: MAKE method .. Ted
     }
 
