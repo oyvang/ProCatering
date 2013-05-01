@@ -984,19 +984,24 @@ public class Gui {
 	private void chefSeeOrderPopulate() {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
-
 		ArrayList<String[]> list = loggedInEmployee.getTodayOrder(date.toString().substring(0, 10));
 
-		String html = "<html><h2>Orders today</h2><table>";
-		html += "<tr><td>Amount</td><td>Time of delivery</td><td>Dish</td><td>First name</td><td>Last name</td></tr>";
-		for (int i = 0; i < list.size(); i++) {
-			html += "<tr>";
-			for (int j = 0; j < list.get(i).length; j++) {
-				html += "<td>"+list.get(i)[j]+"</td>";
+		String html = "<html><h2>Orders today</h2>";
+
+		if(list.isEmpty())
+			html += "<p>No orders today. </p>";
+		else{
+			html += "<table><tr><td>Amount</td><td>Time of delivery</td><td>Dish</td><td>First name</td><td>Last name</td></tr>";
+			for (int i = 0; i < list.size(); i++) {
+				html += "<tr>";
+				for (int j = 0; j < list.get(i).length; j++) {
+					html += "<td>"+list.get(i)[j]+"</td>";
+				}
+				html += "</tr>";
 			}
-			html += "</tr>";
+			html += "</table>";
 		}
-		html += "<p></p>";
+
 		existOrderChefOrdersTextPane.setText(html);
 	}
 
