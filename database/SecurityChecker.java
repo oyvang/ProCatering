@@ -1,7 +1,6 @@
 package database;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,7 +10,13 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 
-/** Class SecurityChecker */
+/**
+ * SecurityChecker check if an employee object have accsess to different elements in the system.
+ * <dl>
+ *  <dt>Constructors: Default constructor</dt>
+ * </dl>
+ * @author Team 17
+ */
 public class SecurityChecker {
 	//TODO DOCUMENTATION
 	private static boolean checkPassword(int employee_id, String password){

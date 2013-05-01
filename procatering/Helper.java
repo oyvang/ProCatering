@@ -1,19 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package procatering;
 
 import database.Database;
-
 import javax.swing.*;
 import java.sql.Time;
 import java.util.Timer;
 
 /**
- *Helper class which is contains help methods
- * @author Ted
+ * Helper class contains help methods where each methode are static.
+ * @author Team 17
  */
+//TODO seartchPostalCode skal vell egentlig ikke opprette et DB object, men kjøres gjennom employee? Om dette endres må dokumentasjonen endres også.
 public class Helper {
     public static final int GUI_NUMBER = 1;
     public static final int DATABASE_NUMBER = 2;
@@ -24,13 +20,11 @@ public class Helper {
     public static final int SUBSCRIPTION_NUMBER = 7;
     public static final int SECURITYCHECKER_NUMBER = 8;
     public static final int DISH_NUMBER = 9;
-	public static final int DATABASECLEAN_NUMBER = 10;
-    
-    
+    public static final int DATABASECLEAN_NUMBER = 10;
     /**
-     * Takes a String and returns the first letter of the String as capital and rest as lower case.
-     * @param input 
-     * @return 
+     * Change the string to lower case, then the first letter to capital. There is no check if the String equals null
+     * @param input
+     * @return String with first letter as capital
      */
     static String singleWordCapitalFirst(String input){
         input = input.toLowerCase();
@@ -38,9 +32,9 @@ public class Helper {
     }
     
     /**
-     * Takes a String and returns every word of the string with the first letter as capital.
-     * @param input
-     * @return 
+     * Takes a String and returns every first letter in a word as capital.
+     * @param input String object to be customized with every first letter of a word to capital
+     * @return a customized string
      */
     public static String capitalFirst(String input){
         String[] table = input.split(" ");
@@ -59,13 +53,10 @@ public class Helper {
     }
     
     
-        /**
-     * Uses showMessageDialog to print out error messages.
-     *
+    /**
      * @param ex Exception object
-     * @param error String object
+     * @param error String object with given error message
      * @return return showMessageDialog(null, "ERROR! \n" + error + "\n" + ex,"Database Error!", ERROR_MESSAGE);
-     * @author Geir Morten Larsen
      */
     public static String errorMessage(Exception ex, String error) {
         if(ex != null && error != null){
@@ -74,9 +65,9 @@ public class Helper {
         return "Error 666: Error while trying to make an error message.";
     }
     /**
-     * Checks if a string is less than 255 signs and is not null.
-     * @param input
-     * @return true if the string is not null and is less than 255 signs, if not it will return false.
+     * Checks if a string is less than 255 or null
+     * @param input the given string that should be checked
+     * @return boolean true if the string is not null and is less than 255 signs; else false.
      */
     public static boolean stringChecker(String input){
         if(input != null && input.length() < 255){
@@ -84,7 +75,11 @@ public class Helper {
         }
         return false;
     }
-    
+    /**
+     * Use melthodes for seartch after postal code place
+     * @param postalCode string with postalcode
+     * @return string with postal code place, else "N/A"
+     */
     public static String searchPostalCode(String postalCode){
         Database db = new Database();
         Boolean gtg = true;
@@ -103,7 +98,10 @@ public class Helper {
         }
 	}
 
-
+        /**
+         * Adds times to a JComboBox in singleOrderAddTimeComboBox.addItem(String time)
+         * @param singleOrderAddTimeComboBox JComboBox object
+         */
 	public static void addTimes(JComboBox singleOrderAddTimeComboBox) {
 		String[] times = new String[]{"0900","1000","1100","1200","1300","1400","1500"};
 		for (String time : times) singleOrderAddTimeComboBox.addItem(time);

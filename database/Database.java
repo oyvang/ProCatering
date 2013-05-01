@@ -13,8 +13,13 @@ import static procatering.Helper.DATABASE_NUMBER;
 
 
 /**
- * @author TEAM 17
+ * The database class contain all metodes with SQL commands to communicate with the database
+ * <dl>
+ *  <dt>Constructor: modified default constructor</dt>
+ * </dl>
+ * @author Team 17
  */
+//TODO fix gui.Gui.showErrorMessage(DATABASE_NUMBER, 2, eCon); that are standing as a comment
 public class Database {
     private final String username = "q20";
     private final String password = "mFW6fL3";
@@ -22,6 +27,7 @@ public class Database {
     private final DBClean cleanup = new DBClean();
 
     //TODO create documentation for all classes
+
     public Database() {
         try {
             String dbDriver = "com.mysql.jdbc.Driver";

@@ -1,12 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package procatering;
 
 /**
- *
- * @author GM
+ * The Dish class have everything to do with all dish metodes. And are mainly used to help Employe and Database class.
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- String name, double price, double cost</dd>
+ *      <dd>- String name, double price, double cost, int id</dd>
+ *      <dd>- Dish d</dd>
+ * </dl>
+ * @author Team 17
  */
 public class Dish {
     private String name;
@@ -26,7 +28,7 @@ public class Dish {
         this.id = id;
     }
     
-    /** Standard copy constructor */ 
+
     public Dish(Dish d){
         this(d.getName(),d.getPrice(),d.getCost());
     }

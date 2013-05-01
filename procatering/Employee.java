@@ -8,8 +8,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
- * Class Employee
- * The active class of proCatering.
+ * <<b>Extends</b>  Person <br><br>
+ * Employee is the active class of proCatering. Everything  without SecurityChecker goes through this class before it goes to the datbase class.
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- int empId, String fn, String ln, String phone, int pCode, String dob, String mail</dd>
+ *      <dd>- String fn, String ln, String phone, int pCode, String dob, String mail</dd>
+ *      <dd>- Employee e</dd>
+ * </dl>
  * @author Team17
  */
 public class Employee extends Person {

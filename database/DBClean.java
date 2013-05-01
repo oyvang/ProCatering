@@ -4,8 +4,14 @@ import java.sql.*;
 import static procatering.Helper.*;
 
 /**
+ * DBClean are a cleanup class for SQL connections<br>
+ * <dl>
+ *  <dt>Constructor: Default constructor</dt>
+ * </dl>
  * @author Team 17
+ * @deprecated
  */
+
 public class DBClean {
 	/**
 	 * Close a Connection object
@@ -13,7 +19,7 @@ public class DBClean {
 	 * @param con Connection object
 	 * @return returns true if con.close() is sucsessfully or if the connection already are closed, else it will return false.<br><br>
 	 *         If an SQLException occure it will return false with an error message.
-	 * @author Geir Morten Larsen
+	 * @author Team 17
 	 */
 	public boolean closeConnection(Connection con) {
 		try {
@@ -90,7 +96,6 @@ public class DBClean {
 	 * @return true if the con.rollback() are sucsessfully, else it will return false. <br><br>
 	 *         If an SQLExceptio  occure it will return false with an error message.
 	 */
-
 	public boolean dbRollback(Connection con) {
 		try {
 			if (con != null && !con.getAutoCommit()) {

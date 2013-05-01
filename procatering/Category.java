@@ -1,9 +1,14 @@
 package procatering;
 
 /**
- * Class category contains the information about the several categories.
+ * Class category contains the information about a categories.
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- int categoryID, String name</dd>
+ *      <dd>- String name</dd>
+ * </dl>
  *
- * @author Geir Morten Larsen
+ * @author Team 17
  */
 public class Category {
 	private String name;
