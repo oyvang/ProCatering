@@ -211,46 +211,46 @@ public class Gui {
 	private JTextPane topDishTextPane;
 	private JPanel bigSpenderTab;
 	private ArrayList<String> jBoxLabels = new ArrayList<>(15);
-    private JTabbedPane dishTabbedPane;
-    private JTextField addDishNameTextField;
-    private JTextField addDishPriceTextField;
-    private JTextField addDishCostTextField;
-    private JList backendAddDishCategoryJList;
-    private JTextField addDishCategoryTextField;
-    private JComboBox addDishCategoryComboBox;
-    private JButton addCategoryButton;
-    private JList backendAddDishIngredientJList;
-    private JTextField addDishIngredientTextField;
-    private JComboBox addDishIngredientComboBox;
-    private JButton addIngredientButton;
-    private JPanel newDishTab;
-    private JPanel editDishTab;
-    private JLabel dishNameLabel;
-    private JLabel dishCostLabel;
-    private JLabel dishPriceLabel;
-    private JLabel dishCategoryLabel;
-    private JLabel dishIngredientLabel;
-    private JPanel backendDishCategoryPanel;
-    private JPanel backendDishIngredientPanel;
-    private JScrollPane backendAddDishCategoryScrollPane;
-    private JScrollPane backendAddDishIngredientScrollPane;
-    private JButton saveDishButton;
-    private JList backendEditDishJList;
-    private JButton x;  //TODO: CHECK
-    private JTextField backendEditDishDishObjectPrice;
-    private JTextField backendEditDishDishObjectCost;
+	private JTabbedPane dishTabbedPane;
+	private JTextField addDishNameTextField;
+	private JTextField addDishPriceTextField;
+	private JTextField addDishCostTextField;
+	private JList backendAddDishCategoryJList;
+	private JTextField addDishCategoryTextField;
+	private JComboBox addDishCategoryComboBox;
+	private JButton addCategoryButton;
+	private JList backendAddDishIngredientJList;
+	private JTextField addDishIngredientTextField;
+	private JComboBox addDishIngredientComboBox;
+	private JButton addIngredientButton;
+	private JPanel newDishTab;
+	private JPanel editDishTab;
+	private JLabel dishNameLabel;
+	private JLabel dishCostLabel;
+	private JLabel dishPriceLabel;
+	private JLabel dishCategoryLabel;
+	private JLabel dishIngredientLabel;
+	private JPanel backendDishCategoryPanel;
+	private JPanel backendDishIngredientPanel;
+	private JScrollPane backendAddDishCategoryScrollPane;
+	private JScrollPane backendAddDishIngredientScrollPane;
+	private JButton saveDishButton;
+	private JList backendEditDishJList;
+	private JButton x;  //TODO: CHECK
+	private JTextField backendEditDishDishObjectPrice;
+	private JTextField backendEditDishDishObjectCost;
 	private JButton saveChangesToDishButton;
-    private JPanel backendEditDishInfoPanel;
-    private JScrollPane backendEditDishScrollPane;
-    private JList backendEditDishCategoryList;
-    private JScrollPane backendEditDishCategoryScrollPane;
+	private JPanel backendEditDishInfoPanel;
+	private JScrollPane backendEditDishScrollPane;
+	private JList backendEditDishCategoryList;
+	private JScrollPane backendEditDishCategoryScrollPane;
 	private JLabel backendEditDishDishObjectId;
 	private JLabel backendEditDishDishObjectName;
 	private JButton backendDishEditButton;
 	private DefaultListModel<String> catgoryList;
-    private DefaultListModel<String> ingredientList;
-    private DefaultListModel<Dish> dishesList;
-    private DefaultListModel<Category> categoryObjectList;
+	private DefaultListModel<String> ingredientList;
+	private DefaultListModel<Dish> dishesList;
+	private DefaultListModel<Category> categoryObjectList;
 	private JTextPane bigSpenderTextPane;
 	private JPanel incomeTab;
 	private JTabbedPane reports;
@@ -286,8 +286,8 @@ public class Gui {
 	 * Method showErrorMessage prints an error in a JOptionPane for the user.
 	 *
 	 * @param errorOrigin the origin of the Error.
-	 * @param errorID the ID of the Error.
-	 * @param exp the exception.
+	 * @param errorID     the ID of the Error.
+	 * @param exp         the exception.
 	 */
 	public static void showErrorMessage(int errorOrigin, int errorID, Exception exp) {
 		Boolean debug = true;
@@ -306,6 +306,7 @@ public class Gui {
 
 	/**
 	 * Initializes all the listeners in the GUI
+	 *
 	 * @author Jørgen Lien Sellæg & Ted Kristoffersen
 	 */
 	private void initListeners() {
@@ -346,12 +347,12 @@ public class Gui {
 				menuSeeOrdersButtonActionPerformed(evt);
 			}
 		});
-        backendDishButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                backendDishButtonActionPerformed(evt);
-            }
-        });
+		backendDishButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				backendDishButtonActionPerformed(evt);
+			}
+		});
 		backendDishEditButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -364,24 +365,24 @@ public class Gui {
 				saveChangesToDishButtonActionPerformed(evt);
 			}
 		});
-        addCategoryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                addCategoryButtonActionPerformed(evt);
-            }
-        });
-        addIngredientButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                addIngredientButtonActionPerformed(evt);
-            }
-        });
-        saveDishButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                saveDishButtonActionPerformed(evt);
-            }
-        });
+		addCategoryButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				addCategoryButtonActionPerformed(evt);
+			}
+		});
+		addIngredientButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				addIngredientButtonActionPerformed(evt);
+			}
+		});
+		saveDishButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				saveDishButtonActionPerformed(evt);
+			}
+		});
 		/* Customer search button */
 		customerSearchButton.addActionListener(new ActionListener() {
 			@Override
@@ -792,76 +793,76 @@ public class Gui {
 			}
 		});
 
-    subscriptionSelectList.addMouseListener(new MouseListener() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            Subscription order = (Subscription) subscriptionSelectList.getSelectedValue();
-            subscriptionOverviewTextPane.setText(order.confirmToHtml());
-        }
+		subscriptionSelectList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Subscription order = (Subscription) subscriptionSelectList.getSelectedValue();
+				subscriptionOverviewTextPane.setText(order.confirmToHtml());
+			}
 
-        @Override
-        public void mousePressed(MouseEvent e) {
+			@Override
+			public void mousePressed(MouseEvent e) {
 
-        }
+			}
 
-        @Override
-        public void mouseReleased(MouseEvent e) {
+			@Override
+			public void mouseReleased(MouseEvent e) {
 
-        }
+			}
 
-        @Override
-        public void mouseEntered(MouseEvent e) {
+			@Override
+			public void mouseEntered(MouseEvent e) {
 
-        }
+			}
 
-        @Override
-        public void mouseExited(MouseEvent e) {
+			@Override
+			public void mouseExited(MouseEvent e) {
 
-        }
-    });
+			}
+		});
 
-	backendEconomicButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			backendEconomicButtonActionPerfomed();
-		}
-	});
+		backendEconomicButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				backendEconomicButtonActionPerfomed();
+			}
+		});
 
-	backendEditDishCategoryList.addMouseListener(new MouseListener() {
-		@Override
-		public void mouseClicked(MouseEvent e) {
+		backendEditDishCategoryList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
 
-		}
+			}
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
+			@Override
+			public void mousePressed(MouseEvent e) {
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			populateBackendEditDish();
-		}
+			}
 
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			
-		}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				populateBackendEditDish();
+			}
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-			
-		}
-	});
-}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
+	}
 
 	/**
 	 * Method editStartValues sets the visibility of elements in the gui.
 	 */
 	private void editStartValues() {
 		loginErrorMessage_label.setVisible(false);
-        subscriptionOverviewTextPane.setContentType("text/html");
-        subscriptionOverviewTextPane.setEditable(false);
+		subscriptionOverviewTextPane.setContentType("text/html");
+		subscriptionOverviewTextPane.setEditable(false);
 		singleOrderCustomerInformationTextpane.setContentType("text/html");
 		singleOrderCustomerInformationTextpane.setEditable(false);
 		singleOrderOrderInformationTextpane.setContentType("text/html");
@@ -937,90 +938,98 @@ public class Gui {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "findPanelCard");
 	}
-    private void backendDishButtonActionPerformed(ActionEvent evt){
-        CardLayout cl = (CardLayout) mainPanel.getLayout();
-        cl.show(mainPanel, "dishBackendCard");
-        backendEditDishPopulateValues();
-        backendAddishPopulateValues();
-    }
-	private void backendDishSearchButtonActionPerformed(ActionEvent evt){
-		Dish editDishObject = (Dish)backendEditDishJList.getSelectedValue();
+
+	private void backendDishButtonActionPerformed(ActionEvent evt) {
+		CardLayout cl = (CardLayout) mainPanel.getLayout();
+		cl.show(mainPanel, "dishBackendCard");
+		backendEditDishPopulateValues();
+		backendAddishPopulateValues();
+	}
+
+	private void backendDishSearchButtonActionPerformed(ActionEvent evt) {
+		Dish editDishObject = (Dish) backendEditDishJList.getSelectedValue();
 		backendEditDishDishObjectId.setText(String.valueOf(editDishObject.getID()));
 		backendEditDishDishObjectName.setText(editDishObject.getName());
 		backendEditDishDishObjectCost.setText(String.valueOf(editDishObject.getCost()));
 		backendEditDishDishObjectPrice.setText(String.valueOf(editDishObject.getPrice()));
 	}
+
 	//TODO: FIX output if it turns out ok.
-	private void saveChangesToDishButtonActionPerformed(ActionEvent evt){
-		Dish dish = new Dish(backendEditDishDishObjectName.getText(),Double.parseDouble(backendEditDishDishObjectPrice.getText()), Double.parseDouble(backendEditDishDishObjectCost.getText()),Integer.parseInt(backendEditDishDishObjectId.getText()));
-		if(loggedInEmployee.editDish(dish)){
+	private void saveChangesToDishButtonActionPerformed(ActionEvent evt) {
+		Dish dish = new Dish(backendEditDishDishObjectName.getText(), Double.parseDouble(backendEditDishDishObjectPrice.getText()), Double.parseDouble(backendEditDishDishObjectCost.getText()), Integer.parseInt(backendEditDishDishObjectId.getText()));
+		if (loggedInEmployee.editDish(dish)) {
 			System.out.println("IT WENT NICE");
 		}
 	}
-    private void backendEditDishPopulateValues(){
-        categoryObjectList = loggedInEmployee.getCategories();
-        backendEditDishCategoryList.setModel(categoryObjectList);
-        backendEditDishCategoryScrollPane.setViewportView(backendEditDishCategoryList);
 
-    }
-    private void addCategoryButtonActionPerformed(ActionEvent evt){
-        if(addDishCategoryTextField.getText()==null || addDishCategoryTextField.getText().trim().equals("")){
-            String localCategory = new String(addDishCategoryComboBox.getSelectedItem().toString());
-            catgoryList.addElement(localCategory);
-        }else{
-            String localCategory = new String(addDishCategoryTextField.getText());
-            catgoryList.addElement(localCategory);
-            addDishCategoryTextField.setText(null);
-        }
-    }
+	private void backendEditDishPopulateValues() {
+		categoryObjectList = loggedInEmployee.getCategories();
+		backendEditDishCategoryList.setModel(categoryObjectList);
+		backendEditDishCategoryScrollPane.setViewportView(backendEditDishCategoryList);
 
-    public void addIngredientButtonActionPerformed(ActionEvent evt){
-        if(addDishIngredientTextField.getText()==null || addDishIngredientTextField.getText().trim().equals("")){
-            String localIngredient = new String(addDishIngredientComboBox.getSelectedItem().toString());
-            ingredientList.addElement(localIngredient);
-        }else{
-            String localIngredient = new String(addDishIngredientTextField.getText());
-            ingredientList.addElement(localIngredient);
-            addDishIngredientTextField.setText(null);
-        }
-    }
-    private void saveDishButtonActionPerformed(ActionEvent evt){
-        Dish localDish = new Dish(addDishNameTextField.getText(),
-                Double.parseDouble(addDishPriceTextField.getText().trim()),
-                Double.parseDouble(addDishCostTextField.getText().trim())
-        );
-        if(loggedInEmployee.addNewDish(localDish,catgoryList,ingredientList)){
-            clearNewDishInputFields();
-        }
-    }
-    private void clearNewDishInputFields(){
-        addDishNameTextField.setText(null);
-        addDishCostTextField.setText(null);
-        addDishPriceTextField.setText(null);
-        catgoryList.clear();
-        ingredientList.clear();
-    }
+	}
 
-    private void backendAddishPopulateValues(){
+	private void addCategoryButtonActionPerformed(ActionEvent evt) {
+		if (addDishCategoryTextField.getText() == null || addDishCategoryTextField.getText().trim().equals("")) {
+			String localCategory = new String(addDishCategoryComboBox.getSelectedItem().toString());
+			catgoryList.addElement(localCategory);
+		} else {
+			String localCategory = new String(addDishCategoryTextField.getText());
+			catgoryList.addElement(localCategory);
+			addDishCategoryTextField.setText(null);
+		}
+	}
 
-        DefaultListModel<Category> categories = loggedInEmployee.getCategories();
-        DefaultListModel<Ingredient> ingredients = loggedInEmployee.getIngredients();
-        addDishCategoryComboBox.removeAllItems();
-        addDishIngredientComboBox.removeAllItems();
-        for (int i = 0; i < categories.size(); i++) {
-            addDishCategoryComboBox.addItem(categories.get(i));
-        }
-        for (int i = 0; i < ingredients.size(); i++) {
-            addDishIngredientComboBox.addItem(ingredients.get(i));
-        }
-        catgoryList = new DefaultListModel<>();
-        backendAddDishCategoryJList.setModel(catgoryList);
-        backendAddDishCategoryScrollPane.setViewportView(backendAddDishCategoryJList);
-        ingredientList = new DefaultListModel<>();
-        backendAddDishIngredientJList.setModel(ingredientList);
-        backendAddDishIngredientScrollPane.setViewportView(backendAddDishIngredientJList);
+	public void addIngredientButtonActionPerformed(ActionEvent evt) {
+		if (addDishIngredientTextField.getText() == null || addDishIngredientTextField.getText().trim().equals("")) {
+			String localIngredient = new String(addDishIngredientComboBox.getSelectedItem().toString());
+			ingredientList.addElement(localIngredient);
+		} else {
+			String localIngredient = new String(addDishIngredientTextField.getText());
+			ingredientList.addElement(localIngredient);
+			addDishIngredientTextField.setText(null);
+		}
+	}
 
-    }
+	private void saveDishButtonActionPerformed(ActionEvent evt) {
+		Dish localDish = new Dish(addDishNameTextField.getText(),
+				Double.parseDouble(addDishPriceTextField.getText().trim()),
+				Double.parseDouble(addDishCostTextField.getText().trim())
+		);
+		if (loggedInEmployee.addNewDish(localDish, catgoryList, ingredientList)) {
+			clearNewDishInputFields();
+		}
+	}
+
+	private void clearNewDishInputFields() {
+		addDishNameTextField.setText(null);
+		addDishCostTextField.setText(null);
+		addDishPriceTextField.setText(null);
+		catgoryList.clear();
+		ingredientList.clear();
+	}
+
+	private void backendAddishPopulateValues() {
+
+		DefaultListModel<Category> categories = loggedInEmployee.getCategories();
+		DefaultListModel<Ingredient> ingredients = loggedInEmployee.getIngredients();
+		addDishCategoryComboBox.removeAllItems();
+		addDishIngredientComboBox.removeAllItems();
+		for (int i = 0; i < categories.size(); i++) {
+			addDishCategoryComboBox.addItem(categories.get(i));
+		}
+		for (int i = 0; i < ingredients.size(); i++) {
+			addDishIngredientComboBox.addItem(ingredients.get(i));
+		}
+		catgoryList = new DefaultListModel<>();
+		backendAddDishCategoryJList.setModel(catgoryList);
+		backendAddDishCategoryScrollPane.setViewportView(backendAddDishCategoryJList);
+		ingredientList = new DefaultListModel<>();
+		backendAddDishIngredientJList.setModel(ingredientList);
+		backendAddDishIngredientScrollPane.setViewportView(backendAddDishIngredientJList);
+
+	}
+
 	private void menuSingleOrderButtonActionPerformed() {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "singleOrderCard");
@@ -1220,7 +1229,7 @@ public class Gui {
 		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "existOrderCard");
 		existOrderPopulate();
-        existSubscriptionPopulate();
+		existSubscriptionPopulate();
 		chefSeeOrderPopulate();
 		chefSeeSubscriptionPopulate();
 
@@ -1229,18 +1238,18 @@ public class Gui {
 	private void chefSeeSubscriptionPopulate() {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
-		SimpleDateFormat  fore = new SimpleDateFormat("EEEE");
-		ArrayList<String[]> list = loggedInEmployee.getTodaySubscription(date.toString().substring(0, 10)+" 00:00:00");
+		SimpleDateFormat fore = new SimpleDateFormat("EEEE");
+		ArrayList<String[]> list = loggedInEmployee.getTodaySubscription(date.toString().substring(0, 10) + " 00:00:00");
 		String html = "<html><h1>Current active subscriptions</h1>";
-		html += "<h2>Today is "+fore.format(time)+"</h2>";
-		if(list.isEmpty())
+		html += "<h2>Today is " + fore.format(time) + "</h2>";
+		if (list.isEmpty())
 			html += "<p>No single orders today. </p>";
-		else{
+		else {
 			html += "<table><tr><td>Amount</td><td>Time of delivery</td><td>Dish</td><td>First name</td><td>Last name</td></tr>";
 			for (int i = 0; i < list.size(); i++) {
 				html += "<tr>";
 				for (int j = 0; j < list.get(i).length; j++) {
-					html += "<td>"+list.get(i)[j]+"</td>";
+					html += "<td>" + list.get(i)[j] + "</td>";
 				}
 				html += "</tr>";
 			}
@@ -1256,14 +1265,14 @@ public class Gui {
 
 		String html = "<html><h1>Orders today</h1>";
 
-		if(list.isEmpty())
+		if (list.isEmpty())
 			html += "<p>No single orders today. </p>";
-		else{
+		else {
 			html += "<table><tr><td>Amount</td><td>Dish</td><td>Day</td><td>First name</td><td>Last name</td></tr>";
 			for (int i = 0; i < list.size(); i++) {
 				html += "<tr>";
 				for (int j = 0; j < list.get(i).length; j++) {
-					html += "<td>"+list.get(i)[j]+"</td>";
+					html += "<td>" + list.get(i)[j] + "</td>";
 				}
 				html += "</tr>";
 			}
@@ -1273,11 +1282,12 @@ public class Gui {
 	}
 
 	private void existOrderPopulate() {
-        subscriptionSelectList.setModel(loggedInEmployee.getSubscriptions());
+		subscriptionSelectList.setModel(loggedInEmployee.getSubscriptions());
 	}
-    private void existSubscriptionPopulate() {
-        singleOrderSelectList.setModel(loggedInEmployee.getOrders());
-    }
+
+	private void existSubscriptionPopulate() {
+		singleOrderSelectList.setModel(loggedInEmployee.getOrders());
+	}
 
 	private void customerSearchButtonActionPerformed() {
 		nameList = Customer.findCustomer(customerSearchField.getText());
@@ -1314,8 +1324,8 @@ public class Gui {
 					"</html>";
 			int confirm = JOptionPane.showConfirmDialog(ProCatering, confirmMessage, "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			System.out.println(confirm);
-		if(confirm != 0)
-			gtg = false;
+			if (confirm != 0)
+				gtg = false;
 		}
 
 		if (gtg) {
@@ -1512,7 +1522,7 @@ public class Gui {
 	 * Action performed when pressing economics button.
 	 */
 	private void backendEconomicButtonActionPerfomed() {
-		CardLayout cl = (CardLayout)mainPanel.getLayout();
+		CardLayout cl = (CardLayout) mainPanel.getLayout();
 		cl.show(mainPanel, "economicBackendCard");
 		populateTopDishTab();
 		populateTopCustomerTab();
@@ -1525,22 +1535,22 @@ public class Gui {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
 		GregorianCalendar cal = new GregorianCalendar();
-		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR)-1900,cal.get(Calendar.MONTH), cal.getMinimum(Calendar.MONTH),0,0,0,0);
-		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR)-1900,cal.get(Calendar.MONTH), cal.getMaximum(Calendar.MONTH),23,59,59,59);
+		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.getMinimum(Calendar.MONTH), 0, 0, 0, 0);
+		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR) - 1900, cal.get(Calendar.MONTH), cal.getMaximum(Calendar.MONTH), 23, 59, 59, 59);
 		ArrayList<String[]> top = loggedInEmployee.getInComeReport(firstDay.toString(), lastDay.toString());
 		String html = "<html>";
 		html += "<h1>Month report</h1>";
 		html += "<table>";
-		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		html += "<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
 		double profit = 0.0;
 		double sum = 0.0;
 		for (int i = 0; i < top.size(); i++) {
-			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td  align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			html += "<tr><td>" + top.get(i)[0] + "</td><td>" + top.get(i)[1] + "</td><td  align='right'>" + top.get(i)[2] + "</td><td align='right'>" + top.get(i)[3] + "</td></tr>";
 			profit += Double.parseDouble(top.get(i)[3]);
-			sum  += Double.parseDouble(top.get(i)[2]);
+			sum += Double.parseDouble(top.get(i)[2]);
 		}
 		html += "<hr>";
-		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "<tr><td><b>SUM</b></td><td></td><td align='right'>" + sum + "</td><td align='right'><i>" + profit + "</i></td></tr>";
 		html += "</table>";
 
 		html += "<html>";
@@ -1551,22 +1561,22 @@ public class Gui {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
 		GregorianCalendar cal = new GregorianCalendar();
-		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR)-1900,0,1,0,0,0,0);
-		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR)-1900,11,31,23,59,59,59);
+		Timestamp firstDay = new Timestamp(cal.get(Calendar.YEAR) - 1900, 0, 1, 0, 0, 0, 0);
+		Timestamp lastDay = new Timestamp(cal.get(Calendar.YEAR) - 1900, 11, 31, 23, 59, 59, 59);
 		ArrayList<String[]> top = loggedInEmployee.getInComeReport(firstDay.toString(), lastDay.toString());
 		String html = "<html>";
 		html += "<h1>Year report</h1>";
 		html += "<table>";
-		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		html += "<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
 		double profit = 0.0;
 		double sum = 0.0;
 		for (int i = 0; i < top.size(); i++) {
-			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			html += "<tr><td>" + top.get(i)[0] + "</td><td>" + top.get(i)[1] + "</td><td align='right'>" + top.get(i)[2] + "</td><td align='right'>" + top.get(i)[3] + "</td></tr>";
 			profit += Double.parseDouble(top.get(i)[3]);
-			sum  += Double.parseDouble(top.get(i)[2]);
+			sum += Double.parseDouble(top.get(i)[2]);
 		}
 		html += "<hr>";
-		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "<tr><td><b>SUM</b></td><td></td><td align='right'>" + sum + "</td><td align='right'><i>" + profit + "</i></td></tr>";
 		html += "</table>";
 
 		html += "<html>";
@@ -1578,20 +1588,20 @@ public class Gui {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
 		GregorianCalendar cal = new GregorianCalendar();
-		ArrayList<String[]> top = loggedInEmployee.getInComeReport(date.toString().substring(0,10)+" 00:00:00", date.toString().substring(0,10)+" 23:59:59");
+		ArrayList<String[]> top = loggedInEmployee.getInComeReport(date.toString().substring(0, 10) + " 00:00:00", date.toString().substring(0, 10) + " 23:59:59");
 		String html = "<html>";
 		html += "<h1>To day report</h1>";
 		html += "<table>";
-		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
+		html += "<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Sum price</b></td><td><b>Total profit</b></td></b></tr>";
 		double profit = 0.0;
 		double sum = 0.0;
 		for (int i = 0; i < top.size(); i++) {
-			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td align='right'>"+top.get(i)[2]+"</td><td align='right'>"+top.get(i)[3]+"</td></tr>";
+			html += "<tr><td>" + top.get(i)[0] + "</td><td>" + top.get(i)[1] + "</td><td align='right'>" + top.get(i)[2] + "</td><td align='right'>" + top.get(i)[3] + "</td></tr>";
 			profit += Double.parseDouble(top.get(i)[3]);
-			sum  += Double.parseDouble(top.get(i)[2]);
+			sum += Double.parseDouble(top.get(i)[2]);
 		}
 		html += "<hr>";
-		html +=		"<tr><td><b>SUM</b></td><td></td><td align='right'>"+sum+"</td><td align='right'><i>"+profit+"</i></td></tr>";
+		html += "<tr><td><b>SUM</b></td><td></td><td align='right'>" + sum + "</td><td align='right'><i>" + profit + "</i></td></tr>";
 		html += "</table>";
 
 		html += "<html>";
@@ -1603,9 +1613,9 @@ public class Gui {
 		String html = "<html>";
 		html += "<h1>Top 10 - Big spenders</h1>";
 		html += "<table>";
-		html +=		"<tr><td><b>First name</b></td><td><b>Last name</b></td><td><b>Number of orders</b></td><td><b>Sum all orders</b></td></b></tr>";
+		html += "<tr><td><b>First name</b></td><td><b>Last name</b></td><td><b>Number of orders</b></td><td><b>Sum all orders</b></td></b></tr>";
 		for (int i = 0; i < top.size(); i++) {
-			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[1]+"</td><td>"+top.get(i)[2]+"</td><td halign='right'>kr "+top.get(i)[3]+",-</td></tr>";
+			html += "<tr><td>" + top.get(i)[0] + "</td><td>" + top.get(i)[1] + "</td><td>" + top.get(i)[2] + "</td><td halign='right'>kr " + top.get(i)[3] + ",-</td></tr>";
 		}
 		html += "</table>";
 
@@ -1618,9 +1628,9 @@ public class Gui {
 		String html = "<html>";
 		html += "<h1>Top sold dishes</h1>";
 		html += "<table>";
-		html +=		"<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Price</b></td><td><b>Cost</b></td><td><b>Income</b></td></b></tr>";
+		html += "<tr><td><b>Dish name</b></td><td><b>Amount sold</b></td><td><b>Price</b></td><td><b>Cost</b></td><td><b>Income</b></td></b></tr>";
 		for (int i = 0; i < top.size(); i++) {
-			html +=	"<tr><td>"+top.get(i)[0]+"</td><td>"+top.get(i)[3]+"</td><td>"+top.get(i)[1]+"</td><td>"+top.get(i)[2]+"</td><td>"+top.get(i)[5]+"</td></tr>";
+			html += "<tr><td>" + top.get(i)[0] + "</td><td>" + top.get(i)[3] + "</td><td>" + top.get(i)[1] + "</td><td>" + top.get(i)[2] + "</td><td>" + top.get(i)[5] + "</td></tr>";
 		}
 		html += "</table>";
 
@@ -1652,8 +1662,9 @@ public class Gui {
 				"</html>";
 		aboutEmployeeTextPane.setText(html);
 	}
+
 	private void populateBackendEditDish() {
-		Category cat = (Category)backendEditDishCategoryList.getSelectedValue();
+		Category cat = (Category) backendEditDishCategoryList.getSelectedValue();
 		backendEditDishJList.setModel(loggedInEmployee.getDishes(cat.getCategoryID()));
 	}
 }

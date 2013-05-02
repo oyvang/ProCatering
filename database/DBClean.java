@@ -1,13 +1,16 @@
 package database;
 
 import java.sql.*;
-import static procatering.Helper.*;
+
+import static procatering.Helper.DATABASECLEAN_NUMBER;
+import static procatering.Helper.DATABASE_NUMBER;
 
 /**
  * DBClean are a cleanup class for SQL connections<br>
  * <dl>
- *  <dt>Constructor: Default constructor</dt>
+ * <dt>Constructor: Default constructor</dt>
  * </dl>
+ *
  * @author Team 17
  * @deprecated
  */

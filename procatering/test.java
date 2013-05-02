@@ -4,26 +4,24 @@
  */
 package procatering;
 
-import javax.swing.DefaultListModel;
-import procatering.Employee;
+import javax.swing.*;
 
 /**
- *
  * @author GM
  */
 public class test {
-    public static void main(String[] args) {
-    Employee e = new Employee("bjarne", "jacobsen", "65873248", 123654, "bjarne@procatering.org", "Qwert123");
+	public static void main(String[] args) {
+		Employee e = new Employee("bjarne", "jacobsen", "65873248", 123654, "bjarne@procatering.org", "Qwert123");
 
-    Dish dish = new Dish("taco", 99,56);
-    
-    DefaultListModel<String> catNames = new DefaultListModel<>();
-    DefaultListModel<String> ingredient = new DefaultListModel<>();
-    
-    catNames.addElement("meat");      
-    ingredient.addElement("tacokrydder");
- 
-        /** DISHES **/                                                          /** DISHES **/ 
+		Dish dish = new Dish("taco", 99, 56);
+
+		DefaultListModel<String> catNames = new DefaultListModel<>();
+		DefaultListModel<String> ingredient = new DefaultListModel<>();
+
+		catNames.addElement("meat");
+		ingredient.addElement("tacokrydder");
+
+		/** DISHES **/                                                          /** DISHES **/
 //       System.out.println((e.addNewDish(dish, catNames, ingredient)));        //ADD
 //       System.out.println(e.hideDish("jorgie"));                              //HIDE
 //       System.out.println(e.activateDish("jorgie"));                          //ACTIVATE
@@ -46,12 +44,12 @@ public class test {
 //      /** CATEGORIES **/                                                      /** CATEGORIES **/
 //        System.out.println(e.removeCategory("svett"));                        //REMOVE
 //          System.out.println(e.addCatergory("mad-corck"));                    //ADD
-    
-        /** ORDERS **/                                                          /**ORDERS**/
+
+		/** ORDERS **/                                                          /**ORDERS**/
 //        for (int i = 0; i < e.findOrders("o").getSize(); i++) {
 //            System.out.println(e.findOrders("o").get(i));
 //        }                                                                     //Search
-          System.out.println(e.getOrder(2));
-          
-    }
+		System.out.println(e.getOrder(2));
+
+	}
 }

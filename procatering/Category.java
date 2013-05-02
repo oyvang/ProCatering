@@ -3,9 +3,9 @@ package procatering;
 /**
  * Class category contains the information about a categories.
  * <dl>
- *  <dt>Constructors:</dt>
- *      <dd>- int categoryID, String name</dd>
- *      <dd>- String name</dd>
+ * <dt>Constructors:</dt>
+ * <dd>- int categoryID, String name</dd>
+ * <dd>- String name</dd>
  * </dl>
  *
  * @author Team 17

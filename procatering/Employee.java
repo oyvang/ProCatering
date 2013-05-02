@@ -579,11 +579,13 @@ public class Employee extends Person {
 		Database db = new Database();
 		return db.getIngredients();
 	}
+
 	//TODO add doc
 	public DefaultListModel<String[]> getBigSpenders() {
 		Database db = new Database();
 		return db.bigSpender();
 	}
+
 	//TODO add doc
 	public ArrayList<String[]> getInComeReport(String start, String end) {
 		Database db = new Database();

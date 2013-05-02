@@ -1,18 +1,20 @@
 package procatering;
 
 import database.Database;
-import java.sql.Timestamp;
+
 import javax.swing.*;
+import java.sql.Timestamp;
 
 /**
  * Class Order creates an object of OrderContent and are beeing used for a singel order insted of subscription order. <br><br>
  * <dl>
- *  <dt>Constructors:</dt>
- *      <dd>- int customer_id, int employee_id, String status, Timestamp creationTime</dd>
- *      <dd>- int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList</dd>
- *      <dd>- int customer_id, int employee_id, String status</dd>
- *      <dd>- Order o</dd>
+ * <dt>Constructors:</dt>
+ * <dd>- int customer_id, int employee_id, String status, Timestamp creationTime</dd>
+ * <dd>- int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList</dd>
+ * <dd>- int customer_id, int employee_id, String status</dd>
+ * <dd>- Order o</dd>
  * </dl>
+ *
  * @author Team 17
  */
 public class Order {
@@ -22,7 +24,7 @@ public class Order {
 	private String status;      // Active, Completed or Cancelled
 	private Timestamp creationTime;
 	private DefaultListModel<OrderContent> ordercontent; // one delivery per object
-    private int orderId;
+	private int orderId;
 
 	/**
 	 * Constructor for Order.
@@ -39,21 +41,21 @@ public class Order {
 		ordercontent = new DefaultListModel<>();
 	}
 
-    public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
-        ordercontent = new DefaultListModel<>();
-        customerId = customer_id;
-        employeeId = employee_id;
-        this.status = status;
-        this.creationTime = creationTime;
-        if(contentList != null){
-            for (int i = 0; i < contentList.size(); i++) {
-                this.ordercontent.addElement(contentList.get(i));
-            }
-        }
-        System.out.println("Order constructor: contentlist == null");
-       // ordercontent = contentList;
-        orderId = order_id;
-    }
+	public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
+		ordercontent = new DefaultListModel<>();
+		customerId = customer_id;
+		employeeId = employee_id;
+		this.status = status;
+		this.creationTime = creationTime;
+		if (contentList != null) {
+			for (int i = 0; i < contentList.size(); i++) {
+				this.ordercontent.addElement(contentList.get(i));
+			}
+		}
+		System.out.println("Order constructor: contentlist == null");
+		// ordercontent = contentList;
+		orderId = order_id;
+	}
 
 	/**
 	 * @param customer_id The id of the Customer
@@ -115,7 +117,6 @@ public class Order {
 
 	/**
 	 * see procatering.Order.getCreationTime();
-	 *
 	 */
 	@Deprecated
 	public Timestamp getOrderDate() {
@@ -126,11 +127,11 @@ public class Order {
 		return creationTime;
 	}
 
-    public int getOrderId() {
-        return orderId;
-    }
+	public int getOrderId() {
+		return orderId;
+	}
 
-    public String getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
@@ -149,7 +150,7 @@ public class Order {
 	 *
 	 * @return a DefaultListModel<OrderContent> with the orderContent of the order ( Dishes, deliveryDate and time )
 	 */
-	public DefaultListModel<OrderContent> getOrderContent(){
+	public DefaultListModel<OrderContent> getOrderContent() {
 		return ordercontent;
 	}
 
@@ -180,19 +181,20 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-        return "Order id #"+getOrderId()+" for "+getCustomer(getCustomerId()).toString();
-                //getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
+		return "Order id #" + getOrderId() + " for " + getCustomer(getCustomerId()).toString();
+		//getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
 	}
 
-    private Customer getCustomer(int customerId) {
-        Database db = new Database();
-        return db.getCustomer(customerId);
-    }
+	private Customer getCustomer(int customerId) {
+		Database db = new Database();
+		return db.getCustomer(customerId);
+	}
 
-    /** Method returns a html representation of the object.
-	 * @return a html document representation of the object.
+	/**
+	 * Method returns a html representation of the object.
 	 *
-	 * */
+	 * @return a html document representation of the object.
+	 */
 	public String toHtml() {
 		String output = "<html>";
 		output += "<b>Order created: </b><i>" + creationTime.toString().substring(0, 16) + "</i>";
@@ -203,7 +205,7 @@ public class Order {
 		return output;
 	}
 
-	public String confirmToHtml(){
+	public String confirmToHtml() {
 		String output = "Receipt for Order<br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
 			output += ordercontent.get(i).toHtml();
@@ -213,7 +215,7 @@ public class Order {
 	}
 
 
-	public double[] getSum(){
+	public double[] getSum() {
 		Double total = 0.0;
 		for (int i = 0; i < ordercontent.size(); i++) {
 			DefaultListModel<Dish> d = ordercontent.get(i).getDishes();
