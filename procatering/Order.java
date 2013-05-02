@@ -1,16 +1,20 @@
 package procatering;
 
-/**
- * Class Order
- *
- * @author TEAM 17
- */
-
 import database.Database;
-
 import java.sql.Timestamp;
 import javax.swing.*;
 
+/**
+ * Class Order creates an object of OrderContent and are beeing used for a singel order insted of subscription order. <br><br>
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- int customer_id, int employee_id, String status, Timestamp creationTime</dd>
+ *      <dd>- int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList</dd>
+ *      <dd>- int customer_id, int employee_id, String status</dd>
+ *      <dd>- Order o</dd>
+ * </dl>
+ * @author Team 17
+ */
 public class Order {
 
 	private int customerId;

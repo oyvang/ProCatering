@@ -5,9 +5,16 @@ import database.Database;
 import javax.swing.*;
 
 /**
- * Customer class contains all the information about the customer. It also opens for some queries towards the database.
+ * <b>extends</b>  Person<br><br>
+ * Customer class contains all the information about a customer.
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- String adr, String fn, String ln, String phone, String mail, int pCode, String note</dd>
+ *      <dd>- String adr, String fn, String ln, String phone, String mail, int pCode, String note, int cid</dd>
+ *      <dd>- Customer customer</dd>
+ * </dl>
  *
- * @author Ted Kristoffersen
+ * @author Team 17
  */
 public class Customer extends Person {
     private String address;

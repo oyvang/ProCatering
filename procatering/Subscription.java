@@ -1,56 +1,58 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package procatering;
 
 import database.Database;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import javax.swing.DefaultListModel;
 
 
 /**
- * Class Subscription
- * @author Ted
+ * Class Subscription are for a subscription order and uses an opbject from OrderContent
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- int e_id, int c_id</dd>
+ *      <dd>- int order_id,int e_id, int c_id, Timestamp created, DefaultListModel<OrderContent> contentList, String status</dd>
+ *      <dd>- Subscription s</dd>
+ * </dl>
+ * 
+ * The variable status should have the Straing value: Active, Completed, Pending or Cancelled
+ * @author Team 17
  */
+    // TODO: getSubscriptions checks startDate, if started; activate.
 public class Subscription {
     private Timestamp startDate;
     private Timestamp endDate;
     private Timestamp orderDate;
     private DefaultListModel<OrderContent> content;
     private int employeeId;
-    private int customerId;     //use whole object if we need many queries.
-    private String status;      // Active, Completed, Pending or Cancelled // TODO: getSubscriptions checks startDate, if started; activate.
+    private int customerId;
+    private String status;     
     private int OrderId;
 
     /**
-     * Constructor, creates an object of Subscription
-     * Sets the orderDate to current Timestamp.
-     * Sets status to "Pending" ( updates in the getSubscription in Database.java )
-     * Creates a DefaultListModel with OrderContent
+     * This constructor should <b>only</b> be used before the order have been added to the database. This is because the variable OrderId are <b>NOT</b> assigned with this constructor and if an object with this constructor use the methode getOrderId() you will get an exception.
+     * <br><br>
+     * orderDate equal current Timestamp.<br>
+     * content = new DefaultListModel()<br>
+     * status = "Pending" 
      * @param e_id input for employee id
      * @param c_id input for customer id
+     * @deprecated 
      */
+    //TODO fix check for what status it should be and change the documentation afterwards.
     public Subscription(int e_id, int c_id){
         java.util.Date time= new java.util.Date();
         orderDate = new Timestamp(time.getTime());
         this.content = new DefaultListModel<>();
         employeeId = e_id;
         customerId = c_id;
-        status = "Pending"; //TODO fix check for what status it should be.
+        status = "Pending"; 
     }
 
     /**
-     * Constructor, creates an object of Subscription
-     * From DB
-     * Sets the orderDate to current Timestamp.
-     * Sets status to "Pending" ( updates in the getSubscription in Database.java )
-     * Creates a DefaultListModel with OrderContent
+     * Constructor, creates an object of Subscription<br>
+     * orderDate equal current Timestamp.<br>
+     * content = new DefaultListModel()<br>
+     * status = "Pending" 
      * @param order_id input for order id
      * @param e_id input for employee id
      * @param c_id input for customer id
@@ -63,27 +65,13 @@ public class Subscription {
         customerId = c_id;
         status = "Pending";
     }
-
-    public String getStatus() {
-        return status;
-    }
-    /*
-        private void subscriptionActivationDateSubmitButtonActionPerformed() {
-        Date date = subscriptionDatePicker.getDate();
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
-        int yy = cal.get(Calendar.YEAR);
-        int mm = cal.get(Calendar.MONTH);//TODO move.
-        int dd = cal.get(Calendar.DATE);
-        int time = Integer.parseInt(singleOrderAddTimeComboBox.getSelectedItem().toString().trim().substring(0, 2));
-        Timestamp ts = new Timestamp(yy-1900,mm,dd,0,0,0,0); //TODO Possible fix this... NOT
-        System.out.println(ts); //TODO remove
-        loggedInEmployee.addSubscriptionStartDate(ts);
-        subscriptionUpdateTextpane();
-    }
+    /**
+     * This constructor do <b>NOT</b> assigned the variable OrderId and will give an exception if the metode getOrderId() are used. 
+     * Simple copy-constructor<br>
+     * But set the <b>status</b> variable to equal <i>"Pending"</i> witch is the default value.
+     * @param s Subscription object
+     * @deprecated 
      */
-
-    /** Simple copy-constructor */
     public Subscription(Subscription s){
         orderDate = s.getOrderDate();
         content = s.getContent();
@@ -93,21 +81,30 @@ public class Subscription {
         startDate = s.getStartDate();
         endDate = s.getEndDate();
     }
-
+    /**
+     * 
+     * @return String object with status; Default: "Pending"
+     */
+    public String getStatus() {
+        return status;
+    }
+    /**
+     * 
+     * @return int with the given orderId,
+     */
     public int getOrderId() {
         return OrderId;
     }
 
     /**
-     * Method getOrderDate
-     * @return Timestamp with the orderDate
+     * 
+     * @return Timestamp with the orderDate; Default current timestamp when object are created
      */
     public Timestamp getOrderDate() {
         return orderDate;
     }
 
     /**
-     * Method getEmployeeId
      * @return int with the employee id
      */
     public int getEmployeeId() {
@@ -115,7 +112,6 @@ public class Subscription {
     }
 
     /**
-     * Method getCustomerId
      * @return int with the customer id
      */
     public int getCustomerId() {
@@ -123,24 +119,20 @@ public class Subscription {
     }
 
     /**
-     * Method getStartDate
-     * @return Timestamp with the date the subscription is to be activated
+     * @return Timestamp with the date the subscription is to be activated, or null if not assigned
      */
     public Timestamp getStartDate() {
         return startDate;
     }
 
     /**
-     * Method getEndDate
-     * @return Timestamp with the date when the subscription is terminated ( optional )
+     * @return Timestamp with the date when the subscription is terminated, or null if not assigned
      */
     public Timestamp getEndDate() {
         return endDate;
     }
 
-
     /**
-     * Method getContent
      * @return DefaultListModel<OrderContent> the list of the orderContent for the subscription
      */
     public DefaultListModel<OrderContent> getContent() {
@@ -148,7 +140,7 @@ public class Subscription {
     }
 
     /**
-     * Method addSTartDate
+     * set a value to the variable startDate
      * @param start Timestamp containing the date that the subscription is activated.
      */
     public void addStartDate(Timestamp start){
@@ -156,7 +148,7 @@ public class Subscription {
     }
 
     /**
-     * Method addEndDate
+     * Set a value to the variable endDate
      * @param end Timestamp containing the date that the subscription is terminated
      */
     public void addEndDate(Timestamp end){
@@ -164,14 +156,11 @@ public class Subscription {
     }
 
     /**
-     * Method addOrderContent
-     * Adds an empty (with no dishes) OrderContent object to the list of ordercontent,
-     * If the day already is added, nothing gets added
-     * @param weekDay String The day this order is to be delivered repeatedly ( Full name of day with capital first letter )
+     * Adds an OrderContent object to the list of ordercontent <i>(DefaultListModel content)</i>, the OrderContent do not include any Dish objects.
+     * @param weekDay String of the given week day that should be added.
      * @param delivery Timestamp of the time of the weekDay the order is delivered repeatedly
-     * @return boolean returns true if executed successfully with correct argument input
+     * @return boolean returns true if executed successfully with correct argument input; returns false if weekDay is allready added to content or if weekDay equals null
      */
-    //TODO FIX
     public boolean addOrderContent(String weekDay, Timestamp delivery) {
         if(weekDay != null){
             for (int i = 0; i<content.size();i++){
@@ -186,10 +175,9 @@ public class Subscription {
     }
 
     /**
-     *Method removeOrderContent
-     * removes an ordercontent thad is added on a given day
-     * @param weekDay String of day of week, Capital first letter.
-     * @return boolean, if successfully removed; true
+     * Removes an ordercontent that is added on a given day
+     * @param weekDay the weekday that you wish to be removed
+     * @return boolean true if removed from content; else false
      */
     public boolean removeOrderContent(String weekDay){
         for (int i = 0; i<content.size(); i++){
@@ -202,12 +190,11 @@ public class Subscription {
     }
 
     /**
-     * Method addDish
-     * Adds a dish to the DefaultListModel containing dishes ( dishes )
-     * @param dishName This dish object will be added to the dishes list.
-     * @param quantity This amount of dishName will be added to the dishes list.
-     * @param index Which OrderConent object the dish is added to. ( index of the content DefaultListModel )
-     * @return boolean returns true if added successfully
+     * Adds a Dish object to the DefaultListModel content
+     * @param dishName Name of the dish that should be added.
+     * @param quantity The ammount of the current dish that should be added to an order
+     * @param index Which OrderConent object the dish is added to ( index of content <i>DefaultListModel</i> )
+     * @return boolean  true if added successfully; else false
      */
     public boolean addDish(Dish dishName, int quantity, int index){
         if(content.getElementAt(index).addDish(dishName, quantity)){
@@ -216,19 +203,29 @@ public class Subscription {
         return false;
     }
     /**
-     * Method toString
-     * overview of the subscription for presentation in gui
-     * @return String of the subscription object
+     * Overview of the subscription for presentation in gui
+     * @return String of the subscription object<br><br>
+     * "Order id #"+ getOrderId()+" for "+getCustomer(getCustomerId()).toString()
      */
     public String toString(){
             return "Order id #"+ getOrderId()+" for "+getCustomer(getCustomerId()).toString();
             //getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
         }
-
+    /**
+     * Find one spesific custumer by the given customer id
+     * @param customerId The customers id
+     * @return a Customer object if found in the database; or null.
+     */
     private Customer getCustomer(int customerId) {
         Database db = new Database();
         return db.getCustomer(customerId);
     }
+    /**
+     * Used for the receipt part of the gui. 
+     * @return a String which is customized for html code; if no dish is added it will return:<br>
+     * "Receipt for Order"<br>
+     * "Day of the week that are added allready"
+     */
     public String confirmToHtml(){
         String output = "Receipt for Order<br>";
         for (int i = 0; i < content.size(); i++) {
@@ -237,6 +234,11 @@ public class Subscription {
 
         return output;
     }
+    /**
+     * Uses for order overview in the GUI when creating an order.
+     * @return a String which is customized for html
+     */
+    
     public String toHtml() {
         String output = "<html>";
         output += "<b>Order created: </b><i>" + orderDate.toString().substring(0, 16) + "</i><br>";
@@ -252,23 +254,4 @@ public class Subscription {
         }
         return output;
     }
-
-
-
-  /*  public String toHtml(){
-        String output = "<b>Order created:</b> "+ getOrderDate().toString().substring(0,16)+"<br>";
-        if(getStartDate() != null){
-            output += "<b>Activation date:</b> "+ this.getStartDate().toString().substring(0,11)+"<br>";
-        }
-        if(getEndDate() != null){
-            output += "<b>Termination date:</b> "+ this.getEndDate().toString().substring(0,11)+"<br>";
-        }
-        if(this.content != null){
-            output+= "<b>Days:</b><br>";
-            for (int i = 0; i<content.size(); i++){
-                output +=content.getElementAt(i).toString();
-            }
-		}
-        return output;
-    }*/
 }

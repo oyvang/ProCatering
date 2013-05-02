@@ -10,6 +10,16 @@ import java.util.ArrayList;
 /**
  * Class Employee
  * The active class of proCatering.
+ * <p/>
+ * =======
+ * <<b>Extends</b>  Person <br><br>
+ * Employee is the active class of proCatering. Everything  without SecurityChecker goes through this class before it goes to the datbase class.
+ * <dl>
+ * <dt>Constructors:</dt>
+ * <dd>- int empId, String fn, String ln, String phone, int pCode, String dob, String mail</dd>
+ * <dd>- String fn, String ln, String phone, int pCode, String dob, String mail</dd>
+ * <dd>- Employee e</dd>
+ * </dl>
  *
  * @author Team17
  */
@@ -323,9 +333,9 @@ public class Employee extends Person {
 	 * Adds a new dish to the database, it will also add dish and category names that are not in the database.
 	 *
 	 * @param dish       Dish object
-	 * @param catNames   DefaultListModel<String> (DefaultListModel is because the dish can be in more then one category)
+	 * @param catNames   DefaultListModel<String>
 	 * @param ingredient DefaultListModel<String>
-	 * @return true if successfully added, else it will return false.
+	 * @return true if sucsessfully added, else it will return false.
 	 */
 	public boolean addNewDish(Dish dish, DefaultListModel<String> catNames, DefaultListModel<String> ingredient) {
 		if (dish == null || catNames.isEmpty() || ingredient.isEmpty()) {
@@ -334,19 +344,20 @@ public class Employee extends Person {
 		int en = 0;
 		int to = 0;
 		try {
-			if (!db.dishExist(Helper.capitalFirst(dish.getName()))) {
-				for (int i = 0; i < catNames.getSize(); i++) {
-					if (!db.cateogryExist(Helper.capitalFirst(catNames.get(i)))) {
-						db.addCategory(Helper.capitalFirst(catNames.get(i)));
+			if (db.addDish(dish)) {
+				if (!db.dishExist(Helper.capitalFirst(dish.getName()))) {
+					for (int i = 0; i < catNames.getSize(); i++) {
+						if (!db.cateogryExist(Helper.capitalFirst(catNames.get(i)))) {
+							db.addCategory(Helper.capitalFirst(catNames.get(i)));
+						}
 					}
-				}
-				for (int i = 0; i < ingredient.getSize(); i++) {
-					if (!db.ingredientExist(Helper.capitalFirst(ingredient.get(i)))) {
-						db.addIngredient(Helper.capitalFirst(ingredient.get(i)));
+					for (int i = 0; i < ingredient.getSize(); i++) {
+						if (!db.ingredientExist(Helper.capitalFirst(ingredient.get(i)))) {
+							db.addIngredient(Helper.capitalFirst(ingredient.get(i)));
+						}
 					}
-				}
 
-				if (db.addDish(dish)) {
+
 					for (int i = 0; i < catNames.getSize(); i++) {
 						db.insertDishCat(Helper.capitalFirst(dish.getName()), Helper.capitalFirst(catNames.get(i)));
 						en++;
@@ -359,9 +370,9 @@ public class Employee extends Person {
 					return en == catNames.getSize() && to == ingredient.getSize();
 				}
 			}
+
 		} catch (SQLException ePrepState) {
 			return false;
-
 		}
 		return false;
 	}
@@ -568,12 +579,12 @@ public class Employee extends Person {
 		Database db = new Database();
 		return db.getIngredients();
 	}
-
+	//TODO add doc
 	public DefaultListModel<String[]> getBigSpenders() {
 		Database db = new Database();
 		return db.bigSpender();
 	}
-
+	//TODO add doc
 	public ArrayList<String[]> getInComeReport(String start, String end) {
 		Database db = new Database();
 		return db.getInComeReport(start, end);

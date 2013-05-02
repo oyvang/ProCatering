@@ -1,19 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package procatering;
 
 
 import javax.swing.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 /**
- * content of an order or subscription, with deliveryDate( for order and subscription ) or deliveryDay( for subscription )
- *
- * @author Ted
+ * OrderContain object are content of an order or subscription, with deliveryDate( for order and subscription ) or deliveryDay( for subscription )
+ * <dl>
+ *  <dt>Constructors:</dt>
+ *      <dd>- Timestamp delivery</dd>
+ *      <dd>- Timestamp delivery, DefaultListModel<Dish> dishList</dd>
+ *      <dd>- String day, Timestamp delivery</dd>
+ *      <dd>- String day, Timestamp time, DefaultListModel<Dish> dishlist</dd>
+ * </dl>
+ * @author Team 17
  */
 public class OrderContent {
 	private DefaultListModel<Dish> dishes;
@@ -21,7 +22,8 @@ public class OrderContent {
 	private String deliveryDay;
 
 	/**
-	 * constructor for content to Orders
+	 * This constructor of OrderContent do <b>not</b> set a value for string variable <b>deliveryDay</b>,
+         * dhises = new DefaultListModel()
 	 *
 	 * @param delivery Timestamp with date and time for delivery of order.
 	 */
@@ -30,8 +32,7 @@ public class OrderContent {
 		this.dishes = new DefaultListModel<>();
 	}
     /**
-     * constructor for content to Orders
-     * From DB
+     *This constructor of OrderContent do <b>not</b> set a value for string variable <b>deliveryDay</b>
      *
      * @param delivery Timestamp with date and time for delivery of order.
      */
@@ -41,10 +42,10 @@ public class OrderContent {
         this.dishes = dishlist;
     }
 
-	/**
-     * constructor for content to subscriptions
-     *
-     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+    /**
+     * dishes = new DefaultListModel() that can cointaint Dish objects <br>
+     * deliveryTime = new Timestamp(year,month,tsday,hour,minute,0,0)
+     * @param day  String of the weekday for repeated delivery
      * @param delivery Timestamp that contains the time of delivery for the given day
      */
     public OrderContent(String day, Timestamp delivery) {
@@ -58,12 +59,12 @@ public class OrderContent {
         deliveryDay = day;
         this.dishes = new DefaultListModel<Dish>();
     }
+
     /**
-     * constructor for content to subscriptions
-     * From DB
-     *
-     * @param day  String of the weekday for repeated delivery, full name with capital letter first. ( "Wednesday" )
+     * 
+     * @param day  String of the weekday for repeated delivery
      * @param time Timestamp that contains the time of delivery for the given day
+     * @param dishlist DefaultListModel with Dish objects
      */
     public OrderContent(String day, Timestamp time, DefaultListModel<Dish> dishlist) {
 
@@ -75,17 +76,16 @@ public class OrderContent {
 
 
 	/**
-	 * Method getDishes
 	 *
-	 * @return a DefaultListModel containing all the dishes
+	 * @return a DefaultListModel that can contain dish objects
 	 */
 	public DefaultListModel<Dish> getDishes() {
 		return dishes;
 	}
         /**
          * Find a Dish object at the given index
-         * @param index Integer (dishes index)
-         * @return a dish object
+         * @param index the index in dishes
+         * @return a dish object; or null
          */
         public Dish getDishIndex(int index){
             if(index <= dishes.getSize() && index > -1){
@@ -95,30 +95,28 @@ public class OrderContent {
         }
 
 	/**
-	 * Method getDeliveryDate
 	 *
-	 * @return Timestamp with the delivery time (Only time for subscription, time and date for order)
+	 * @return Timestamp with the delivery time (Only time for subscription, time and date for order); or null (null ahould never happend)
 	 */
 	public Timestamp getDeliveryDate() {
 		return deliveryTime;
 	}
 
 	/**
-	 * Method getDeliveryDay
-	 *
-	 * @return String with the delivery day(Only for subscription)
+	 * Find the day of an subscription order
+	 * @return String with the delivery day(Only for subscription), should return null for normal orders
 	 */
 	public String getDeliveryDay() {
 		return deliveryDay;
 	}
 
 	/**
-	 * Method addDeliveryTime
 	 * Adds a date for an order
 	 *
-	 * @param date Timestamp containing the time of delivery(subscription) or the time and date of delivery(order)
-	 * @return
+	 * @param date Timestamp containing the time of delivery(subscription) or the time and date of delivery(normal order)
+	 * @return boolean true if date are not null and
 	 */
+        //Is it better to use --this.deliveryTime.equals(date)--?
 	public boolean addDeliveryTime(Timestamp date) {
 		if (date != null) {
 			this.deliveryTime = date;
@@ -134,6 +132,7 @@ public class OrderContent {
 	 * @param weekDay whole name of the day with capital first letter.
 	 * @return boolean true if it is successfully added
 	 */
+        //TODO Her kom jeg i går...!
 	public boolean addDay(String weekDay) {
 		if (weekDay != null) {
 			this.deliveryDay = weekDay;
