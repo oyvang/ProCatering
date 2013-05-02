@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 
 /**
- * SecurityChecker check if an employee object have accsess to different elements in the system.
+ * SecurityChecker checks if an employee object have accsess to different elements in the system.
  * <dl>
  * <dt>Constructors: Default constructor</dt>
  * </dl>
@@ -14,7 +14,12 @@ import java.security.NoSuchAlgorithmException;
  * @author Team 17
  */
 public class SecurityChecker {
-	//TODO DOCUMENTATION
+	/**
+         * Checks if the given password equls employees password in the database
+         * @param employee_id Employee's id and username(userid)
+         * @param password The password used by login
+         * @return boolean true if password are correct; else false
+         */
 	private static boolean checkPassword(int employee_id, String password) {
 
 		String dbPass = getPasswordFromDatabase(employee_id);
@@ -45,7 +50,6 @@ public class SecurityChecker {
 	 *
 	 * @param id of the column witch contains the password
 	 * @return String with a md5 hash of a password
-	 * @author J�rgen Lien Sell�g
 	 */
 	private static String getPasswordFromDatabase(int id) {
 		Database con = new Database();
@@ -53,7 +57,11 @@ public class SecurityChecker {
 		return con.getPasswordFromDatabase(id);
 	}
 
-	//TODO legg til dokumentasjon for md5sjekkeren.
+	/**
+         * Help methode for MD5, used for password encryption
+         * @param data byte[]
+         * @return a string consisting of exactly this sequence of characters
+         */
 	private static String convertToHex(byte[] data) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < data.length; i++) {
@@ -70,7 +78,13 @@ public class SecurityChecker {
 		return buf.toString();
 	}
 
-	//TODO Documentation
+	/**
+         * The methode uses the methode convertToHes to encrypt a password.
+         * @param text password or any other string value that want to be encrypted
+         * @return a encrypted string value
+         * @throws NoSuchAlgorithmException
+         * @throws UnsupportedEncodingException 
+         */
 	public static String MD5(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md;
 		md = MessageDigest.getInstance("MD5");
@@ -80,13 +94,17 @@ public class SecurityChecker {
 		return convertToHex(md5hash);
 	}
 
-	//TODO Documentation
+	//TODO Documentation; Methode only return false
 	public boolean checkAdmin() {
 		// TODO Create check if the user is admin.
 		return false;
 	}
 
-	//TODO write documentation
+	/**
+         * Extract the hidden password in the login window
+         * @param password password used in the login
+         * @return String value
+         */
 	public static String extractPasswordFromFieldToString(char[] password) {
 		if (password == null)
 			return null;
@@ -96,7 +114,12 @@ public class SecurityChecker {
 		return res;
 	}
 
-	//TODO Write documentation
+	/**
+         * Checks if information in the login window are correct<br><br>Note: The employee id cannot be null or less than 1, The password cannot be null or equals ""
+         * @param id Employee's id
+         * @param password Employee's password
+         * @return true if the given password are correct with the database; else it will reutn false 
+         */
 	public static boolean logIn(Integer id, String password) {
 		if (id == null || id <= 0 || password == null || password.equals(""))
 			return false;

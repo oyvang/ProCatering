@@ -128,13 +128,11 @@ public class OrderContent {
 	}
 
 	/**
-	 * Method addDay
 	 * Adds a weekday for repeated delivery to a subscription.
 	 *
 	 * @param weekDay whole name of the day with capital first letter.
-	 * @return boolean true if it is successfully added
+	 * @return boolean true if it is successfully added; else false
 	 */
-	//TODO Her kom jeg i går...!
 	public boolean addDay(String weekDay) {
 		if (weekDay != null) {
 			this.deliveryDay = weekDay;
@@ -144,12 +142,11 @@ public class OrderContent {
 	}
 
 	/**
-	 * Method addDish
-	 * Adds a dish to the DefaultListModel containing dishes ( dishes )
+	 * Adds a dish to the DefaultListModel containing Dish objects
 	 *
 	 * @param dishName This dish object will be added to the dishes list.
 	 * @param quantity This amount of dishName will be added to the dishes list.
-	 * @return boolean returns true if added successfully
+	 * @return boolean returns true if added successfully; else false
 	 */
 	public boolean addDish(Dish dishName, int quantity) {
 		if (dishName != null) {
@@ -163,14 +160,13 @@ public class OrderContent {
 	}
 
 	/**
-	 * Method countDishes
 	 * help-method for the toString.
 	 * counts the occurence of every distinct dish within the dish List
 	 *
 	 * @param dishes the list of dishes that the OrderContent is containng
 	 * @return a DefaultListModel<String> with the distinct dish names and the number of those dishes.
 	 */
-	//TODO needs testing
+        //TODO This is not used, remove? Documentation are not updated for this methode.
 	private DefaultListModel<String> countDishes(DefaultListModel<Dish> dishes) {
 //		if (dishes == null)
 //			return null;
@@ -203,7 +199,6 @@ public class OrderContent {
 	}
 
 	/**
-	 * Method removeDish
 	 * Removes an element from the dishes list.
 	 *
 	 * @param index the index the element for removal lies.
@@ -214,9 +209,9 @@ public class OrderContent {
 
 
 	/**
-	 * Count equal dishes in the DefaultModelList "dishes".
+	 * Count equal dishes in the DefaultModelList dishes.
 	 *
-	 * @return a DefaultListModel<String> with string objects example (13x Taco)
+	 * @return a DefaultListModel with string objects example (13x Taco)
 	 */
 	public DefaultListModel<String> countDish() {
 		int counter = 0;
@@ -244,9 +239,9 @@ public class OrderContent {
 	}
 
 	/**
-	 * Count equal dishes in the DefaultModelList "dishes".
+	 * Count equal dishes in the DefaultModelList dishes.
 	 *
-	 * @return a DefaultListModel<String> with string objects example (13x Taco)
+	 * @return a DefaultListModel with string objects example <br>[Taco][2]<br>[Pizza][3]<br>[Fish] [1]
 	 */
 	public String[][] countDishFish(DefaultListModel<Dish> dishes) {
 		int counter = 0;
@@ -276,7 +271,6 @@ public class OrderContent {
 
 
 	/**
-	 * Method toString
 	 *
 	 * @return String with toString for either subscription or order.
 	 */
@@ -306,6 +300,10 @@ public class OrderContent {
 		}
 	}
 
+        /**
+         * Used in the GUI when adding elements to OrderContent
+         * @return customized string value for html
+         */
 	public String toHtml() {
 		String output = "";
 		DefaultListModel<String> countList = countDish();
@@ -332,6 +330,11 @@ public class OrderContent {
 		}
 	}
 
+        /**
+         * Count equal dishes in the DefaultModelList dishes
+         * @param dish Object
+         * @return an int with  how many equal dishes; Default return value are 0
+         */
 	public int countDish(Dish dish) {
 		int counter = 0;
 		for (int i = 0; i < dishes.getSize(); i++) {

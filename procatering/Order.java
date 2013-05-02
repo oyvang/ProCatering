@@ -14,6 +14,8 @@ import java.sql.Timestamp;
  * <dd>- int customer_id, int employee_id, String status</dd>
  * <dd>- Order o</dd>
  * </dl>
+ * <br> The String status should be one of these values (Active, Completed, Cancelled or Pending)<br>
+ * The DefaultListModel should include one delivery for each object
  *
  * @author Team 17
  */
@@ -21,13 +23,13 @@ public class Order {
 
 	private int customerId;
 	private int employeeId;
-	private String status;      // Active, Completed or Cancelled
+	private String status;      
 	private Timestamp creationTime;
-	private DefaultListModel<OrderContent> ordercontent; // one delivery per object
+	private DefaultListModel<OrderContent> ordercontent; 
 	private int orderId;
 
 	/**
-	 * Constructor for Order.
+	 * This constructor do <b>not</b> initialize orderId
 	 *
 	 * @param customer_id The id of the Customer
 	 * @param employee_id The id of the Employee
@@ -40,7 +42,15 @@ public class Order {
 		this.creationTime = creationTime;
 		ordercontent = new DefaultListModel<>();
 	}
-
+        /**
+         * This constructor checks if contentList with OrderContent equals null, if not it will copy each object and add them into orderconten
+         * @param order_id
+         * @param customer_id
+         * @param employee_id
+         * @param status
+         * @param creationTime
+         * @param contentList 
+         */
 	public Order(int order_id, int customer_id, int employee_id, String status, Timestamp creationTime, DefaultListModel<OrderContent> contentList) {
 		ordercontent = new DefaultListModel<>();
 		customerId = customer_id;
@@ -57,11 +67,12 @@ public class Order {
 		orderId = order_id;
 	}
 
-	/**
-	 * @param customer_id The id of the Customer
-	 * @param employee_id The id of the Employee
-	 * @param status      The initial status of the Order.
-	 */
+        /**
+         * This constructor do <b>not</b> initialize orderId
+         * @param customer_id
+         * @param employee_id
+         * @param status 
+         */
 	public Order(int customer_id, int employee_id, String status) {
 		customerId = customer_id;
 		employeeId = employee_id;
@@ -70,32 +81,39 @@ public class Order {
 		ordercontent = new DefaultListModel();
 	}
 
-	/**
-	 * Standard copy constructor
-	 */
+
+        /**
+         * Standard copy constructor which only Standard copy constructor creationTime and ordercontent
+         * @param o  Order object
+         */
 	public Order(Order o) {
 		this(o.getCustomerId(), o.getEmployeeId(), o.getStatus(), o.getOrderDate());
 		this.creationTime = o.getOrderDate();
 		this.ordercontent = o.getOrderContent();
 	}
 
-
+        /**
+         * 
+         * @return an int value of employeeId
+         */
 	public int getEmployeeId() {
 		return employeeId;
 	}
-
+        /**
+         * 
+         * @return an int value of customerId
+         */
 	public int getCustomerId() {
 		return customerId;
 	}
 
 	/**
-	 * Method addDish
 	 * Adds a dish to the order content list within the Order
 	 *
 	 * @param dishName Dish object that are to be added
 	 * @param quantity The amount of dishes that is to be added
 	 * @param index    which OrderContent object in the DefaultListModel that the Dish object is inserted into.
-	 * @return boolean, true for successful insertion.
+	 * @return boolean true for successful insertion; else false
 	 */
 	public boolean addDish(Dish dishName, int quantity, int index) {
 		if (ordercontent.getElementAt(index).addDish(dishName, quantity)) {
@@ -105,8 +123,7 @@ public class Order {
 	}
 
 	/**
-	 * Method getCurrentDate
-	 *
+	 * Get the current Time
 	 * @return a current Timestamp
 	 */
 	public Timestamp getCurrentDate() {
@@ -115,38 +132,48 @@ public class Order {
 		return date;
 	}
 
-	/**
-	 * see procatering.Order.getCreationTime();
-	 */
+        /**
+         * Find the time an order have been created
+         * @return a Timestamp value of creation time
+         * @deprecated
+         * @see procatering.Order.getCreationTime()
+         */
 	@Deprecated
 	public Timestamp getOrderDate() {
 		return creationTime;
 	}
-
+        /**
+         * Find the time an order have been created
+         * @return a Timestamp value
+         */
 	public Timestamp getCreationTime() {
 		return creationTime;
 	}
-
+        /**
+         * 
+         * @return int value of orderId
+         */
 	public int getOrderId() {
 		return orderId;
 	}
-
+        /**
+         * 
+         * @return a String value of status
+         */
 	public String getStatus() {
 		return status;
 	}
 
 	/**
-	 * Method setStatus
 	 * Sets the status of an order.
-	 *
-	 * @param status the status for the order. Available statuses for Order: Active, Completed or Cancelled
+	 * Available statuses for Order: Active, Completed, Cancelled or Pending
+	 * @param status the status for the order.
 	 */
 	public void setStatus(String status) {
 		this.status = status;
 	}
 
 	/**
-	 * Method getOrderContent
 	 *
 	 * @return a DefaultListModel<OrderContent> with the orderContent of the order ( Dishes, deliveryDate and time )
 	 */
@@ -156,7 +183,6 @@ public class Order {
 
 
 	/**
-	 * Method addOrderContent
 	 * Creates an OrderContent object for adding of dishes, and adds it to the DefaultListModel<orderContent>
 	 *
 	 * @param delivery Timestamp with the date and time for delivery.
@@ -168,14 +194,12 @@ public class Order {
 		}
 		return false;
 	}
-	//TODO: ADDISH
-
+        //TODO UNUSED
 	public void addDB() {
 		database.Database db = new database.Database();
 	}
 
 	/**
-	 * Method toString
 	 *
 	 * @return object shows as String with the order created date/time and the content of the order sorted.
 	 */
@@ -184,14 +208,18 @@ public class Order {
 		return "Order id #" + getOrderId() + " for " + getCustomer(getCustomerId()).toString();
 		//getOrderContent().get(0).getDeliveryDate().toString().substring(0,16);
 	}
-
+        
+        /**
+         * Find one spesific customer by customer id
+         * @param customerId customers id 
+         * @return a Customer object; or null
+         */
 	private Customer getCustomer(int customerId) {
 		Database db = new Database();
 		return db.getCustomer(customerId);
 	}
 
 	/**
-	 * Method returns a html representation of the object.
 	 *
 	 * @return a html document representation of the object.
 	 */
@@ -204,7 +232,10 @@ public class Order {
 		}
 		return output;
 	}
-
+        /**
+         * Create an receipt for Order that are customized for html
+         * @return string value
+         */
 	public String confirmToHtml() {
 		String output = "Receipt for Order<br>";
 		for (int i = 0; i < ordercontent.size(); i++) {
@@ -214,7 +245,10 @@ public class Order {
 		return output;
 	}
 
-
+        /**
+         *  Find total sum for an order
+         * @return double [] with two exact equal numbers
+         */
 	public double[] getSum() {
 		Double total = 0.0;
 		for (int i = 0; i < ordercontent.size(); i++) {

@@ -9,7 +9,7 @@ import javax.swing.*;
  *
  * @author Team 17
  */
-//TODO seartchPostalCode skal vell egentlig ikke opprette et DB object, men kjøres gjennom employee? Om dette endres må dokumentasjonen endres også.
+//TODO Should this class by the methode searchPostalCode(String postalCode) create an Database object, or should we run it through employee
 public class Helper {
 	public static final int GUI_NUMBER = 1;
 	public static final int DATABASE_NUMBER = 2;

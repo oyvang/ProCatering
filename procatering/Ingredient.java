@@ -13,7 +13,10 @@ public class Ingredient {
 	private String name;
 	private int ingredientID = -1;
 
-	//TODO Docs
+	/**
+         * This constructor do <b>not</b> initialize ingredientID; Default value is -1
+         * @param name string value for the given ingridient
+         */
 	public Ingredient(String name) {
 		this.name = name;
 	}
@@ -30,7 +33,6 @@ public class Ingredient {
 	}
 
 	/**
-	 * //TODO Docs
 	 *
 	 * @return the String variable name
 	 */
@@ -39,7 +41,6 @@ public class Ingredient {
 	}
 
 	/**
-	 * //TODO Docs
 	 *
 	 * @return return the int variable ingredientID; Default value equals -1
 	 */
@@ -47,7 +48,10 @@ public class Ingredient {
 		return ingredientID;
 	}
 
-	//TODO Docs
+	/**
+         * tostring methode that reutn the string name
+         * @return 
+         */
 	public String toString() {
 		return this.name;
 	}

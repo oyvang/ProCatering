@@ -518,7 +518,6 @@ public class Employee extends Person {
 	 * @return a DefaultListModel with all the employees
 	 */
 	public DefaultListModel<Employee> getEmployees() {
-		Database db = new Database();
 		return db.getEmployees();
 	}
 
@@ -529,7 +528,6 @@ public class Employee extends Person {
 	 * @return an ArrayList with string tables with the content of the result.
 	 */
 	public ArrayList<String[]> getTodayOrder(String today) {
-		Database db = new Database();
 		return db.getTodayOrder(today);
 	}
 
@@ -539,7 +537,6 @@ public class Employee extends Person {
 	 * @return a DefaultListModel containing all the orders in the database, returns null if nothing is found.
 	 */
 	public DefaultListModel<Order> getOrders() {
-		Database db = new Database();
 		return db.getAllOrders2();
 	}
 
@@ -549,7 +546,6 @@ public class Employee extends Person {
 	 * @return a DefaultListModel containing all the subscriptions in the database, returns null if nothing is found.
 	 */
 	public DefaultListModel<Subscription> getSubscriptions() {
-		Database db = new Database();
 		return db.getAllSubscriptions();
 	}
 
@@ -560,7 +556,6 @@ public class Employee extends Person {
 	 * @return an ArrayList of all the subscriptions
 	 */
 	public ArrayList<String[]> getTodaySubscription(String today) {
-		Database db = new Database();
 		return db.getTodaySubscription(today);
 	}
 
@@ -570,25 +565,32 @@ public class Employee extends Person {
 	 * @return a DefaultListModel of the dishes
 	 */
 	public DefaultListModel<String[]> getTopDishes() {
-		Database db = new Database();
 		return db.topDishes();
 	}
 
-	//TODO ADD DOCUMENTATION
+	/**
+         * 
+         * @return a DefaultListModel of all ingredients
+         */
 	public DefaultListModel<Ingredient> getIngredients() {
-		Database db = new Database();
 		return db.getIngredients();
 	}
 
-	//TODO add doc
+	/**
+         * Find the top 10 customers by money flow
+         * @return DefaultListModel with string[] objects
+         */
 	public DefaultListModel<String[]> getBigSpenders() {
-		Database db = new Database();
 		return db.bigSpender();
 	}
 
-	//TODO add doc
+	/**
+         * Find income from one date to another date
+         * @param start String formated as a Timestamp for starte date
+         * @param end String formated as a Timestamp for end date
+         * @return an ArrayList containtin String[] objects
+         */
 	public ArrayList<String[]> getInComeReport(String start, String end) {
-		Database db = new Database();
 		return db.getInComeReport(start, end);
 	}
 }
