@@ -628,7 +628,7 @@ public class Database {
             return null;
         }
     }
-
+    // TODO ORDER BY order id or something?
     public DefaultListModel<Order> getAllOrders2() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT DISTINCT orders.order_id, orders.customer_id, orders.employee_id, orders.status, orders.time_of_order, orders.order_id  FROM orders LEFT OUTER JOIN order_dish ON (order_dish.order_id = orders.order_id) WHERE days IS NULL")) {
