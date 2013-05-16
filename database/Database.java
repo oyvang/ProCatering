@@ -800,18 +800,6 @@ public class Database {
         return output;
     }
 
-    public static void main(String[] args) {
-        Database db = new Database();
-        DefaultListModel<Order> hei = db.getAllOrders2();
-        // System.out.println("lengde på utskriftsliste: "+hei.size());
-        String ut = "<html>";
-        for (int i = 0; i < hei.size(); i++) {
-            ut += hei.get(i).confirmToHtml();
-        }
-        ut += "</html>";
-        showMessageDialog(null, ut);
-    }
-
     /**
      * The methode check the dishName length, it has to be less than 255 signs.
      *
@@ -893,7 +881,7 @@ public class Database {
     /**
      * Search metode for dishes. uses a string value and include every dish with that value inside the dishname.
      *
-     * @param value
+     * @param value the value to be serached for.
      * @return a DefaultListModel with dishes that include the string value in dishname, or null if something fails.
      */
     public DefaultListModel<procatering.Dish> findDishes(String value) {
@@ -955,8 +943,8 @@ public class Database {
     /**
      * Check the number of dishes sold of a given dish.
      *
-     * @param dishId
-     * @returnes a integer of the number of dishes if it exists, 0 if it don't.
+     * @param dishId the dish ID
+     * @return a integer of the number of dishes if it exists, 0 if it don't.
      */
     public int numbOfDishes(int dishId) {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -988,7 +976,7 @@ public class Database {
      *
      * @param from is the start date and time.
      * @param to   is the end date and time.
-     * @returnes strings in a DefaultListModel.
+     * @return strings in a DefaultListModel.
      */
     public DefaultListModel<String> topDishesFromTo(Timestamp from, Timestamp to) {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -997,7 +985,7 @@ public class Database {
                 prepStat.setTimestamp(1, from);
                 prepStat.setTimestamp(2, to);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel output = new DefaultListModel<>();
+                DefaultListModel<String> output = new DefaultListModel<>();
                 while (rs.next()) {
                     output.addElement("Number of dishes: " + rs.getInt("amountsum") + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
                 }
@@ -1018,14 +1006,14 @@ public class Database {
     /**
      * Gives the top five dishes arranged by most sold.
      *
-     * @returnes strings in a DefaultListModel.
+     * @return Strings in a DefaultListModel.
      */
     public DefaultListModel<String> topDishes() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(amount) AS amountsum , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id GROUP BY dish.dish_id ORDER BY amountsum DESC")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel output = new DefaultListModel<>();
+                DefaultListModel<String> output = new DefaultListModel<>();
                 while (rs.next()) {
                     if (rs.getRow() < 6) {
                         output.addElement("Number of dishes: " + rs.getInt("amountsum") + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
@@ -1049,14 +1037,14 @@ public class Database {
     /**
      * Gives the top 10 dishes arranged by profit.
      *
-     * @returns strings in a DefaultListModel.
+     * @return strings in a DefaultListModel.
      */
     public DefaultListModel<String> topProfit() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT time_of_order, order_dish.order_id, dish.dish_id, order_dish.dish_id, dishname, price, cost, SUM(price - cost) AS profit , SUM(order_dish.dish_id) AS 'in orders' FROM dish LEFT OUTER JOIN order_dish ON order_dish.dish_id = dish.dish_id JOIN orders GROUP BY dish.dish_id ORDER BY profit DESC LIMIT 10;")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel output = new DefaultListModel<>();
+                DefaultListModel<String> output = new DefaultListModel<>();
                 while (rs.next()) {
                     output.addElement("Profit: " + rs.getDouble("profit") + " NOK" + ". Dish: " + rs.getString("dishname") + ". Dish price: " + rs.getDouble("price") + " NOK" + ". Dish cost: " + rs.getDouble("cost") + " NOK");
                 }
@@ -1080,7 +1068,7 @@ public class Database {
      *
      * @param from is the start date and time.
      * @param to   is the end date and time.
-     * @returnes strings in a DefaultListModel.
+     * @return strings in a DefaultListModel.
      */
     public DefaultListModel<String> getOrdersFromTo(Timestamp from, Timestamp to) {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -1089,7 +1077,7 @@ public class Database {
                 prepStat.setTimestamp(1, from);
                 prepStat.setTimestamp(2, to);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel output = new DefaultListModel<>();
+                DefaultListModel<String> output = new DefaultListModel<>();
                 while (rs.next()) {
                     output.addElement("Order ID: " + rs.getInt("order_id") + ". Order sum: " + rs.getDouble("sum") + " NOK" + ". Kunde: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Employee ID: " + rs.getInt("employee_id") + ". Order time: " + rs.getTimestamp("time_of_order"));
                 }
@@ -1111,14 +1099,14 @@ public class Database {
     /**
      * Gives the top 10 customers arranged by money used.
      *
-     * @returnes strings in a DefaultListModel.
+     * @return strings in a DefaultListModel.
      */
     public DefaultListModel<String> bigSpender() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT customer.customer_id, customer.lastname, customer.firstname, COUNT(customer.customer_id) 'nu', SUM(amount*quantity) 'sum' FROM orders LEFT OUTER JOIN order_dish ON order_dish.order_id = orders.order_id JOIN customer ON customer.customer_id = orders.customer_id GROUP BY customer.customer_id ORDER BY sum DESC LIMIT 10")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
-                DefaultListModel output = new DefaultListModel<>();
+                DefaultListModel<String> output = new DefaultListModel<>();
                 while (rs.next()) {
                     output.addElement("Customer ID: " + rs.getInt("Customer ID: " + rs.getInt("customer_id") + ". Name: " + rs.getString("lastname") + ", " + rs.getString("firstname") + ". Sum of all orders: " + rs.getDouble("sum") + " NOK. In " + rs.getString("nu") + " order(s)"));
                 }
@@ -1140,7 +1128,7 @@ public class Database {
      * Adds a new category into the database. This methode only uses the name of the category to create one.
      *
      * @param name String object
-     * @return
+     * @return true if the category is successfully added. False is it fails.
      */
     public boolean addCategory(String name) {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
@@ -1243,8 +1231,8 @@ public class Database {
     /**
      * Uses the first String to find the row in the database, and change the name to the second string
      *
-     * @param name
-     * @param newname
+     * @param name the current name of the category.
+     * @param newname the new name of the category.
      * @return true if sucsesfully updated, else it will return false.
      */
     public boolean editCategory(String name, String newname) {
