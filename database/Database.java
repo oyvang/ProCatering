@@ -544,14 +544,14 @@ public class Database {
             return null;
         }
     }
-    public DefaultListModel<Subscription> getAllSubscriptions() {
+    public DefaultListModel<Order> getAllSubscriptions() {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (PreparedStatement prepStat = con.prepareStatement("SELECT DISTINCT orders.order_id, orders.customer_id, orders.employee_id, orders.status, orders.time_of_order, orders.order_id  FROM orders LEFT OUTER JOIN order_dish ON (order_dish.order_id = orders.order_id) WHERE days IS NULL")) {
                 con.setAutoCommit(false);
                 ResultSet rs = prepStat.executeQuery();
                 con.commit();
                 con.setAutoCommit(true);
-                DefaultListModel<Subscription> orderList = new DefaultListModel<>();
+                DefaultListModel<Order> orderList = new DefaultListModel<>();
                 while (rs.next()) {
                     orderList.addElement(
                             new Order(rs.getInt("orders.order_id"), rs.getInt("orders.customer_id"), rs.getInt("orders.employee_id"), rs.getString("orders.status"), rs.getTimestamp("orders.time_of_order"), createContentList(rs.getInt("orders.order_id")))
@@ -1644,6 +1644,34 @@ public class Database {
         }
     }
 
+	public ArrayList<String[]> getTodaySubscription(String today){
+		ArrayList<String[]> output = new ArrayList<>();
+		String sql = "SELECT order_dish.quantity, dish.dishname, order_dish.days, customer.firstname, customer.lastname, orders.starts, orders.ends FROM order_dish JOIN orders ON (orders.order_id = order_dish.order_id) JOIN dish ON (order_dish.dish_id = dish.dish_id) JOIN customer ON (orders.customer_id = customer.customer_id) WHERE orders.starts <= ? AND orders.ends >= ?";
+		if(today == null)
+			return null;
+		try (Connection con = DriverManager.getConnection(URL, username, password)) {
+			try (PreparedStatement prepStat = con.prepareStatement(sql)) {
+				con.setAutoCommit(false);
+				prepStat.setString(1, today);
+				prepStat.setString(2, today);
+				ResultSet rs = prepStat.executeQuery();
+				while(rs.next()){
+					output.add(new String[]{rs.getInt(1)+"",rs.getString(2)+"",rs.getString(3),rs.getString(4), rs.getString(5)});
+				}
+
+				con.commit();
+				con.setAutoCommit(true);
+				return output;
+			}catch(SQLException e){
+				System.out.println(e);
+				con.rollback();
+				return null;
+			}
+		}catch (SQLException er){
+			System.out.println(er);
+			return null;
+		}
+	}
 
 
     public ArrayList<String[]> getTodayOrder(String today){

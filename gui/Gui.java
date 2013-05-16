@@ -7,6 +7,7 @@ import procatering.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -980,17 +982,20 @@ public class Gui {
 		cl.show(mainPanel, "existOrderCard");
 		existOrderPopulate();
 		chefSeeOrderPopulate();
+		chefSeeSubscriptionPopulate();
+
 	}
 
-	private void chefSeeOrderPopulate() {
+	private void chefSeeSubscriptionPopulate() {
 		java.util.Date time = new java.util.Date();
 		Timestamp date = new Timestamp(time.getTime());
-		ArrayList<String[]> list = loggedInEmployee.getTodayOrder(date.toString().substring(0, 10));
-
-		String html = "<html><h2>Orders today</h2>";
-
+		GregorianCalendar cal = new GregorianCalendar();
+		SimpleDateFormat  fore = new SimpleDateFormat("EEEE");
+		ArrayList<String[]> list = loggedInEmployee.getTodaySubscription(date.toString().substring(0, 10)+" 00:00:00");
+		String html = "<html><h1>Current active subscriptions</h1>";
+		html += "<h2>Today is "+fore.format(time)+"</h2>";
 		if(list.isEmpty())
-			html += "<p>No orders today. </p>";
+			html += "<p>No single orders today. </p>";
 		else{
 			html += "<table><tr><td>Amount</td><td>Time of delivery</td><td>Dish</td><td>First name</td><td>Last name</td></tr>";
 			for (int i = 0; i < list.size(); i++) {
@@ -1002,7 +1007,29 @@ public class Gui {
 			}
 			html += "</table>";
 		}
+		existOrderChefSubscriptionsTextPane.setText(html);
+	}
 
+	private void chefSeeOrderPopulate() {
+		java.util.Date time = new java.util.Date();
+		Timestamp date = new Timestamp(time.getTime());
+		ArrayList<String[]> list = loggedInEmployee.getTodayOrder(date.toString().substring(0, 10));
+
+		String html = "<html><h1>Orders today</h1>";
+
+		if(list.isEmpty())
+			html += "<p>No single orders today. </p>";
+		else{
+			html += "<table><tr><td>Amount</td><td>Dish</td><td>Day</td><td>First name</td><td>Last name</td></tr>";
+			for (int i = 0; i < list.size(); i++) {
+				html += "<tr>";
+				for (int j = 0; j < list.get(i).length; j++) {
+					html += "<td>"+list.get(i)[j]+"</td>";
+				}
+				html += "</tr>";
+			}
+			html += "</table>";
+		}
 		existOrderChefOrdersTextPane.setText(html);
 	}
 
